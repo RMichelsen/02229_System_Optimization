@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Text;
 
 namespace MulticoreProcessorScheduler.Models
 {
@@ -13,6 +14,15 @@ namespace MulticoreProcessorScheduler.Models
             Id = id;
             Cores = new List<Core>();
         }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"Processor Id:{Id}");
+            Cores.ForEach(core => sb.AppendLine(core.ToString()));
+
+            return sb.ToString();
+        }
     }
 
     class Core
@@ -23,6 +33,11 @@ namespace MulticoreProcessorScheduler.Models
         {
             Id = id;
             WcetFactor = wcetFactor;
+        }
+
+        public override string ToString()
+        {
+            return $"Core\tId:{Id}, WcetFactor: {WcetFactor}";
         }
     }
 }

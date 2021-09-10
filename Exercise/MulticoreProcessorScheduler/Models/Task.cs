@@ -14,5 +14,10 @@ namespace MulticoreProcessorScheduler.Models
             Period = period;
             Wcet = wCET;
         }
+
+        public override string ToString()
+        {
+            return $"Task\tId:{Id}, Deadline: {Deadline}, Period: {Period}, WCET: {Wcet}";
+        }
     }
 }
