@@ -23,15 +23,15 @@ namespace MulticoreProcessorScheduler
             //load in mcps
             foreach (var mcp in mcps)
             {
-                string id = (string)mcp.Attribute("Id");
-                var processor = new Processor(id);
+                string mcpId = (string)mcp.Attribute("Id");
+                var processor = new Processor(mcpId);
 
                 var cores = mcp.Descendants("Core")
                     .Select(core => {
                         string id = (string)core.Attribute("Id");
                         decimal wcetFactor = ((decimal)core.Attribute("WCETFactor"));
 
-                        return new Core(id, wcetFactor);
+                        return new Core(id, mcpId, wcetFactor);
                     }).ToList();
 
                 processor.Cores = cores;

@@ -28,16 +28,18 @@ namespace MulticoreProcessorScheduler.Models
     class Core
     {
         public string Id { get; }
+        public string McpId { get; }
         public decimal WcetFactor { get; set; }
-        public Core(string id, decimal wcetFactor)
+        public Core(string id, string mcpId, decimal wcetFactor)
         {
             Id = id;
+            McpId = mcpId;
             WcetFactor = wcetFactor;
         }
 
         public override string ToString()
         {
-            return $"Core\tId:{Id}, WcetFactor: {WcetFactor}";
+            return $"Core\tId:{Id}, McpId:{McpId}, WcetFactor: {WcetFactor}";
         }
     }
 }
