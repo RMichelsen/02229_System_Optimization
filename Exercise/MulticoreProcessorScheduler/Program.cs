@@ -6,7 +6,6 @@ namespace MulticoreProcessorScheduler
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
 
             XmlReader.Read(ImportFileSize.Small, out var tasks, out var processors);
 
@@ -17,6 +16,8 @@ namespace MulticoreProcessorScheduler
                 Console.WriteLine(task.ToString());
             }
 
+            var solution = SolutionGenerator.GetInititalSolution(tasks,processors);
+            Console.WriteLine(solution.ToString());
         }
     }
 }
