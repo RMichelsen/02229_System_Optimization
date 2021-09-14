@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+
 namespace MulticoreProcessorScheduler.Models
 {
 	class Solution

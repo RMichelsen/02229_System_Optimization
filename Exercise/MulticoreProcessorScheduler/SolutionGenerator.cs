@@ -1,3 +1,5 @@
+using MulticoreProcessorScheduler.Models;
+
 namespace MulticoreProcessorScheduler
 {
 	class SolutionGenerator
