@@ -34,8 +34,16 @@ namespace MulticoreProcessorScheduler.Models
 	class AssignedTask
 	{
 		public Task Task { get; }
-		public Core Core { get; set; }
+		private Core _core;
+		public Core Core { 
+			get { return _core; } 
+			set {
+				_core = value;
+				Wcet = _core.WcetFactor * Task.Wcet;
+			} 
+		}
 		public double Wcrt { get; set; }
+		public double Wcet { get; set; }
 		
 		public AssignedTask(Task task, Core core, double wcrt){
 			Task = task;

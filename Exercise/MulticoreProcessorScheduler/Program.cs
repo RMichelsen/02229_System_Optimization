@@ -1,4 +1,5 @@
 ﻿using System;
+using MulticoreProcessorScheduler.Models;
 
 namespace MulticoreProcessorScheduler
 {
@@ -23,6 +24,14 @@ namespace MulticoreProcessorScheduler
             var neighbour = SolutionGenerator.GenerateNeighbour(solution);
             Console.WriteLine(neighbour.ToString());
             Console.WriteLine(solution.ToString());
+
+            Console.WriteLine();
+            Console.WriteLine();
+
+            AssignedTask assignedTask = new AssignedTask(tasks[0], processors[0].Cores[0], 0);
+            Console.WriteLine($"Old Wcet: {assignedTask.Wcet}, Core.WcetFactor: {assignedTask.Core.WcetFactor}, Task.Wcet: {assignedTask.Task.Wcet}");
+            assignedTask.Core = processors[0].Cores[1];
+            Console.WriteLine($"New Wcet: {assignedTask.Wcet}, Core.WcetFactor: {assignedTask.Core.WcetFactor}, Task.Wcet: {assignedTask.Task.Wcet}");
 
         }
     }
