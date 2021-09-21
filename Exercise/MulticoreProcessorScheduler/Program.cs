@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MulticoreProcessorScheduler.Models;
 
 namespace MulticoreProcessorScheduler
@@ -44,7 +46,27 @@ namespace MulticoreProcessorScheduler
                 Console.WriteLine(tuple.Item1);
             }
 
-            
+            printTuples(tuples);
+
+        }
+
+        public static void printTuples(List<(double, Solution)> tuples)
+        {
+            string indent = "";
+            Console.WriteLine();
+            Console.WriteLine("Solutions (" + tuples.Count() + ") status: ");
+            indent += "\t";
+            Console.WriteLine(indent + "First 5: ");
+            indent += "\t";
+            tuples.Take(5).ToList().ForEach(t => Console.WriteLine(indent + t.Item1));
+            indent = indent.Substring(0, indent.Length-1);
+            Console.WriteLine(indent + "Last 5: ");
+            indent += "\t";
+            tuples.Skip(tuples.Count()-5).ToList().ForEach(t => Console.WriteLine(indent + t.Item1));
+            indent = indent.Substring(0, indent.Length-1);
+            Console.WriteLine(indent + "Best 5: ");
+            indent += "\t";
+            tuples.OrderBy(t => t.Item1).Take(5).ToList().ForEach(t => Console.WriteLine(indent + t.Item1));
 
         }
     }

@@ -29,7 +29,9 @@ namespace MulticoreProcessorScheduler
                 costNeighbour = Cost(neighbourC);
                 if (AccProbability(costC,costNeighbour, T) > rnd.Next(0, 1)) {
                     C = neighbourC;
-                    results.Add((costNeighbour, C));
+                    if (costNeighbour < 1000000000f) {
+                        results.Add((costNeighbour, C));
+                    }
                 }
                 T = T * (1 - r);
             }
@@ -52,12 +54,14 @@ namespace MulticoreProcessorScheduler
                 do {
                     R = I + assignedTask.Wcet;
                     if(R > assignedTask.Task.Deadline) {
-                        return 100000.0f;
+                        return 1000000000f;
                     }
                     I = 0.0f;
-                    for(int j = 0; j < i - 1; j++) {
+                    for(int j = 0; j < i; j++) {
                         jthTask = solution.AssignedTasks[j];
-                        I += Math.Ceiling(R / jthTask.Task.Period) * jthTask.Wcet;
+                        if(assignedTask.Core.Id == jthTask.Core.Id) {
+                            I += Math.Ceiling(R / jthTask.Task.Period) * jthTask.Wcet;
+                        }
                     }
 
                 } while(I + assignedTask.Wcet > R);
