@@ -6,7 +6,8 @@ namespace MulticoreProcessorScheduler
 {
 	class SolutionGenerator
 	{
-		public static Solution GetInititalSolution(List<Task> tasks, List<Processor> processors) {
+		public static Solution GetInititalSolution(List<Task> tasks, List<Processor> processors) 
+		{
 			var solution = new Solution();
 			int i = 0;
 			
@@ -18,6 +19,11 @@ namespace MulticoreProcessorScheduler
 				i = (i+1)%coreCount;
 				solution.AssignedTasks.Add(assignedTask);
 			}
+			return solution;
+		}
+
+		public static Solution GenerateNeighbour(Solution solution)
+		{
 			return solution;
 		}
 	}
