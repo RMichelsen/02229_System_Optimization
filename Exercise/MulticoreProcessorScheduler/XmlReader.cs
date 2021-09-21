@@ -29,7 +29,7 @@ namespace MulticoreProcessorScheduler
                 var cores = mcp.Descendants("Core")
                     .Select(core => {
                         string id = (string)core.Attribute("Id");
-                        decimal wcetFactor = ((decimal)core.Attribute("WCETFactor"));
+                        double wcetFactor = ((double)core.Attribute("WCETFactor"));
 
                         return new Core(id, mcpId, wcetFactor);
                     }).ToList();

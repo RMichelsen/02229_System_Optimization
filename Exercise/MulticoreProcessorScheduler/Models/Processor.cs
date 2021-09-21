@@ -29,8 +29,8 @@ namespace MulticoreProcessorScheduler.Models
     {
         public string Id { get; }
         public string McpId { get; }
-        public decimal WcetFactor { get; set; }
-        public Core(string id, string mcpId, decimal wcetFactor)
+        public double WcetFactor { get; set; }
+        public Core(string id, string mcpId, double wcetFactor)
         {
             Id = id;
             McpId = mcpId;
