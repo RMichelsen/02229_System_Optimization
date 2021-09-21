@@ -33,6 +33,19 @@ namespace MulticoreProcessorScheduler
             assignedTask.Core = processors[0].Cores[1];
             Console.WriteLine($"New Wcet: {assignedTask.Wcet}, Core.WcetFactor: {assignedTask.Core.WcetFactor}, Task.Wcet: {assignedTask.Task.Wcet}");
 
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("Solutions: ");
+
+            var tuples = SimulatedAnnealing.FindOptimalSolution(tasks, processors);
+            foreach (var tuple in tuples)
+            {
+                Console.WriteLine(tuple.Item1);
+            }
+
+            
+
         }
     }
 }

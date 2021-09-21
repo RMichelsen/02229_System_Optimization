@@ -4,11 +4,11 @@ using System.Linq;
 using MulticoreProcessorScheduler;
 using MulticoreProcessorScheduler.Models;
 
-namespace SimulatedAnnealing 
+namespace MulticoreProcessorScheduler 
 {
     class SimulatedAnnealing 
     {
-        public List<(double,Solution)> FindOptimalSolution(List<Task> tasks, List<Processor> processors) 
+        public static List<(double,Solution)> FindOptimalSolution(List<Task> tasks, List<Processor> processors) 
 		{
 			// start values
         	double T = 10000.0;
@@ -29,9 +29,7 @@ namespace SimulatedAnnealing
                 costNeighbour = Cost(neighbourC);
                 if (AccProbability(costC,costNeighbour, T) > rnd.Next(0, 1)) {
                     C = neighbourC;
-                    if (true /*IsSolution(C)*/) {
-                        break;
-                    }
+                    results.Add((costNeighbour, C));
                 }
                 T = T * (1 - r);
             }
@@ -39,11 +37,11 @@ namespace SimulatedAnnealing
             return results;
         }
 
-        protected double AccProbability(double costC, double costNeighbour, double T) {
+        protected static double AccProbability(double costC, double costNeighbour, double T) {
             return Math.Exp((costNeighbour - costC) / T);
         }
 
-        protected double Cost(Solution solution) {
+        protected static double Cost(Solution solution) {
             AssignedTask assignedTask;
             AssignedTask jthTask;
             for(int i = 0; i < solution.AssignedTasks.Count; i++) {
