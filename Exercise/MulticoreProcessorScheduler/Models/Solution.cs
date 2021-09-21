@@ -23,8 +23,11 @@ namespace MulticoreProcessorScheduler.Models
 		}
 
 		public Solution Copy()
-		{
-			return (Solution) this.MemberwiseClone();
+		{	
+			Solution copy = new Solution();
+			var copiedTasks = this.AssignedTasks.Select(at => new AssignedTask(at.Task ,at.Core, at.Wcrt));
+			copy.AssignedTasks.AddRange(copiedTasks);
+			return copy;
 		}
     }
 

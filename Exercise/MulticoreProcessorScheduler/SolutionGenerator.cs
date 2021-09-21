@@ -20,6 +20,8 @@ namespace MulticoreProcessorScheduler
 				i = (i+1)%coreCount;
 				solution.AssignedTasks.Add(assignedTask);
 			}
+
+			solution.AssignedTasks = OrderByDeadline(solution.AssignedTasks);
 			return solution;
 		}
 
@@ -37,13 +39,16 @@ namespace MulticoreProcessorScheduler
 			{
 				taskindex = rnd.Next(neighbour.AssignedTasks.Count());
 				task2 = neighbour.AssignedTasks[taskindex];
-			} while (task2.Core.Id != task1.Core.Id);
+			} while (task2.Core.Id == task1.Core.Id);
 
 			var t1Core = task1.Core;
 			task1.Core = task2.Core;
 			task2.Core = t1Core;
-			
+			neighbour.AssignedTasks = OrderByDeadline(neighbour.AssignedTasks);
 			return neighbour;
 		}
+
+		public static List<AssignedTask> OrderByDeadline(List<AssignedTask> assignedTasks) => assignedTasks.OrderBy(at => at.Task.Deadline).ToList();
+
 	}
 }
