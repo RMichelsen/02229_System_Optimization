@@ -8,14 +8,13 @@ namespace SimulatedAnnealing
 {
     class SimulatedAnnealing 
     {
-        
-        public List<(decimal,Solution)> FindOptimalSolution(List<Task> tasks, List<Processor> processors) 
+        public List<(double,Solution)> FindOptimalSolution(List<Task> tasks, List<Processor> processors) 
 		{
 			// start values
         	double T = 10000.0;
         	double r = 0.003;
         	
-            var results = new List<(decimal,Solution)>();
+            var results = new List<(double,Solution)>();
             
 			Solution C = SolutionGenerator.GetInititalSolution(tasks, processors);
             double costC = Cost(C);
@@ -37,38 +36,38 @@ namespace SimulatedAnnealing
                 T = T * (1 - r);
             }
 
-            return C;
+            return results;
         }
 
         protected double AccProbability(double costC, double costNeighbour, double T) {
-            return Math.Exp((costC-costNeighbour)/T);
+            return Math.Exp((costNeighbour - costC) / T);
         }
 
         protected double Cost(Solution solution) {
+            AssignedTask assignedTask;
+            AssignedTask jthTask;
             for(int i = 0; i < solution.AssignedTasks.Count; i++) {
-                Task task = solution.AssignedTasks[i].Task;
+                assignedTask = solution.AssignedTasks[i];
 
                 double I = 0.0f;
                 double R = 0.0f;
                 do {
-                    R = I + task.Wcet;
-                    if(R > task.Deadline) {
+                    R = I + assignedTask.Wcet;
+                    if(R > assignedTask.Task.Deadline) {
                         return 100000.0f;
                     }
+                    I = 0.0f;
                     for(int j = 0; j < i - 1; j++) {
-                        I += Math.Ceiling(R / task.Period) * task.Wcet;
+                        jthTask = solution.AssignedTasks[j];
+                        I += Math.Ceiling(R / jthTask.Task.Period) * jthTask.Wcet;
                     }
 
-                } while(I + task.Wcet > R);
+                } while(I + assignedTask.Wcet > R);
 
                 solution.AssignedTasks[i].Wcrt = R;
             }
 
-            double cost = 0.0;
-            foreach(var task in solution.AssignedTasks) {
-                cost += task.Wcrt;
-            }
-            return cost;
+            return (double) solution.AssignedTasks.Sum(at => at.Wcrt);
         }
     }
 }

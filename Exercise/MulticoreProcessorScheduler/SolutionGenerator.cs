@@ -27,11 +27,11 @@ namespace MulticoreProcessorScheduler
 
 		public static Solution GenerateNeighbour(Solution solution)
 		{
+			var rnd = new Random();
+			
 			var neighbour = new Solution();
-
 			neighbour = solution.Copy();
 
-			Random rnd = new Random();
 			int taskindex = rnd.Next(neighbour.AssignedTasks.Count());
 			var task1 = neighbour.AssignedTasks[taskindex];
 			AssignedTask task2;
@@ -44,6 +44,7 @@ namespace MulticoreProcessorScheduler
 			var t1Core = task1.Core;
 			task1.Core = task2.Core;
 			task2.Core = t1Core;
+			
 			neighbour.AssignedTasks = OrderByDeadline(neighbour.AssignedTasks);
 			return neighbour;
 		}
