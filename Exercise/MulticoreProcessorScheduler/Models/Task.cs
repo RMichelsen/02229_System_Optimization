@@ -7,12 +7,12 @@ namespace MulticoreProcessorScheduler.Models
         public int Period { get; set; }
         public int Wcet { get; set; }
 
-        public Task(string id, int deadline, int period, int wCET)
+        public Task(string id, int deadline, int period, int wcet)
         {
             Id = id;
             Deadline = deadline;
             Period = period;
-            Wcet = wCET;
+            Wcet = wcet;
         }
 
         public override string ToString()
