@@ -1,4 +1,5 @@
 using MulticoreProcessorScheduler.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,7 +25,25 @@ namespace MulticoreProcessorScheduler
 
 		public static Solution GenerateNeighbour(Solution solution)
 		{
-			return solution;
+			var neighbour = new Solution();
+
+			neighbour = solution.Copy();
+
+			Random rnd = new Random();
+			int taskindex = rnd.Next(neighbour.AssignedTasks.Count());
+			var task1 = neighbour.AssignedTasks[taskindex];
+			AssignedTask task2;
+			do
+			{
+				taskindex = rnd.Next(neighbour.AssignedTasks.Count());
+				task2 = neighbour.AssignedTasks[taskindex];
+			} while (task2.Core.Id != task1.Core.Id);
+
+			var t1Core = task1.Core;
+			task1.Core = task2.Core;
+			task2.Core = t1Core;
+			
+			return neighbour;
 		}
 	}
 }

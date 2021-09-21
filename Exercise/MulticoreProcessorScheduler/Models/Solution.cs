@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,12 @@ namespace MulticoreProcessorScheduler.Models
 
             return sb.ToString();
 		}
-	}
+
+		public Solution Copy()
+		{
+			return (Solution) this.MemberwiseClone();
+		}
+    }
 
 	class AssignedTask
 	{

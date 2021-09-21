@@ -19,6 +19,11 @@ namespace MulticoreProcessorScheduler
             // print solution
             var solution = SolutionGenerator.GetInititalSolution(tasks,processors);
             Console.WriteLine(solution.ToString());
+
+            var neighbour = SolutionGenerator.GenerateNeighbour(solution);
+            Console.WriteLine(neighbour.ToString());
+            Console.WriteLine(solution.ToString());
+
         }
     }
 }
