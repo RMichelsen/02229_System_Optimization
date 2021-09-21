@@ -35,9 +35,9 @@ namespace MulticoreProcessorScheduler.Models
 	{
 		public Task Task { get; }
 		public Core Core { get; set; }
-		public decimal Wcrt { get; set; }
+		public double Wcrt { get; set; }
 		
-		public AssignedTask(Task task, Core core, decimal wcrt){
+		public AssignedTask(Task task, Core core, double wcrt){
 			Task = task;
 			Core = core;
 			Wcrt = wcrt;
