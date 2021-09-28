@@ -66,7 +66,7 @@ namespace MulticoreProcessorScheduler
             indent = indent.Substring(0, indent.Length-1);
             Console.WriteLine(indent + "Best 5: ");
             indent += "\t";
-            tuples.OrderBy(t => t.Item1).Take(5).ToList().ForEach(t => Console.WriteLine(indent + t.Item1));
+            tuples.OrderBy(t => t.Item1).Skip(tuples.Count() - 5).ToList().ForEach(t => Console.WriteLine(indent + t.Item1));
 
         }
     }

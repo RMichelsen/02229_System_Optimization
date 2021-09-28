@@ -7,6 +7,9 @@ namespace MulticoreProcessorScheduler
 {
 	class SolutionGenerator
 	{
+		static Random rnd;
+		static SolutionGenerator() { rnd = new Random(); }
+
 		public static Solution GetInititalSolution(List<Task> tasks, List<Processor> processors) 
 		{
 			var solution = new Solution();
@@ -25,10 +28,17 @@ namespace MulticoreProcessorScheduler
 			return solution;
 		}
 
-		public static Solution GenerateNeighbour(Solution solution)
+		public static Solution GenerateNeighbour(Solution solution) {
+			if(rnd.NextDouble() > 0.5) {
+				return GenerateNeighbourSwap(solution);
+            }
+			else {
+				return GenerateNeighbourMove(solution);
+            }
+        }
+
+		public static Solution GenerateNeighbourSwap(Solution solution)
 		{
-			var rnd = new Random();
-			
 			var neighbour = new Solution();
 			neighbour = solution.Copy();
 
@@ -48,6 +58,29 @@ namespace MulticoreProcessorScheduler
 			neighbour.AssignedTasks = OrderByDeadline(neighbour.AssignedTasks);
 			return neighbour;
 		}
+		
+		public static Solution GenerateNeighbourMove(Solution solution)
+		{
+			var neighbour = new Solution();
+			neighbour = solution.Copy();
+
+			int taskindex = rnd.Next(neighbour.AssignedTasks.Count());
+			var task1 = neighbour.AssignedTasks[taskindex];
+			AssignedTask task2;
+			do
+			{
+				taskindex = rnd.Next(neighbour.AssignedTasks.Count());
+				task2 = neighbour.AssignedTasks[taskindex];
+			} while (task2.Core.Id == task1.Core.Id);
+
+			var t1Core = task1.Core;
+			task1.Core = task2.Core;
+			task2.Core = t1Core;
+			
+			neighbour.AssignedTasks = OrderByDeadline(neighbour.AssignedTasks);
+			return neighbour;
+		}
+
 
 		public static List<AssignedTask> OrderByDeadline(List<AssignedTask> assignedTasks) => assignedTasks.OrderBy(at => at.Task.Deadline).ToList();
 

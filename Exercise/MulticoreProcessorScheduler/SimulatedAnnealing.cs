@@ -11,25 +11,30 @@ namespace MulticoreProcessorScheduler
         public static List<(double,Solution)> FindOptimalSolution(List<Task> tasks, List<Processor> processors) 
 		{
 			// start values
-        	double T = 1000000000000.0;
-        	double r = 0.003;
+        	double T = 1000000000000000.0;
+        	double r = 0.0001;
         	
             var results = new List<(double,Solution)>();
             
 			Solution C = SolutionGenerator.GetInititalSolution(tasks, processors);
-            double costC = Cost(C);
-            results.Add((costC, C));
+            ResponseTimeAnalysis(C);
+            results.Add((TotalLaxity(C), C));
 
-            double costNeighbour;
         	Random rnd = new Random();
 
-            while(T > 1) {
+            while (T > 1) {
                 Solution neighbourC = SolutionGenerator.GenerateNeighbour(C);
-                costC = Cost(C);
-                costNeighbour = Cost(neighbourC);
-                if ((costNeighbour - costC) > 0 || AccProbability(costC, costNeighbour, T) > rnd.NextDouble()) {
+                var (E, _) = ResponseTimeAnalysis(C);
+                var (nE, passRTA) = ResponseTimeAnalysis(neighbourC);
+
+                double dE = nE - E;
+                double probability = AccProbability(-dE, T);
+
+                if (dE > 0 || probability > rnd.NextDouble()) {
+                    if (passRTA) {
+                        results.Add((TotalLaxity(neighbourC), neighbourC));
+                    }
                     C = neighbourC;
-                    results.Add((costNeighbour, C));
                 }
                 T = T * (1 - r);
             }
@@ -37,13 +42,20 @@ namespace MulticoreProcessorScheduler
             return results;
         }
 
-        protected static double AccProbability(double costC, double costNeighbour, double T) {
-            return Math.Exp((costNeighbour - costC) / T);
+        protected static double AccProbability(double dE, double T) {
+            return Math.Exp(dE / T);
         }
 
-        protected static double Cost(Solution solution) {
+        protected static double TotalLaxity(Solution solution) {
+            return solution.AssignedTasks.Sum(at => at.Task.Deadline - at.Wcrt);
+        }
+
+        protected static (double, bool) ResponseTimeAnalysis(Solution solution) {
+            bool pass = true;
+
             AssignedTask assignedTask;
             AssignedTask jthTask;
+
             for(int i = 0; i < solution.AssignedTasks.Count; i++) {
                 assignedTask = solution.AssignedTasks[i];
 
@@ -52,7 +64,7 @@ namespace MulticoreProcessorScheduler
                 do {
                     R = I + assignedTask.Wcet;
                     if(R > assignedTask.Task.Deadline) {
-                        return 1000000.0f;
+                        pass = false;
                     }
                     I = 0.0f;
                     for(int j = 0; j < i; j++) {
@@ -64,11 +76,11 @@ namespace MulticoreProcessorScheduler
 
                 } while(I + assignedTask.Wcet > R);
 
-                solution.AssignedTasks[i].Wcrt = R;
+                assignedTask.Wcrt = R;
             }
 
-            Console.WriteLine($"Cost: {(double)solution.AssignedTasks.Sum(at => at.Wcrt)}");
-            return (double) solution.AssignedTasks.Sum(at => at.Wcrt);
+            double averageLaxity = solution.AssignedTasks.Sum(at => at.Task.Deadline - at.Wcrt) / solution.AssignedTasks.Count;
+            return (averageLaxity, pass);
         }
     }
 }
