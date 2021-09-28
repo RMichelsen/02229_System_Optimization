@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MulticoreProcessorScheduler;
 using MulticoreProcessorScheduler.Models;
 
 namespace MulticoreProcessorScheduler 
@@ -11,8 +10,8 @@ namespace MulticoreProcessorScheduler
         public static List<(double,Solution)> FindOptimalSolution(List<Task> tasks, List<Processor> processors) 
 		{
 			// start values
-        	double T = 1000000000000000.0;
-        	double r = 0.0001;
+        	double T = 1000.0;
+        	double r = 0.003;
         	
             var results = new List<(double,Solution)>();
             
@@ -20,21 +19,24 @@ namespace MulticoreProcessorScheduler
             ResponseTimeAnalysis(C);
             results.Add((TotalLaxity(C), C));
 
-        	Random rnd = new Random();
+        	Random rnd = new Random(1);
 
             while (T > 1) {
-                Solution neighbourC = SolutionGenerator.GenerateNeighbour(C);
-                var (E, _) = ResponseTimeAnalysis(C);
-                var (nE, passRTA) = ResponseTimeAnalysis(neighbourC);
+                for (int i = 0; i < 100; i++)
+                {    
+                    Solution neighbourC = SolutionGenerator.GenerateNeighbour(C);
+                    var (E, _) = ResponseTimeAnalysis(C);
+                    var (nE, passRTA) = ResponseTimeAnalysis(neighbourC);
 
-                double dE = nE - E;
-                double probability = AccProbability(dE, T);
+                    double dE = nE - E;
+                    double probability = AccProbability(dE, T);
 
-                if (dE > 0 || probability > rnd.NextDouble()) {
-                    if (passRTA) {
-                        results.Add((TotalLaxity(neighbourC), neighbourC));
+                    if (dE > 0 || probability > rnd.NextDouble()) {
+                        if (passRTA) {
+                            results.Add((TotalLaxity(neighbourC), neighbourC));
+                        }
+                        C = neighbourC;
                     }
-                    C = neighbourC;
                 }
                 T = T * (1 - r);
             }
@@ -43,14 +45,15 @@ namespace MulticoreProcessorScheduler
         }
 
         protected static double AccProbability(double dE, double T) {
-            return Math.Exp(dE / T);
+            var frag = dE / T;
+            return Math.Exp(frag);
         }
 
-        protected static double TotalLaxity(Solution solution) {
+        public static double TotalLaxity(Solution solution) {
             return solution.AssignedTasks.Sum(at => at.Task.Deadline - at.Wcrt);
         }
 
-        protected static (double, bool) ResponseTimeAnalysis(Solution solution) {
+        public static (double, bool) ResponseTimeAnalysis(Solution solution) {
             bool pass = true;
 
             AssignedTask assignedTask;
@@ -69,7 +72,7 @@ namespace MulticoreProcessorScheduler
                     I = 0.0f;
                     for(int j = 0; j < i; j++) {
                         jthTask = solution.AssignedTasks[j];
-                        if(assignedTask.Core.Id == jthTask.Core.Id) {
+                        if(assignedTask.Core.McpId == jthTask.Core.McpId && assignedTask.Core.Id == jthTask.Core.Id) {
                             I += Math.Ceiling(R / jthTask.Task.Period) * jthTask.Wcet;
                         }
                     }
