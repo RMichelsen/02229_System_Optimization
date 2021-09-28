@@ -11,7 +11,7 @@ namespace MulticoreProcessorScheduler
         public static List<(double,Solution)> FindOptimalSolution(List<Task> tasks, List<Processor> processors) 
 		{
 			// start values
-        	double T = 10000.0;
+        	double T = 1000000000000.0;
         	double r = 0.003;
         	
             var results = new List<(double,Solution)>();
@@ -27,11 +27,9 @@ namespace MulticoreProcessorScheduler
                 Solution neighbourC = SolutionGenerator.GenerateNeighbour(C);
                 costC = Cost(C);
                 costNeighbour = Cost(neighbourC);
-                if (AccProbability(costC,costNeighbour, T) > rnd.Next(0, 1)) {
+                if ((costNeighbour - costC) > 0 || AccProbability(costC, costNeighbour, T) > rnd.NextDouble()) {
                     C = neighbourC;
-                    if (costNeighbour < 1000000000f) {
-                        results.Add((costNeighbour, C));
-                    }
+                    results.Add((costNeighbour, C));
                 }
                 T = T * (1 - r);
             }
@@ -54,7 +52,7 @@ namespace MulticoreProcessorScheduler
                 do {
                     R = I + assignedTask.Wcet;
                     if(R > assignedTask.Task.Deadline) {
-                        return 1000000000f;
+                        return 1000000.0f;
                     }
                     I = 0.0f;
                     for(int j = 0; j < i; j++) {
@@ -69,6 +67,7 @@ namespace MulticoreProcessorScheduler
                 solution.AssignedTasks[i].Wcrt = R;
             }
 
+            Console.WriteLine($"Cost: {(double)solution.AssignedTasks.Sum(at => at.Wcrt)}");
             return (double) solution.AssignedTasks.Sum(at => at.Wcrt);
         }
     }

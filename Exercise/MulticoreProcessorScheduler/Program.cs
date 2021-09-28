@@ -43,7 +43,7 @@ namespace MulticoreProcessorScheduler
             var tuples = SimulatedAnnealing.FindOptimalSolution(tasks, processors);
             foreach (var tuple in tuples)
             {
-                Console.WriteLine(tuple.Item1);
+                //Console.WriteLine(tuple.Item1);
             }
 
             printTuples(tuples);
