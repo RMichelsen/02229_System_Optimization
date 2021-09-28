@@ -64,20 +64,10 @@ namespace MulticoreProcessorScheduler
 			var neighbour = new Solution();
 			neighbour = solution.Copy();
 
-			int taskindex = rnd.Next(neighbour.AssignedTasks.Count());
-			var task1 = neighbour.AssignedTasks[taskindex];
-			AssignedTask task2;
-			do
-			{
-				taskindex = rnd.Next(neighbour.AssignedTasks.Count());
-				task2 = neighbour.AssignedTasks[taskindex];
-			} while (task2.Core.Id == task1.Core.Id);
+			int t1index = rnd.Next(neighbour.AssignedTasks.Count());
+			int t2index = rnd.Next(neighbour.AssignedTasks.Count());
 
-			var t1Core = task1.Core;
-			task1.Core = task2.Core;
-			task2.Core = t1Core;
-			
-			neighbour.AssignedTasks = OrderByDeadline(neighbour.AssignedTasks);
+			neighbour.AssignedTasks[t1index].Core = neighbour.AssignedTasks[t2index].Core;
 			return neighbour;
 		}
 

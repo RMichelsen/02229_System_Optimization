@@ -28,7 +28,7 @@ namespace MulticoreProcessorScheduler
                 var (nE, passRTA) = ResponseTimeAnalysis(neighbourC);
 
                 double dE = nE - E;
-                double probability = AccProbability(-dE, T);
+                double probability = AccProbability(dE, T);
 
                 if (dE > 0 || probability > rnd.NextDouble()) {
                     if (passRTA) {
