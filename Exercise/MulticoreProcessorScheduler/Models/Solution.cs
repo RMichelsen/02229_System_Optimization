@@ -39,7 +39,7 @@ namespace MulticoreProcessorScheduler.Models
 			get { return _core; } 
 			set {
 				_core = value;
-				Wcet = _core.WcetFactor * Task.Wcet;
+				Wcet = Math.Ceiling(_core.WcetFactor * Task.Wcet);
 			} 
 		}
 		public double Wcrt { get; set; }
