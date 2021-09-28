@@ -8,7 +8,8 @@ namespace MulticoreProcessorScheduler
 	class SolutionGenerator
 	{
 		static Random rnd;
-		static SolutionGenerator() { rnd = new Random(); }
+		static SolutionGenerator() { rnd = new Random(1); }
+		static List<Core> Cores { get; set; }
 
 		public static Solution GetInititalSolution(List<Task> tasks, List<Processor> processors) 
 		{
@@ -16,6 +17,7 @@ namespace MulticoreProcessorScheduler
 			int i = 0;
 			
 			var cores = processors.SelectMany(processor => processor.Cores).ToList();
+			Cores = cores;
 			int coreCount = cores.Count();
 
 			foreach(var task in tasks){
@@ -24,7 +26,7 @@ namespace MulticoreProcessorScheduler
 				solution.AssignedTasks.Add(assignedTask);
 			}
 
-			solution.AssignedTasks = OrderByDeadline(solution.AssignedTasks);
+			solution.AssignedTasks = OrderByDeadlineThenByWcet(solution.AssignedTasks);
 			return solution;
 		}
 
@@ -49,13 +51,12 @@ namespace MulticoreProcessorScheduler
 			{
 				taskindex = rnd.Next(neighbour.AssignedTasks.Count());
 				task2 = neighbour.AssignedTasks[taskindex];
-			} while (task2.Core.Id == task1.Core.Id);
+			} while (task1.Core.McpId == task2.Core.McpId && task1.Core.Id == task2.Core.Id);
 
 			var t1Core = task1.Core;
 			task1.Core = task2.Core;
 			task2.Core = t1Core;
 			
-			neighbour.AssignedTasks = OrderByDeadline(neighbour.AssignedTasks);
 			return neighbour;
 		}
 		
@@ -64,15 +65,19 @@ namespace MulticoreProcessorScheduler
 			var neighbour = new Solution();
 			neighbour = solution.Copy();
 
-			int t1index = rnd.Next(neighbour.AssignedTasks.Count());
-			int t2index = rnd.Next(neighbour.AssignedTasks.Count());
+			int coreId = rnd.Next(Cores.Count());
+			int taskId = rnd.Next(neighbour.AssignedTasks.Count());
 
-			neighbour.AssignedTasks[t1index].Core = neighbour.AssignedTasks[t2index].Core;
+			neighbour.AssignedTasks[taskId].Core = Cores[coreId];
 			return neighbour;
 		}
 
 
-		public static List<AssignedTask> OrderByDeadline(List<AssignedTask> assignedTasks) => assignedTasks.OrderBy(at => at.Task.Deadline).ToList();
+		public static List<AssignedTask> OrderByDeadlineThenByWcet(List<AssignedTask> assignedTasks) => 
+			assignedTasks
+			.OrderBy(at => at.Task.Deadline)
+			.ThenByDescending(at => at.Wcet)
+			.ToList();
 
 	}
 }
