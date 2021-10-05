@@ -2,40 +2,57 @@
 using System.Collections.Generic;
 using System.Linq;
 using MulticoreProcessorScheduler.Models;
+using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace MulticoreProcessorScheduler
 {
     class Program
     {
+        private static ImportFileSize defaultSize = ImportFileSize.Small;
         static void Main(string[] args)
         {
-
-            XmlReader.Read(ImportFileSize.Small, out var tasks, out var processors);
-
-            foreach (var processor in processors) {
-                Console.WriteLine(processor.ToString());
+            ImportFileSize fileSize = defaultSize;
+            if (args.Count() > 0) {
+                Console.WriteLine(args[0]);
+                fileSize = GetSizeFromArgs(args);
+                Console.WriteLine(fileSize);
             }
-            foreach (var task in tasks) {
-                Console.WriteLine(task.ToString());
-            }
+            XmlReader.Read(fileSize, out var tasks, out var processors);
+
+            // foreach (var processor in processors) {
+            //     Console.WriteLine(processor.ToString());
+            // }
+            // foreach (var task in tasks) {
+            //     Console.WriteLine(task.ToString());
+            // }
 
             Console.WriteLine();
             Console.WriteLine();
-
-            var bestSolution = SimulatedAnnealing.FindOptimalSolution(tasks, processors);
+            
+            Stopwatch s1 = new Stopwatch();
+            s1.Start(); 
+            (double, Solution) bestSolution;
+            bestSolution = SimulatedAnnealing.FindOptimalSolution(tasks, processors);
             Console.WriteLine("Best Solution: ");
             Console.WriteLine("\tTotal laxity: " + bestSolution.Item1);
             Console.WriteLine();
-            Console.WriteLine(bestSolution.Item2.ToString());
-
-            Console.WriteLine("Best Solutions: ");
-            Console.WriteLine("\tTotal laxity: ");
-            for (int i = 0; i < 10; i++)
-            {
-                bestSolution = SimulatedAnnealing.FindOptimalSolution(tasks, processors);
-                Console.WriteLine("\t\t" + bestSolution.Item1);
-            }
+            s1.Stop();
+            Console.WriteLine("Time: " + s1.Elapsed.ToString());
+            s1.Reset();
             
+            // Console.WriteLine("Best Solutions: ");
+            // Console.WriteLine("\tTotal laxity: ");
+            
+            // Stopwatch s1 = new Stopwatch();
+            // s1.Start(); 
+            // Parallel.For(0,9, i => {
+            //     bestSolution = SimulatedAnnealing.FindOptimalSolution(tasks, processors);
+            //     Console.WriteLine("\t\t" + bestSolution.Item1);
+            // });
+            // s1.Stop();
+            // Console.WriteLine("Time: " + s1.Elapsed.ToString());
+
             // // print solution
             // var solution = SolutionGenerator.GetInititalSolution(tasks,processors);
             // Console.WriteLine(solution.ToString());
@@ -95,7 +112,37 @@ namespace MulticoreProcessorScheduler
             */
         }
 
-        public static void printTuples(List<(double, Solution)> tuples)
+		private static ImportFileSize GetSizeFromArgs(string[] args)
+		{
+            if (args.Count() == 0) return defaultSize;
+            switch (args[0]) {
+                case "small":
+                case "Small":
+                case "-small":
+                case "--small":
+                case "-Small":
+                case "--Small":
+                    return ImportFileSize.Small;
+                case "medium":
+                case "Medium":
+                case "-medium":
+                case "--medium":
+                case "-Medium":
+                case "--Medium":
+                    return ImportFileSize.Medium;
+                case "large":
+                case "Large":
+                case "-large":
+                case "--large":
+                case "-Large":
+                case "--Large":
+                    return ImportFileSize.Large;                
+                default: 
+                    return defaultSize;
+            }
+		}
+
+		public static void printTuples(List<(double, Solution)> tuples)
         {
             string indent = "";
             Console.WriteLine();
