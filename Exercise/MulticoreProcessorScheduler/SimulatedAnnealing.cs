@@ -7,23 +7,24 @@ namespace MulticoreProcessorScheduler
 {
     class SimulatedAnnealing 
     {
-        public static List<(double,Solution)> FindOptimalSolution(List<Task> tasks, List<Processor> processors) 
+        public static (double,Solution) FindOptimalSolution(List<Task> tasks, List<Processor> processors) 
 		{
 			// start values
         	double T = 1000.0;
         	double r = 0.003;
         	
-            var results = new List<(double,Solution)>();
+            (double, Solution) bestSolution;
             
 			Solution C = SolutionGenerator.GetInititalSolution(tasks, processors);
             ResponseTimeAnalysis(C);
-            results.Add((TotalLaxity(C), C));
+            bestSolution = (TotalLaxity(C), C);
 
-        	Random rnd = new Random(1);
+        	// Random rnd = new Random(1);
+        	Random rnd = new Random();
 
             while (T > 1) {
-                for (int i = 0; i < 100; i++)
-                {    
+                // for (int i = 0; i < 100; i++)
+                // {    
                     Solution neighbourC = SolutionGenerator.GenerateNeighbour(C);
                     var (E, _) = ResponseTimeAnalysis(C);
                     var (nE, passRTA) = ResponseTimeAnalysis(neighbourC);
@@ -32,16 +33,19 @@ namespace MulticoreProcessorScheduler
                     double probability = AccProbability(dE, T);
 
                     if (dE > 0 || probability > rnd.NextDouble()) {
+                        double totalLaxity = TotalLaxity(neighbourC);
                         if (passRTA) {
-                            results.Add((TotalLaxity(neighbourC), neighbourC));
+                            if (bestSolution.Item1 < totalLaxity) {
+                                bestSolution = (totalLaxity, neighbourC);
+                            }
+                            C = neighbourC;
                         }
-                        C = neighbourC;
                     }
-                }
+                // }
                 T = T * (1 - r);
             }
 
-            return results;
+            return bestSolution;
         }
 
         protected static double AccProbability(double dE, double T) {
@@ -84,6 +88,43 @@ namespace MulticoreProcessorScheduler
 
             double averageLaxity = solution.AssignedTasks.Sum(at => at.Task.Deadline - at.Wcrt) / solution.AssignedTasks.Count;
             return (averageLaxity, pass);
+        }
+        public static List<(double,Solution)> FindOptimalSolution_test(List<Task> tasks, List<Processor> processors) 
+        {
+            // start values
+            double T = 1000.0;
+            double r = 0.003;
+            
+            var results = new List<(double,Solution)>();
+            
+            Solution C = SolutionGenerator.GetInititalSolution(tasks, processors);
+            ResponseTimeAnalysis(C);
+            results.Add((TotalLaxity(C), C));
+
+            // Random rnd = new Random(1);
+            Random rnd = new Random();
+
+            while (T > 1) {
+                // for (int i = 0; i < 100; i++)
+                // {    
+                    Solution neighbourC = SolutionGenerator.GenerateNeighbour(C);
+                    var (E, _) = ResponseTimeAnalysis(C);
+                    var (nE, passRTA) = ResponseTimeAnalysis(neighbourC);
+
+                    double dE = nE - E;
+                    double probability = AccProbability(dE, T);
+
+                    if (dE > 0 || probability > rnd.NextDouble()) {
+                        if (passRTA) {
+                            results.Add((TotalLaxity(neighbourC), neighbourC));
+                        }
+                        C = neighbourC;
+                    }
+                // }
+                T = T * (1 - r);
+            }
+
+            return results;
         }
     }
 }
