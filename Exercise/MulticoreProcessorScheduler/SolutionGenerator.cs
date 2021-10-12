@@ -9,7 +9,7 @@ namespace MulticoreProcessorScheduler
 	{
 		static Random rnd;
 		// static SolutionGenerator() { rnd = new Random(1); }
-		static SolutionGenerator() { rnd = new Random(); }
+		static SolutionGenerator() { rnd = new Random(1); }
 		static List<Core> Cores { get; set; }
 
 		public static Solution GetInititalSolution(List<Task> tasks, List<Processor> processors) 

@@ -103,8 +103,8 @@ namespace MulticoreProcessorScheduler
 
         public static double GetTValue(int taskCount) {
             if (taskCount < 50) return 100000.0;
-            if (taskCount < 200) return 1000000.0;
-            return 10000000.0;
+            if (taskCount < 200) return 10000000.0;
+            return 100000000.0;
         }
 
         public static List<(double,Solution)> FindOptimalSolution_test(List<Models.Task> tasks, List<Processor> processors) 
@@ -119,10 +119,10 @@ namespace MulticoreProcessorScheduler
             var (E, _) = ResponseTimeAnalysis(C);
             results.Add((TotalLaxity(C), C));
 
-            Random rnd = new Random();
+            Random rnd = new Random(1);
 
             int count = 1;
-            while (T > 1) {
+            while (T > 0.1) {
                 
                 Solution neighbourC = SolutionGenerator.GenerateNeighbour(C);
                 var (nE, passRTA) = ResponseTimeAnalysis(neighbourC);

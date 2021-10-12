@@ -16,10 +16,11 @@ namespace MulticoreProcessorScheduler
             ImportFileSize fileSize = defaultSize;
             if (args.Count() > 0) {
                 fileSize = GetSizeFromArgs(args);
-                Console.WriteLine(fileSize);
             }
             XmlReader.Read(fileSize, out var tasks, out var processors);
-
+            
+            Console.WriteLine(fileSize);
+            Console.WriteLine("Task count: " + tasks.Count());
             // foreach (var processor in processors) {
             //     Console.WriteLine(processor.ToString());
             // }
@@ -30,16 +31,16 @@ namespace MulticoreProcessorScheduler
             Console.WriteLine();
             Console.WriteLine();
             
-            Stopwatch s1 = new Stopwatch();
-            s1.Start(); 
-            (double, Solution) bestSolution;
-            bestSolution = SimulatedAnnealing.FindOptimalSolution(tasks, processors);
-            Console.WriteLine("Best Solution: ");
-            Console.WriteLine("\tTotal laxity: " + bestSolution.Item1);
-            Console.WriteLine();
-            s1.Stop();
-            Console.WriteLine("Time: " + s1.Elapsed.ToString());
-            s1.Reset();
+            // Stopwatch s1 = new Stopwatch();
+            // s1.Start(); 
+            // (double, Solution) bestSolution;
+            // bestSolution = SimulatedAnnealing.FindOptimalSolution(tasks, processors);
+            // Console.WriteLine("Best Solution: ");
+            // Console.WriteLine("\tTotal laxity: " + bestSolution.Item1);
+            // Console.WriteLine();
+            // s1.Stop();
+            // Console.WriteLine("Time: " + s1.Elapsed.ToString());
+            // s1.Reset();
             
             // Console.WriteLine("Best Solutions: ");
             // Console.WriteLine("\tTotal laxity: ");
@@ -71,7 +72,7 @@ namespace MulticoreProcessorScheduler
             // Console.WriteLine("Solutions: ");
 
 
-            string path = @"csv_files/test1.csv";         
+            string path = @"csv_files/test.csv";         
 
             var lines = new List<string>();
             // print list of solutions
@@ -81,7 +82,7 @@ namespace MulticoreProcessorScheduler
                 // Console.WriteLine(tuple.Item1);
                 lines.Add(tuple.Item1.ToString());
             }
-            File.AppendAllLines(path, lines);
+            File.WriteAllLines(path, lines);
 
             printTuples(tuples);
 
