@@ -389,3 +389,4 @@ FodyWeavers.xsd
 
 Exercise/MulticoreProcessorScheduler/Program.exe
 
+Exercise/MulticoreProcessorScheduler/csv_files/*

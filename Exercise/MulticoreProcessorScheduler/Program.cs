@@ -31,16 +31,16 @@ namespace MulticoreProcessorScheduler
             Console.WriteLine();
             Console.WriteLine();
             
-            // Stopwatch s1 = new Stopwatch();
-            // s1.Start(); 
-            // (double, Solution) bestSolution;
-            // bestSolution = SimulatedAnnealing.FindOptimalSolution(tasks, processors);
-            // Console.WriteLine("Best Solution: ");
-            // Console.WriteLine("\tTotal laxity: " + bestSolution.Item1);
-            // Console.WriteLine();
-            // s1.Stop();
-            // Console.WriteLine("Time: " + s1.Elapsed.ToString());
-            // s1.Reset();
+            Stopwatch s1 = new Stopwatch();
+            s1.Start(); 
+            (double, Solution) bestSolution;
+            bestSolution = SimulatedAnnealing.FindOptimalSolution(tasks, processors);
+            Console.WriteLine("Best Solution: ");
+            Console.WriteLine("\tTotal laxity: " + bestSolution.Item1);
+            Console.WriteLine();
+            s1.Stop();
+            Console.WriteLine("Time: " + s1.Elapsed.ToString());
+            s1.Reset();
             
             // Console.WriteLine("Best Solutions: ");
             // Console.WriteLine("\tTotal laxity: ");
@@ -165,11 +165,11 @@ namespace MulticoreProcessorScheduler
             // Console.WriteLine(indent + "Middle 20: ");
             // indent += "\t";
             // tuples.Skip(tuples.Count() / 2).Take(20).ToList().ForEach(t => Console.WriteLine(indent + t.Item1));
-            indent = indent.Substring(0, indent.Length-1);
-            Console.WriteLine(indent + "Last 20: ");
-            var last20 = tuples.Skip(tuples.Count() - 20).Take(20).ToList();
-            indent += "\t";
-            tuples.Skip(tuples.Count() - 20).Take(20).ToList().ForEach(t => Console.WriteLine(indent + t.Item1));
+            // indent = indent.Substring(0, indent.Length-1);
+            // Console.WriteLine(indent + "Last 20: ");
+            // var last20 = tuples.Skip(tuples.Count() - 20).Take(20).ToList();
+            // indent += "\t";
+            // tuples.Skip(tuples.Count() - 20).Take(20).ToList().ForEach(t => Console.WriteLine(indent + t.Item1));
         }
     }
 }

@@ -22,7 +22,7 @@ namespace MulticoreProcessorScheduler
 
         	Random rnd = new Random();
             int count = 1;
-            while (T > 1) {
+            while (T > 0.1) {
                 
                 Solution neighbourC = SolutionGenerator.GenerateNeighbour(C);
                 var (nE, passRTA) = ResponseTimeAnalysis(neighbourC);
@@ -119,7 +119,7 @@ namespace MulticoreProcessorScheduler
             var (E, _) = ResponseTimeAnalysis(C);
             results.Add((TotalLaxity(C), C));
 
-            Random rnd = new Random(1);
+            Random rnd = new Random();
 
             int count = 1;
             while (T > 0.1) {
