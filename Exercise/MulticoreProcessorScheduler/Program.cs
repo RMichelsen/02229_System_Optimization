@@ -4,6 +4,7 @@ using System.Linq;
 using MulticoreProcessorScheduler.Models;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.IO;
 
 namespace MulticoreProcessorScheduler
 {
@@ -14,7 +15,6 @@ namespace MulticoreProcessorScheduler
         {
             ImportFileSize fileSize = defaultSize;
             if (args.Count() > 0) {
-                Console.WriteLine(args[0]);
                 fileSize = GetSizeFromArgs(args);
                 Console.WriteLine(fileSize);
             }
@@ -44,14 +44,10 @@ namespace MulticoreProcessorScheduler
             // Console.WriteLine("Best Solutions: ");
             // Console.WriteLine("\tTotal laxity: ");
             
-            // Stopwatch s1 = new Stopwatch();
-            // s1.Start(); 
             // Parallel.For(0,9, i => {
             //     bestSolution = SimulatedAnnealing.FindOptimalSolution(tasks, processors);
             //     Console.WriteLine("\t\t" + bestSolution.Item1);
             // });
-            // s1.Stop();
-            // Console.WriteLine("Time: " + s1.Elapsed.ToString());
 
             // // print solution
             // var solution = SolutionGenerator.GetInititalSolution(tasks,processors);
@@ -75,14 +71,19 @@ namespace MulticoreProcessorScheduler
             // Console.WriteLine("Solutions: ");
 
 
-            // print list of solutions
-            // var tuples = SimulatedAnnealing.FindOptimalSolution(tasks, processors);
-            // foreach (var tuple in tuples)
-            // {
-            //     // Console.WriteLine(tuple.Item1);
-            // }
+            string path = @"csv_files/test1.csv";         
 
-            // printTuples(tuples);
+            var lines = new List<string>();
+            // print list of solutions
+            var tuples = SimulatedAnnealing.FindOptimalSolution_test(tasks, processors);
+            foreach (var tuple in tuples)
+            {
+                // Console.WriteLine(tuple.Item1);
+                lines.Add(tuple.Item1.ToString());
+            }
+            File.AppendAllLines(path, lines);
+
+            printTuples(tuples);
 
             /*
             var exampleSolution = new Solution() {
@@ -163,11 +164,11 @@ namespace MulticoreProcessorScheduler
             // Console.WriteLine(indent + "Middle 20: ");
             // indent += "\t";
             // tuples.Skip(tuples.Count() / 2).Take(20).ToList().ForEach(t => Console.WriteLine(indent + t.Item1));
-            // indent = indent.Substring(0, indent.Length-1);
-            // Console.WriteLine(indent + "Last 20: ");
-            // var last20 = tuples.Skip(tuples.Count() - 20).Take(20).ToList();
-            // indent += "\t";
-            // tuples.Skip(tuples.Count() - 20).Take(20).ToList().ForEach(t => Console.WriteLine(indent + t.Item1));
+            indent = indent.Substring(0, indent.Length-1);
+            Console.WriteLine(indent + "Last 20: ");
+            var last20 = tuples.Skip(tuples.Count() - 20).Take(20).ToList();
+            indent += "\t";
+            tuples.Skip(tuples.Count() - 20).Take(20).ToList().ForEach(t => Console.WriteLine(indent + t.Item1));
         }
     }
 }
