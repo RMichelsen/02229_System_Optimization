@@ -11,8 +11,8 @@ namespace MulticoreProcessorScheduler
         public static (double,Solution) FindOptimalSolution(List<Models.Task> tasks, List<Processor> processors) 
 		{
 			// start values
-        	double T = GetTValue(tasks.Count());
-        	double r = 0.002;
+        	double T = 1000000.0;
+        	double r = GetRValue(tasks.Count());
         	
             (double, Solution) bestSolution;
             
@@ -23,7 +23,6 @@ namespace MulticoreProcessorScheduler
         	Random rnd = new Random();
             int count = 1;
             while (T > 0.1) {
-                
                 Solution neighbourC = SolutionGenerator.GenerateNeighbour(C);
                 var (nE, passRTA) = ResponseTimeAnalysis(neighbourC);
 
@@ -33,10 +32,10 @@ namespace MulticoreProcessorScheduler
                 if (passRTA) {
                     if (dE > 0 || probability > rnd.NextDouble()) {
                         double totalLaxity = TotalLaxity(neighbourC);
-                            if (bestSolution.Item1 < totalLaxity) {
-                                bestSolution = (totalLaxity, neighbourC);
-                            }
-                            C = neighbourC;
+                        if (bestSolution.Item1 < totalLaxity) {
+                            bestSolution = (totalLaxity, neighbourC);
+                        }
+                        C = neighbourC;
                     }
                     E = nE;
                 }
@@ -101,17 +100,17 @@ namespace MulticoreProcessorScheduler
             return (averageLaxity, pass);
         }
 
-        public static double GetTValue(int taskCount) {
-            if (taskCount < 50) return 100000.0;
-            if (taskCount < 200) return 10000000.0;
-            return 100000000.0;
+        public static double GetRValue(int taskCount) {
+            if (taskCount < 50) return 0.0015;
+            if (taskCount < 200) return 0.001;
+            return 0.0005;
         }
 
         public static List<(double,Solution)> FindOptimalSolution_test(List<Models.Task> tasks, List<Processor> processors) 
         {
             // start values
-            double T = GetTValue(tasks.Count());
-            double r = 0.002;
+        	double T = 1000000.0;
+        	double r = GetRValue(tasks.Count());
             
             var results = new List<(double,Solution)>();
             
@@ -144,7 +143,6 @@ namespace MulticoreProcessorScheduler
             }
 
             Console.WriteLine("Number of loops: " + count);
-
             return results;
         }
     }
