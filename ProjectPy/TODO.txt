@@ -1,0 +1,12 @@
+- Clean up code
+	- Helper method for adding variables to the cp model
+	- Wrappers for addition / multiplication / division
+	- Split into more files (maybe solvers in separate file)
+	- Dictionary lookups are a bit ugly, maybe do something great instead
+
+- Fix model
+	- Arrival patterns are 0, seems wrong
+		- Assuming "c" refers to a cycle in the range 1..3, the input to the arrival pattern
+		  function is negative. This seems in unintended.
+		- Period seems very large compared to cycle and alpha numbers, even after multiplying
+		  with the cycle length.

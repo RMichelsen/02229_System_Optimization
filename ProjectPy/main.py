@@ -95,23 +95,30 @@ class SolutionPrinter(cp_model.CpSolverSolutionCallback):
   def OnSolutionCallback(self):
     self.solution_count += 1
     print("Solution %i:" % self.solution_count)
-    # print("Objective: " % self.ObjectiveValue())
+
+    print("  Objective: %s" % self.ObjectiveValue())
+    for var in self.all_variables.global_variables:
+        print("  %s = %i" % (var, self.Value(var)))
+
     for flow_variables in self.all_variables.flow_variables:
       print('  Path:', end = ' ')
       print(' => '.join(flow_variables.paths[self.Value(flow_variables.path_choice)]))
 
-      for _, (edge, q) in enumerate(flow_variables.queue_numbers.items()):
-        try:
-          print("  %s: %s = %i" % (edge, q, self.Value(q)))
-        except Exception as e:
-          print(e)
+      # for _, (edge, q) in enumerate(flow_variables.queue_numbers.items()):
+      #   try:
+      #     print("  %s: %s = %i" % (edge, q, self.Value(q)))
+      #   except Exception as e:
+      #     print(e)
 
-      print("    %s = %i" % (flow_variables.e2e_delay, self.Value(flow_variables.e2e_delay)))
-      for _, (_, A) in enumerate(flow_variables.arrival_patterns.items()):
-        try:
-          print("    %s = %i" % (A, self.Value(A)))
-        except Exception as e:
-          print(e)
+      # print("    %s = %i" % (flow_variables.e2e_delay, self.Value(flow_variables.e2e_delay)))
+      # for _, (_, A) in enumerate(flow_variables.arrival_patterns.items()):
+      #   try:
+      #     print("    %s = %i" % (A[0], self.Value(A[0])))
+      #     print("    %s = %i" % (A[1], self.Value(A[1])))
+      #     print("    %s = %i" % (A[2], self.Value(A[2])))
+      #   except Exception as e:
+      #     print(e)
+
 
 infinity = 2**32
 cycle_length = 12
@@ -130,7 +137,7 @@ def add_flow_variables(model, graph, flow):
 
     for v1, v2 in pairwise(path):
       if (v1, v2) not in all_arrival_patterns:
-        all_arrival_patterns[(v1, v2)] = [model.NewConstant(0)] * len(paths)
+        all_arrival_patterns[(v1, v2)] = [[model.NewConstant(0)] * 3] * len(paths)
       if (v1, v2) not in all_queue_numbers:
         all_queue_numbers[(v1, v2)] = [model.NewConstant(0)] * len(paths)
 
@@ -146,24 +153,29 @@ def add_flow_variables(model, graph, flow):
       alpha = model.NewIntVar(0, infinity, "alpha_%s" % edge_identifier)
       model.Add(alpha == sum(path_e2e_delays))
 
-      all_arrival_patterns[(v1, v2)][p] = model.NewIntVar(0, infinity, "bandwidth_%s" % edge_identifier)
+      for c in range(3):
+        all_arrival_patterns[(v1, v2)][p][c] = model.NewIntVar(-infinity, infinity, "arrival_pattern_%i_%s" % (c, edge_identifier))
 
-      arrival_pattern_tmp = model.NewIntVar(0, infinity, "arrival_pattern_tmp1_%s" % edge_identifier)
-      model.Add(arrival_pattern_tmp == ((flow.size) - alpha) * cycle_length)
-      arrival_pattern_tmp2 = model.NewIntVar(0, infinity, "arrival_pattern_tmp2_%s" % edge_identifier)
-      model.AddModuloEquality(arrival_pattern_tmp2, arrival_pattern_tmp, flow.period)
+        arrival_pattern_tmp = model.NewIntVar(-infinity, infinity, "arrival_pattern_tmp1_%i_%s" % (c, edge_identifier))
+        model.Add(arrival_pattern_tmp == ((c + 1) * cycle_length) - alpha)
 
-      b = model.NewBoolVar('intermediate_boolean')
-      model.Add(arrival_pattern_tmp2 == 0).OnlyEnforceIf(b)
-      model.Add(arrival_pattern_tmp2 != 0).OnlyEnforceIf(b.Not())
+        # arrival_pattern_tmp2 = arrival_pattern_tmp % flow.period
+        arrival_pattern_tmp2 = model.NewIntVar(-infinity, infinity, "arrival_pattern_tmp2_%i_%s" % (c, edge_identifier))
+        model.AddModuloEquality(arrival_pattern_tmp2, arrival_pattern_tmp, flow.period)
 
-      arrival_pattern = model.NewIntVar(0, infinity, "arrival_pattern_%s" % edge_identifier)
-      model.Add(arrival_pattern == flow.size).OnlyEnforceIf(b)
-      model.Add(arrival_pattern == 0).OnlyEnforceIf(b.Not())
+        b = model.NewBoolVar('intermediate_boolean_%i' % c)
+        model.Add(arrival_pattern_tmp2 == 0).OnlyEnforceIf(b)
+        model.Add(arrival_pattern_tmp2 != 0).OnlyEnforceIf(b.Not())
 
-      model.Add(all_arrival_patterns[(v1, v2)][p] == arrival_pattern)
+        arrival_pattern = model.NewIntVar(0, infinity, "arrival_pattern_%i_%s" % (c, edge_identifier))
+        model.Add(arrival_pattern == flow.size).OnlyEnforceIf(b)
+        model.Add(arrival_pattern == 0).OnlyEnforceIf(b.Not())
+
+        model.Add(all_arrival_patterns[(v1, v2)][p][c] == arrival_pattern)
 
       # Element of sum, rij.e.D + rij.q
+      # d is propagation delay in microseconds
+      # q is queue number (cycles) multiplied by the cycle length to get microseconds
       model.Add(d + (q * cycle_length) == edge_delay)
       path_e2e_delays.append(edge_delay)
 
@@ -187,9 +199,18 @@ def add_flow_variables(model, graph, flow):
     if index not in all_arrival_patterns:
       index = (index[1], index[0])
 
-    arrival_patterns[index] = model.NewIntVar(0, infinity, "flow_%s_A_%s%s" % (flow.name, edge[0], edge[1]))
-    model.AddElement(path_choice, all_arrival_patterns[index], arrival_patterns[index])
+    if index not in arrival_patterns:
+      arrival_patterns[index] = [None] * 3
 
+    # arrival_patterns[index][0] = all_arrival_patterns[index][path_choice]
+    arrival_patterns[index][0] = model.NewIntVar(-infinity, infinity, "flow_%s_A_%i_%s%s" % (flow.name, 0, edge[0], edge[1]))
+    arrival_patterns[index][1] = model.NewIntVar(-infinity, infinity, "flow_%s_A_%i_%s%s" % (flow.name, 1, edge[0], edge[1]))
+    arrival_patterns[index][2] = model.NewIntVar(-infinity, infinity, "flow_%s_A_%i_%s%s" % (flow.name, 2, edge[0], edge[1]))
+    model.AddElement(path_choice, all_arrival_patterns[index][0], arrival_patterns[index][0])
+    model.AddElement(path_choice, all_arrival_patterns[index][1], arrival_patterns[index][1])
+    model.AddElement(path_choice, all_arrival_patterns[index][2], arrival_patterns[index][2])
+
+    # queue_numbers[index] = all_queue_numbers[index][path_choice]
     queue_numbers[index] = model.NewIntVar(0, infinity, "flow_%s_q_%s%s" % (flow.name, edge[0], edge[1]))
     model.AddElement(path_choice, all_queue_numbers[index], queue_numbers[index])
 
@@ -199,28 +220,71 @@ def invoke_constraint_solver(architecture, application):
   model = cp_model.CpModel()
   graph = create_graph(architecture)
 
+  all_vars = []
+
+  edge_bandwidth_cs = {}
   flow_variables = []
   for flow in application.flows:
     flow_variables.append(add_flow_variables(model, graph, flow))
 
+    for (v1, v2) in graph.edges:
+      edge = next(x for x in architecture.edges if (x.source == v1 and x.destination == v2) or (x.destination == v1 and x.source == v2))
+      index = (v1, v2)
+
+      for c in range(3):
+        arrival_patterns = []
+        for flow_vars in flow_variables:
+          if index not in flow_vars.arrival_patterns:
+            index = (index[1], index[0])
+
+          if index not in edge_bandwidth_cs:
+              edge_bandwidth_cs[index] = [[] for _ in range(3)]
+
+          arrival_patterns.append(flow_vars.arrival_patterns[index][c])
+
+        edge_bandwidth_c = model.NewIntVar(0, infinity, "bandwidth%i_%s%s" % (c, v1, v2)) 
+        model.Add(edge_bandwidth_c == sum(arrival_patterns))
+        model.Add(edge_bandwidth_c <= edge.bandwidth)
+        edge_bandwidth_cs[index][c].append(edge_bandwidth_c)
+
+  all_bandwidths = []
   for (v1, v2) in graph.edges:
     edge = next(x for x in architecture.edges if (x.source == v1 and x.destination == v2) or (x.destination == v1 and x.source == v2))
     index = (v1, v2)
 
-    arrival_patterns = []
-    for flow_vars in flow_variables:
-      if index not in flow_vars.arrival_patterns:
-        index = (index[1], index[0])
-      arrival_patterns.append(flow_vars.arrival_patterns[index])
+    if index not in edge_bandwidth_cs:
+      edge_bandwidth_cs[index] = [[] for _ in range(3)]
 
-    edge_bandwidth = model.NewIntVar(0, infinity, "bandwidth%s%s" % (v1, v2))
-    model.Add(edge_bandwidth == sum(arrival_patterns))
-    model.Add(edge_bandwidth <= edge.bandwidth)
+    for c in range(3):
+      # max_edge_bandwidths = max(edge_bandwidths_cs[index][c])
+      max_edge_bandwidths = model.NewIntVar(0, infinity, "max_edge_bandwidth%s%s" % (v1, v2))
+      model.AddMaxEquality(max_edge_bandwidths, edge_bandwidth_cs[index][c])
 
-  solution_printer = SolutionPrinter(AllVariables(flow_variables, []))
+      # left_side = max_edge_bandwidths / S
+      left_side = model.NewIntVar(0, infinity, "left_side_tmp%s%s" % (v1, v2))
+      model.AddDivisionEquality(left_side, max_edge_bandwidths, edge.bandwidth * cycle_length)
+
+      # edge_bandwidth = left_side * 1000
+      edge_bandwidth = model.NewIntVar(0, infinity, "edge_bandwidth%s%s" % (v1, v2))
+      model.AddMultiplicationEquality(edge_bandwidth, [left_side, 1000])
+
+      all_bandwidths.append(edge_bandwidth)
+
+  sum_bandwidths = model.NewIntVar(0, infinity, "sum_bandwidth") 
+  model.Add(sum_bandwidths == sum(all_bandwidths))
+
+  OMEGA = model.NewIntVar(0, infinity, "OMEGA") 
+  model.AddDivisionEquality(OMEGA, sum_bandwidths, len(architecture.edges))
+
+  model.Minimize(OMEGA)
+
+  all_vars.append(sum_bandwidths)
+  all_vars.append(OMEGA)
+
+  solution_printer = SolutionPrinter(AllVariables(flow_variables, all_vars))
 
   solver = cp_model.CpSolver()
-  solver.parameters.log_search_progress = True
+  #solver.parameters.log_search_progress = True
   solver.parameters.enumerate_all_solutions = True
   solver.SolveWithSolutionCallback(model, solution_printer)
 
