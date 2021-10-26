@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using MulticoreProcessorScheduler.Models;
-using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 
