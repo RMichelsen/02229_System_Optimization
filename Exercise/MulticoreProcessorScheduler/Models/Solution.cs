@@ -18,21 +18,32 @@ namespace MulticoreProcessorScheduler.Models
 		public override string ToString(){
 			var sb = new StringBuilder();
             
-            AssignedTasks.ForEach(t => sb.AppendLine(t.ToString()));
+            AssignedTasks.ForEach(t => sb.Append(t.ToString()));
 
             return sb.ToString();
 		}
 
-		public void toXML(){
-			using (XmlWriter xmlWriter = XmlWriter.Create("solution.xml"))
+		public string toXML(double totalLaxity, string fileSize)
+		{
+			string path = @"solutions/";
+			string fullFilePath = path + fileSize + "-solution.xml";    
+
+			XmlWriterSettings settings = new XmlWriterSettings();
+			settings.OmitXmlDeclaration = true;
+			settings.ConformanceLevel = ConformanceLevel.Fragment;
+			settings.CloseOutput = false;
+			
+			using (XmlWriter xmlWriter = XmlWriter.Create(fullFilePath, settings))
 			{
-				xmlWriter.WriteRaw("\n");
-				xmlWriter.WriteStartElement("Solution");
+				xmlWriter.WriteStartElement("solution");
 				xmlWriter.WriteRaw("\n");
 				AssignedTasks.ForEach(t => xmlWriter.WriteRaw(t.ToString()));
 				xmlWriter.WriteEndElement();  
+				xmlWriter.WriteRaw("\n");
+				xmlWriter.WriteComment(" Total Laxity: " + totalLaxity);
     			xmlWriter.Flush();
 			}
+			return fullFilePath;
 		}
 		
 
@@ -53,7 +64,7 @@ namespace MulticoreProcessorScheduler.Models
 			get { return _core; } 
 			set {
 				_core = value;
-				Wcet = _core.WcetFactor * Task.Wcet;
+				Wcet = Math.Ceiling(_core.WcetFactor * Task.Wcet);
 			} 
 		}
 		public double Wcrt { get; set; }

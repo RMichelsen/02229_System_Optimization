@@ -1,0 +1,12 @@
+﻿<solution>
+	<Task id="5", MCP="1", Core="0", WCRT="312"/>
+	<Task id="8", MCP="1", Core="3", WCRT="910"/>
+	<Task id="4", MCP="0", Core="1", WCRT="250"/>
+	<Task id="2", MCP="1", Core="2", WCRT="26"/>
+	<Task id="6", MCP="0", Core="2", WCRT="334"/>
+	<Task id="3", MCP="0", Core="3", WCRT="1372"/>
+	<Task id="0", MCP="1", Core="1", WCRT="126"/>
+	<Task id="1", MCP="0", Core="0", WCRT="3521"/>
+	<Task id="7", MCP="1", Core="2", WCRT="2866"/>
+</solution>
+<!-- Total Laxity: 285283-->
