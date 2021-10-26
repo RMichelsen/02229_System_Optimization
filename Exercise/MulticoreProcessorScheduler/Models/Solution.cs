@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace MulticoreProcessorScheduler.Models
 {
@@ -22,6 +23,19 @@ namespace MulticoreProcessorScheduler.Models
             return sb.ToString();
 		}
 
+		public void toXML(){
+			using (XmlWriter xmlWriter = XmlWriter.Create("solution.xml"))
+			{
+				xmlWriter.WriteRaw("\n");
+				xmlWriter.WriteStartElement("Solution");
+				xmlWriter.WriteRaw("\n");
+				AssignedTasks.ForEach(t => xmlWriter.WriteRaw(t.ToString()));
+				xmlWriter.WriteEndElement();  
+    			xmlWriter.Flush();
+			}
+		}
+		
+
 		public Solution Copy()
 		{	
 			Solution copy = new Solution();
@@ -39,7 +53,7 @@ namespace MulticoreProcessorScheduler.Models
 			get { return _core; } 
 			set {
 				_core = value;
-				Wcet = Math.Ceiling(_core.WcetFactor * Task.Wcet);
+				Wcet = _core.WcetFactor * Task.Wcet;
 			} 
 		}
 		public double Wcrt { get; set; }
@@ -52,8 +66,9 @@ namespace MulticoreProcessorScheduler.Models
 		}
 
 		public override string ToString(){
-			return $"\tTask id ={Task.Id}, MCP ={Core.McpId}, Core ={Core.Id}, WCRT ={Wcrt}";
+			return $"\t<Task id=\"{Task.Id}\", MCP=\"{Core.McpId}\", Core=\"{Core.Id}\", WCRT=\"{Wcrt}\"/>\n";
 		}
 
+	
 	}
 }
