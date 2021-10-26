@@ -10,7 +10,7 @@ namespace MulticoreProcessorScheduler
 {
     class Program
     {
-        private static ImportFileSize defaultSize = ImportFileSize.Small;
+        private static ImportFileSize defaultSize = ImportFileSize.Medium;
         static void Main(string[] args)
         {
             ImportFileSize fileSize = defaultSize;
@@ -21,16 +21,20 @@ namespace MulticoreProcessorScheduler
             
             Console.WriteLine(fileSize);
             Console.WriteLine("Task count: " + tasks.Count());
-            // foreach (var processor in processors) {
-            //     Console.WriteLine(processor.ToString());
-            // }
-            // foreach (var task in tasks) {
-            //     Console.WriteLine(task.ToString());
-            // }
 
+            FindAndPresentResult(tasks, processors, fileSize);
+
+            // CalcTotalLaxityOfSolution(tasks, processors);
+
+            // GetAllSolutionListInCSV(tasks, processors);
             Console.WriteLine();
+        }
+
+        public static void FindAndPresentResult(List<Models.Task> tasks, List<Processor> processors, ImportFileSize fileSize) {
             Console.WriteLine();
+            PrintLine();
             
+            Console.WriteLine("Statistics:\n");
             Stopwatch s1 = new Stopwatch();
             s1.Start(); 
             (double, Solution) bestSolution;
@@ -41,52 +45,21 @@ namespace MulticoreProcessorScheduler
             s1.Stop();
             Console.WriteLine("Time: " + s1.Elapsed.ToString());
             s1.Reset();
-            
-            // Console.WriteLine("Best Solutions: ");
-            // Console.WriteLine("\tTotal laxity: ");
-            
-            // Parallel.For(0,9, i => {
-            //     bestSolution = SimulatedAnnealing.FindOptimalSolution(tasks, processors);
-            //     Console.WriteLine("\t\t" + bestSolution.Item1);
-            // });
+            PrintLine();
 
-            // // print solution
-            // var solution = SolutionGenerator.GetInititalSolution(tasks,processors);
-            // Console.WriteLine(solution.ToString());
+            string filepath = bestSolution.Item2.toXML(bestSolution.Item1, fileSize.ToString());
+            Console.WriteLine("Solution has been saved at: " + filepath);
 
-            // var neighbour = SolutionGenerator.GenerateNeighbourMove(solution);
-            // Console.WriteLine(neighbour.ToString());
-            // Console.WriteLine(solution.ToString());
+            // PrintLine();
+            // var lines = File.ReadAllLines(filepath).ToList();
+            // lines.ForEach(l => Console.WriteLine(l));
+            // PrintLine();
 
-            // Console.WriteLine();
-            // Console.WriteLine();
+        }
 
-            // AssignedTask assignedTask = new AssignedTask(tasks[0], processors[0].Cores[0], 0);
-            // Console.WriteLine($"Old Wcet: {assignedTask.Wcet}, Core.WcetFactor: {assignedTask.Core.WcetFactor}, Task.Wcet: {assignedTask.Task.Wcet}");
-            // assignedTask.Core = processors[0].Cores[1];
-            // Console.WriteLine($"New Wcet: {assignedTask.Wcet}, Core.WcetFactor: {assignedTask.Core.WcetFactor}, Task.Wcet: {assignedTask.Task.Wcet}");
-
-            // Console.WriteLine();
-            // Console.WriteLine();
-            // Console.WriteLine();
-            // Console.WriteLine("Solutions: ");
-
-
-            string path = @"csv_files/test.csv";         
-
-            var lines = new List<string>();
-            // print list of solutions
-            var tuples = SimulatedAnnealing.FindOptimalSolution_test(tasks, processors);
-            foreach (var tuple in tuples)
-            {
-                // Console.WriteLine(tuple.Item1);
-                lines.Add(tuple.Item1.ToString());
-            }
-            File.WriteAllLines(path, lines);
-
-            printTuples(tuples);
-
-            /*
+        public static void CalcTotalLaxityOfSolution(List<Models.Task> tasks, List<Processor> processors) 
+        {
+            PrintLine();
             var exampleSolution = new Solution() {
                 AssignedTasks = new List<AssignedTask> {
                     new AssignedTask(tasks[7], processors[0].Cores[0], 0),
@@ -107,14 +80,33 @@ namespace MulticoreProcessorScheduler
 
 
             SimulatedAnnealing.ResponseTimeAnalysis(exampleSolution);
-            Console.WriteLine();
-            Console.WriteLine();
+            Console.WriteLine("Manually typed solution:");
             Console.WriteLine(exampleSolution.ToString());
             Console.WriteLine("Total Laxity: " + SimulatedAnnealing.TotalLaxity(exampleSolution));
-            */
+            PrintLine();
+            
         }
 
-		private static ImportFileSize GetSizeFromArgs(string[] args)
+        public static void GetAllSolutionListInCSV(List<Models.Task> tasks, List<Processor> processors) 
+        {
+            PrintLine();
+            string path = @"csv_files/test.csv";         
+
+            var lines = new List<string>();
+            // print list of solutions
+            var tuples = SimulatedAnnealing.FindOptimalSolution_test(tasks, processors);
+            foreach (var tuple in tuples)
+            {
+                // Console.WriteLine(tuple.Item1);
+                lines.Add(tuple.Item1.ToString());
+            }
+            File.WriteAllLines(path, lines);
+
+            printTuples(tuples);
+            PrintLine();
+        }
+
+        private static ImportFileSize GetSizeFromArgs(string[] args)
 		{
             if (args.Count() == 0) return defaultSize;
             switch (args[0]) {
@@ -147,7 +139,6 @@ namespace MulticoreProcessorScheduler
 		public static void printTuples(List<(double, Solution)> tuples)
         {
             string indent = "";
-            Console.WriteLine();
             Console.WriteLine("Solutions (" + tuples.Count() + ") status: ");
             indent += "\t";
             Console.WriteLine(indent + "First 5: ");
@@ -161,15 +152,10 @@ namespace MulticoreProcessorScheduler
             Console.WriteLine(indent + "Best 5: ");
             indent += "\t";
             tuples.OrderBy(t => t.Item1).Skip(tuples.Count() - 5).ToList().ForEach(t => Console.WriteLine(indent + t.Item1));
-            // indent = indent.Substring(0, indent.Length-1);
-            // Console.WriteLine(indent + "Middle 20: ");
-            // indent += "\t";
-            // tuples.Skip(tuples.Count() / 2).Take(20).ToList().ForEach(t => Console.WriteLine(indent + t.Item1));
-            // indent = indent.Substring(0, indent.Length-1);
-            // Console.WriteLine(indent + "Last 20: ");
-            // var last20 = tuples.Skip(tuples.Count() - 20).Take(20).ToList();
-            // indent += "\t";
-            // tuples.Skip(tuples.Count() - 20).Take(20).ToList().ForEach(t => Console.WriteLine(indent + t.Item1));
+        }
+
+        public static void PrintLine() {
+            Console.WriteLine("============================================");
         }
     }
 }
