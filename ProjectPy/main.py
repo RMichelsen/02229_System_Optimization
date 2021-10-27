@@ -110,14 +110,14 @@ class SolutionPrinter(cp_model.CpSolverSolutionCallback):
       #   except Exception as e:
       #     print(e)
 
-      # print("    %s = %i" % (flow_variables.e2e_delay, self.Value(flow_variables.e2e_delay)))
-      # for _, (_, A) in enumerate(flow_variables.arrival_patterns.items()):
-      #   try:
-      #     print("    %s = %i" % (A[0], self.Value(A[0])))
-      #     print("    %s = %i" % (A[1], self.Value(A[1])))
-      #     print("    %s = %i" % (A[2], self.Value(A[2])))
-      #   except Exception as e:
-      #     print(e)
+      print("    %s = %i" % (flow_variables.e2e_delay, self.Value(flow_variables.e2e_delay)))
+      for _, (_, A) in enumerate(flow_variables.arrival_patterns.items()):
+        try:
+          print("    %s = %i" % (A[0], self.Value(A[0])))
+          print("    %s = %i" % (A[1], self.Value(A[1])))
+          print("    %s = %i" % (A[2], self.Value(A[2])))
+        except Exception as e:
+          print(e)
 
 
 infinity = 2**32
@@ -157,7 +157,7 @@ def add_flow_variables(model, graph, flow):
         all_arrival_patterns[(v1, v2)][p][c] = model.NewIntVar(-infinity, infinity, "arrival_pattern_%i_%s" % (c, edge_identifier))
 
         arrival_pattern_tmp = model.NewIntVar(-infinity, infinity, "arrival_pattern_tmp1_%i_%s" % (c, edge_identifier))
-        model.Add(arrival_pattern_tmp == ((c + 1) * cycle_length) - alpha)
+        model.Add(arrival_pattern_tmp == (c * cycle_length) - alpha)
 
         # arrival_pattern_tmp2 = arrival_pattern_tmp % flow.period
         arrival_pattern_tmp2 = model.NewIntVar(-infinity, infinity, "arrival_pattern_tmp2_%i_%s" % (c, edge_identifier))
@@ -202,13 +202,10 @@ def add_flow_variables(model, graph, flow):
     if index not in arrival_patterns:
       arrival_patterns[index] = [None] * 3
 
-    # arrival_patterns[index][0] = all_arrival_patterns[index][path_choice]
-    arrival_patterns[index][0] = model.NewIntVar(-infinity, infinity, "flow_%s_A_%i_%s%s" % (flow.name, 0, edge[0], edge[1]))
-    arrival_patterns[index][1] = model.NewIntVar(-infinity, infinity, "flow_%s_A_%i_%s%s" % (flow.name, 1, edge[0], edge[1]))
-    arrival_patterns[index][2] = model.NewIntVar(-infinity, infinity, "flow_%s_A_%i_%s%s" % (flow.name, 2, edge[0], edge[1]))
-    model.AddElement(path_choice, all_arrival_patterns[index][0], arrival_patterns[index][0])
-    model.AddElement(path_choice, all_arrival_patterns[index][1], arrival_patterns[index][1])
-    model.AddElement(path_choice, all_arrival_patterns[index][2], arrival_patterns[index][2])
+    for c in range(3):
+      # arrival_patterns[index][c] = all_arrival_patterns[index][path_choice]
+      arrival_patterns[index][c] = model.NewIntVar(-infinity, infinity, "flow_%s_A_%i_%s%s" % (flow.name, c, edge[0], edge[1]))
+      model.AddElement(path_choice, all_arrival_patterns[index][c], arrival_patterns[index][c])
 
     # queue_numbers[index] = all_queue_numbers[index][path_choice]
     queue_numbers[index] = model.NewIntVar(0, infinity, "flow_%s_q_%s%s" % (flow.name, edge[0], edge[1]))
