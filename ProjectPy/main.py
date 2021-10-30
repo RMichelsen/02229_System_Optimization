@@ -34,6 +34,9 @@ class Edge:
     self.bandwidth = int(bandwidth)
     self.propagation_delay = int(propagation_delay)
 
+  def __str__(self):
+    return "%s%s, Edge(%s, %i, %i)" % (self.source, self.destination, self.id, self.bandwidth, self.propagation_delay)
+
 class Architecture:
   def __init__(self, vertices, edges):
     self.vertices = vertices
@@ -47,6 +50,9 @@ class Flow:
     self.size = int(size)
     self.period = int(period)
     self.deadline = int(deadline)
+
+  def __str__(self):
+    return "{ \"%s\", Flow(\"%s\", \"%s\", %s, %i, %i, %i) }," % (self.name, self.name, self.source, self.destination, self.size, self.period, self.deadline)
 
   def __hash__(self):
     return hash(self.name)
@@ -102,7 +108,8 @@ def get_flow_paths(graph, flow):
   for path in list(nx.all_simple_paths(graph, flow.source, flow.destination, cutoff = 20)):
     converted_path = []
     for v1, v2 in pairwise(path):
-      edge_identifier = tuple(sorted((v1, v2)))
+      # edge_identifier = tuple(sorted((v1, v2)))
+      edge_identifier = (v1, v2)
       converted_path.append(edge_identifier)
     paths.append(converted_path)
   return paths
@@ -110,6 +117,7 @@ def get_flow_paths(graph, flow):
 if __name__ == "__main__":
   architecture, application = parse_xml(TestCase.TC1)
   graph = create_graph(architecture)
+
   model = cp_model.CpModel()
 
   # Calculate the cycle count by first calculating the hyperperiod (in microseconds) and then diving it by the cycle length
@@ -122,6 +130,9 @@ if __name__ == "__main__":
   paths = {}
   for flow in application.flows:
     paths[flow] = get_flow_paths(graph, flow)
+
+  for edge in application.flows:
+    print(edge)
 
   # Path choice for each flow (at random for now...)
   path_choices = {}
@@ -170,6 +181,12 @@ if __name__ == "__main__":
     model.Add(e2e_delay_sum == sum(e2e_delay_parts))
     model.Add(e2e_delay_sum <= flow.deadline)
     debug_variables.append(e2e_delay_sum)
+
+  cycle_bandwidths = {}
+  for edge, cs in arrival_patterns.items():
+    cycle_bandwidths[edge] = [None] * cycle_count
+    for c in range(cycle_count):
+      cycle_bandwidths[edge][c] = sum(cs[c])
 
   edge_bandwidths = []
   for edge in architecture.edges:
