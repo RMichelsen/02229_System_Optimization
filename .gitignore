@@ -395,3 +395,4 @@ Exercise/MulticoreProcessorScheduler/csv_files/*
 
 ProjectCpp/build/*
 ProjectCpp/dependencies/or-tools/lib/ortools.lib
+ProjectCpp/build.bat
