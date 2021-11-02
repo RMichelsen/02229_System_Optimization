@@ -232,6 +232,8 @@ if __name__ == "__main__":
   solver = cp_model.CpSolver()
   #solver.parameters.log_search_progress = True
   solver.parameters.enumerate_all_solutions = True
+
+  print("solving")
   solver.SolveWithSolutionCallback(model, solution_printer)
 
 # def get_all_flow_paths(graph, flows):
