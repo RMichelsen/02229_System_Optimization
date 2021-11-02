@@ -42,14 +42,7 @@ std::unordered_map<std::string, Edge> edges = {
 	{ "SW1ES2", Edge(2, 1000, 10) },
 	{ "ES1SW2", Edge(3, 1000, 10) },
 	{ "SW2ES2", Edge(4, 1000, 10) },
-	{ "SW2SW1", Edge(5, 1000, 10) },
-
-	// Repeated, lazy...
-	{ "SW1ES1", Edge(1, 1000, 10) },
-	{ "ES2SW1", Edge(2, 1000, 10) },
-	{ "SW2ES1", Edge(3, 1000, 10) },
-	{ "ES2SW2", Edge(4, 1000, 10) },
-	{ "SW1SW2", Edge(5, 1000, 10) }
+	{ "SW2SW1", Edge(5, 1000, 10) }
 };
 
 std::unordered_map<std::string, Flow> flows = {
@@ -64,14 +57,14 @@ std::unordered_map<std::string, Flow> flows = {
 };
 
 std::unordered_map<std::string, std::vector<std::vector<std::string>>> flow_paths = {
- 	{ "F1", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW1SW2", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
-	{ "F2", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW1SW2", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
-	{ "F3", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW1SW2", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
-	{ "F4", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW1SW2", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
-	{ "F5", { { "ES2SW1", "SW1ES1" }, { "ES2SW1", "SW1SW2", "SW2ES1" }, { "ES2SW2", "SW2ES1" }, { "ES2SW2", "SW2SW1", "SW1ES1" } } },
-	{ "F6", { { "ES2SW1", "SW1ES1" }, { "ES2SW1", "SW1SW2", "SW2ES1" }, { "ES2SW2", "SW2ES1" }, { "ES2SW2", "SW2SW1", "SW1ES1" } } },
-	{ "F7", { { "ES2SW1", "SW1ES1" }, { "ES2SW1", "SW1SW2", "SW2ES1" }, { "ES2SW2", "SW2ES1" }, { "ES2SW2", "SW2SW1", "SW1ES1" } } },
-	{ "F8", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW1SW2", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } }
+ 	{ "F1", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
+	{ "F2", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
+	{ "F3", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
+	{ "F4", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
+	{ "F5", { { "SW1ES2", "ES1SW1" }, { "SW1ES2", "SW2SW1", "ES1SW2" }, { "SW2ES2", "ES1SW2" }, { "SW2ES2", "SW2SW1", "ES1SW1" } } },
+	{ "F6", { { "SW1ES2", "ES1SW1" }, { "SW1ES2", "SW2SW1", "ES1SW2" }, { "SW2ES2", "ES1SW2" }, { "SW2ES2", "SW2SW1", "ES1SW1" } } },
+	{ "F7", { { "SW1ES2", "ES1SW1" }, { "SW1ES2", "SW2SW1", "ES1SW2" }, { "SW2ES2", "ES1SW2" }, { "SW2ES2", "SW2SW1", "ES1SW1" } } },
+	{ "F8", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } }
 };
 
 bool TrySolve(std::unordered_map<std::string, int> path_choices) {
@@ -86,7 +79,7 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 	std::unordered_map<std::string, IntVar *> q_choices;
 	for(const auto &[flow_name, _] : flows) {
 		for(const auto &edge : flow_paths[flow_name][path_choices[flow_name]]) {
-			q_choices[flow_name + "_" + edge] = solver.MakeIntVar(1, 3, "q_" + edge + "_p_0_" + flow_name);
+			q_choices[flow_name + "_" + edge] = solver.MakeIntVar(1, 3, "q_" + edge + "_p_" + std::to_string(path_choices[flow_name]) + "_" + flow_name);
 		}
 	}
 
@@ -97,7 +90,7 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 			// If the edge does not yet have an array of arrival patterns per cycle,
 			// initialize a vector that contains one vector of flow arrival patterns for each cycle. 
 			if(arrival_patterns.find(edge) == arrival_patterns.end()) {
-				arrival_patterns[edge] = std::vector<std::vector<IntVar *>>(2500);
+				arrival_patterns[edge] = std::vector<std::vector<IntVar *>>(667);
 			}
 
 			IntExpr *alpha = solver.MakeSum(e2e_delays);
@@ -105,7 +98,7 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 			IntExpr *e2e_delay = solver.MakeSum(solver.MakeProd(q_choices[flow_name + "_" + edge], CYCLE_LENGTH), edges[edge].propagation_delay);
 			e2e_delays.push_back(e2e_delay->Var());
 
-			for(int c = 0; c < 2500; c++) {
+			for(int c = 0; c < 667; c++) {
 				IntExpr *A_input = solver.MakeModulo(solver.MakeSum(alpha, c * CYCLE_LENGTH), flow.period);
 				IntVar *b = solver.MakeIsEqualCstVar(A_input, 0);
 				IntVar *A = solver.MakeIntVar(0, std::numeric_limits<int32_t>::max(), "AAAAAAAAAA");
@@ -119,29 +112,36 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 		solver.AddConstraint(solver.MakeSumLessOrEqual(e2e_delays, flow.deadline));
 	}
 
+	int num_constraints = 0;
+
 	std::unordered_map<std::string, std::vector<IntVar *>> cycle_bandwidths;
 	for(const auto &[edge, As] : arrival_patterns) {
-		for(int c = 0; c < 2500; c++) {
+		for(int c = 0; c < 667; c++) {
 			IntExpr *sum = solver.MakeSum(As[c]);
 
 			// Edge capacity
 			int edge_capacity = edges[edge].bandwidth * CYCLE_LENGTH;
 
 			solver.AddConstraint(solver.MakeLessOrEqual(sum, edge_capacity));
+			++num_constraints;
 			cycle_bandwidths[edge].push_back(sum->Var());
 		}
 	}
+
+	std::cout << num_constraints << std::endl;
 
 	std::vector<IntVar *> edge_bandwidths;
 	for(const auto &[edge, _] : arrival_patterns) {
 		// Edge capacity
 		int edge_capacity = edges[edge].bandwidth * CYCLE_LENGTH;
-		IntExpr *bandwidth = solver.MakeProd(solver.MakeDiv(solver.MakeMax(cycle_bandwidths[edge]), edge_capacity), 1000);
+		IntExpr *bandwidth = solver.MakeDiv(solver.MakeProd(solver.MakeMax(cycle_bandwidths[edge]), 1000), edge_capacity);
 		edge_bandwidths.push_back(bandwidth->Var());
 	}
+	IntVar *mean_bandwidth_usage = solver.MakeDiv(solver.MakeSum(edge_bandwidths), edges.size())->VarWithName("mean_bandwidth_usage");
+	all_variables.push_back(mean_bandwidth_usage);
+	OptimizeVar *omega = solver.MakeMinimize(mean_bandwidth_usage, 10);
 
-	OptimizeVar *omega = solver.MakeMinimize(solver.MakeSum(edge_bandwidths)->Var(), 1);
-
+	LOG(INFO) << "Number of variables: " << all_variables.size();
 	LOG(INFO) << "Number of constraints: " << solver.constraints();
 
 	// for(const auto &[_, var] : path_choices) all_variables.push_back(var);
@@ -157,11 +157,12 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 	  Solver::CHOOSE_FIRST_UNBOUND, 
 	  Solver::ASSIGN_MIN_VALUE
 	);
-	SearchMonitor *const search_log = solver.MakeSearchLog(1000, omega);
+	SearchMonitor *const search_log = solver.MakeSearchLog(1000000, omega);
 	SolutionCollector *const collector = solver.MakeLastSolutionCollector();
-	collector->Add(all_variables);
+	collector->Add(mean_bandwidth_usage);
 
 	bool solved = false;
+
 	if(solver.Solve(db, omega, search_log, collector)) {
 		for(const auto &variable : all_variables) {
 			LOG(INFO) << variable << " = " << variable->Value();
@@ -169,6 +170,8 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 
 		bool solved = true;
 	}
+
+	LOG(INFO) << collector->solution(0)->DebugString();
 
 	return solved;
 
@@ -178,7 +181,6 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 	// 	for(const auto &variable : all_variables) {
 	// 		LOG(INFO) << variable << " = " << variable->Value();
 	// 	}
-	// 	break;
 	// }
 	// solver.EndSearch();
 	// LOG(INFO) << "Number of solutions: " << solver.solutions();
@@ -194,6 +196,8 @@ int main(int argc, char **argv) {
 	google::InitGoogleLogging(argv[0]);
 	absl::SetFlag(&FLAGS_logtostderr, 1);
 
+	// Cycle count = least common multiple of flow periods
+
 	srand(time(NULL));
 
 	for(int i = 0; i < 1000; ++i) {
@@ -206,11 +210,6 @@ int main(int argc, char **argv) {
 		path_choices["F6"] = rand() % 4;
 		path_choices["F7"] = rand() % 4;
 		path_choices["F8"] = rand() % 4;
-
-		for(const auto &[_, i] : patch_choices) {
-			std::cout << i << ' ';
-			std::cout << std::endl;
-		}
 
 		if(TrySolve(path_choices)) {
 			for(const auto &[_, i] : path_choices) {
