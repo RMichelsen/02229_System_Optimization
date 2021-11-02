@@ -93,7 +93,9 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 				arrival_patterns[edge] = std::vector<std::vector<IntVar *>>(667);
 			}
 
-			IntExpr *alpha = solver.MakeSum(e2e_delays);
+			IntExpr *alpha	 = solver.MakeSum(e2e_delays);
+
+			all_variables.push_back(alpha->VarWithName(flow_name + "A" + edge));
 
 			IntExpr *e2e_delay = solver.MakeSum(solver.MakeProd(q_choices[flow_name + "_" + edge], CYCLE_LENGTH), edges[edge].propagation_delay);
 			e2e_delays.push_back(e2e_delay->Var());
@@ -101,7 +103,7 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 			for(int c = 0; c < 667; c++) {
 				IntExpr *A_input = solver.MakeModulo(solver.MakeSum(alpha, c * CYCLE_LENGTH), flow.period);
 				IntVar *b = solver.MakeIsEqualCstVar(A_input, 0);
-				IntVar *A = solver.MakeIntVar(0, std::numeric_limits<int32_t>::max(), "AAAAAAAAAA");
+				IntVar *A = solver.MakeIntVar(0, std::numeric_limits<int32_t>::max());
 				solver.AddConstraint(solver.MakeIfThenElseCt(b, solver.MakeIntConst(flow.size), solver.MakeIntConst(0), A));
 
 				// A now contains the arrival pattern for cycle "c"
@@ -112,34 +114,31 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 		solver.AddConstraint(solver.MakeSumLessOrEqual(e2e_delays, flow.deadline));
 	}
 
-	int num_constraints = 0;
-
 	std::unordered_map<std::string, std::vector<IntVar *>> cycle_bandwidths;
 	for(const auto &[edge, As] : arrival_patterns) {
 		for(int c = 0; c < 667; c++) {
 			IntExpr *sum = solver.MakeSum(As[c]);
 
 			// Edge capacity
-			int edge_capacity = edges[edge].bandwidth * CYCLE_LENGTH;
+			int edge_capacity = edges[edge].bandwidth;
 
 			solver.AddConstraint(solver.MakeLessOrEqual(sum, edge_capacity));
-			++num_constraints;
 			cycle_bandwidths[edge].push_back(sum->Var());
 		}
 	}
 
-	std::cout << num_constraints << std::endl;
-
 	std::vector<IntVar *> edge_bandwidths;
 	for(const auto &[edge, _] : arrival_patterns) {
 		// Edge capacity
-		int edge_capacity = edges[edge].bandwidth * CYCLE_LENGTH;
+		int edge_capacity = edges[edge].bandwidth;
 		IntExpr *bandwidth = solver.MakeDiv(solver.MakeProd(solver.MakeMax(cycle_bandwidths[edge]), 1000), edge_capacity);
-		edge_bandwidths.push_back(bandwidth->Var());
+		edge_bandwidths.push_back(bandwidth->VarWithName("edge_bandwidth_" + edge));
 	}
+	for(const auto &var : edge_bandwidths) all_variables.push_back(var);
+
 	IntVar *mean_bandwidth_usage = solver.MakeDiv(solver.MakeSum(edge_bandwidths), edges.size())->VarWithName("mean_bandwidth_usage");
 	all_variables.push_back(mean_bandwidth_usage);
-	OptimizeVar *omega = solver.MakeMinimize(mean_bandwidth_usage, 10);
+	OptimizeVar *omega = solver.MakeMaximize(mean_bandwidth_usage, 10);
 
 	LOG(INFO) << "Number of variables: " << all_variables.size();
 	LOG(INFO) << "Number of constraints: " << solver.constraints();
@@ -158,38 +157,24 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 	  Solver::ASSIGN_MIN_VALUE
 	);
 	SearchMonitor *const search_log = solver.MakeSearchLog(1000000, omega);
-	SolutionCollector *const collector = solver.MakeLastSolutionCollector();
-	collector->Add(mean_bandwidth_usage);
 
-	bool solved = false;
-
-	if(solver.Solve(db, omega, search_log, collector)) {
+	solver.NewSearch(db, search_log);
+	while (solver.NextSolution()) {
 		for(const auto &variable : all_variables) {
 			LOG(INFO) << variable << " = " << variable->Value();
 		}
-
-		bool solved = true;
+		// static int i = 0;
+		// ++i;
+		// if(i > 50) break;
 	}
+	solver.EndSearch();
+	LOG(INFO) << "Number of solutions: " << solver.solutions();
+	LOG(INFO) << "";
+	LOG(INFO) << "Advanced usage:";
+	LOG(INFO) << "Problem solved in " << solver.wall_time() << "ms";
+	LOG(INFO) << "Memory usage: " << Solver::MemoryUsage() << " bytes";
 
-	LOG(INFO) << collector->solution(0)->DebugString();
-
-	return solved;
-
-	// solver.NewSearch(db);
-	// while (solver.NextSolution()) {
-	// 	LOG(INFO) << "Solution " << solver.solutions();
-	// 	for(const auto &variable : all_variables) {
-	// 		LOG(INFO) << variable << " = " << variable->Value();
-	// 	}
-	// }
-	// solver.EndSearch();
-	// LOG(INFO) << "Number of solutions: " << solver.solutions();
-	// LOG(INFO) << "";
-	// LOG(INFO) << "Advanced usage:";
-	// LOG(INFO) << "Problem solved in " << solver.wall_time() << "ms";
-	// LOG(INFO) << "Memory usage: " << Solver::MemoryUsage() << " bytes";
-
-	// return solver.solutions() > 0;
+	return solver.solutions() > 0;
 }
 
 int main(int argc, char **argv) {
