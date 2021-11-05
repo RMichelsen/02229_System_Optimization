@@ -3,8 +3,6 @@
 
 #include <cstdlib>
 
-// TODO: Remove hardcoded cycle count
-
 using namespace operations_research;
 
 constexpr int CYCLE_LENGTH = 12;
@@ -76,17 +74,45 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 	// 	path_choices[flow] = solver.MakeIntVar(0, paths.size() - 1, "path_choice" + flow);
 	// }
 
-	std::unordered_map<std::string, IntVar *> q_choices;
-	for(const auto &[flow_name, _] : flows) {
-		for(const auto &edge : flow_paths[flow_name][path_choices[flow_name]]) {
-			q_choices[flow_name + "_" + edge] = solver.MakeIntVar(1, 3, "q_" + edge + "_p_" + std::to_string(path_choices[flow_name]) + "_" + flow_name);
-		}
-	}
+	// std::unordered_map<std::string, IntVar *> q_choices;
+	// for(const auto &[flow_name, _] : flows) {
+	// 	for(const auto &edge : flow_paths[flow_name][path_choices[flow_name]]) {
+	// 		q_choices[flow_name + "_" + edge] = solver.MakeIntVar(1, 3, "q_" + edge + "_p_" + std::to_string(path_choices[flow_name]) + "_" + flow_name);
+	// 	}
+	// }
+
+	std::unordered_map<std::string, int> q_choices;
+	q_choices["F1_ES1SW1"] = 2;
+	q_choices["F1_SW1ES2"] = 1;
+
+	q_choices["F2_ES1SW2"] = 1;
+	q_choices["F2_SW2ES2"] = 3;
+
+	q_choices["F3_ES1SW2"] = 3;
+	q_choices["F3_SW2ES2"] = 3;
+
+	q_choices["F4_ES1SW1"] = 1;
+	q_choices["F4_SW1ES2"] = 3;
+
+	q_choices["F5_SW2ES2"] = 2;
+	q_choices["F5_ES1SW2"] = 2;
+
+	q_choices["F6_SW2ES2"] = 2;
+	q_choices["F6_ES1SW2"] = 1;
+
+	q_choices["F7_SW2ES2"] = 3;
+	q_choices["F7_ES1SW2"] = 2;
+
+	q_choices["F8_ES1SW2"] = 2;
+	q_choices["F8_SW2ES2"] = 1;
 
 	std::unordered_map<std::string, std::vector<std::vector<IntVar *>>> arrival_patterns;
 	for(const auto &[flow_name, flow] : flows) {
 		std::vector<IntVar *> e2e_delays;
 		for(const auto &edge : flow_paths[flow_name][path_choices[flow_name]]) {
+
+			std::cout << "Processing edge: " << edge << " for flow: " << flow_name << std::endl;
+
 			// If the edge does not yet have an array of arrival patterns per cycle,
 			// initialize a vector that contains one vector of flow arrival patterns for each cycle. 
 			if(arrival_patterns.find(edge) == arrival_patterns.end()) {
@@ -94,22 +120,32 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 			}
 
 			IntExpr *alpha	 = solver.MakeSum(e2e_delays);
-
 			all_variables.push_back(alpha->VarWithName(flow_name + "A" + edge));
 
-			IntExpr *e2e_delay = solver.MakeSum(solver.MakeProd(q_choices[flow_name + "_" + edge], CYCLE_LENGTH), edges[edge].propagation_delay);
-			e2e_delays.push_back(e2e_delay->Var());
+			// IntExpr *e2e_delay = solver.MakeSum(solver.MakeProd(q_choices[flow_name + "_" + edge], CYCLE_LENGTH), edges[edge].propagation_delay);
+			// e2e_delays.push_back(e2e_delay->Var());
+			IntVar *e2e_delay = solver.MakeIntConst(q_choices[flow_name + "_" + edge] * CYCLE_LENGTH + edges[edge].propagation_delay);
+			all_variables.push_back(e2e_delay);
+
+			e2e_delays.push_back(e2e_delay);
 
 			for(int c = 0; c < 667; c++) {
 				IntExpr *A_input = solver.MakeModulo(solver.MakeSum(alpha, c * CYCLE_LENGTH), flow.period);
-				IntVar *b = solver.MakeIsEqualCstVar(A_input, 0);
-				IntVar *A = solver.MakeIntVar(0, std::numeric_limits<int32_t>::max());
+				// TODO: We can check less than 12, since a cycle is 12 microseconds... But the modulo still seems off..
+				IntVar *b = solver.MakeIsLessCstVar(A_input, 12);
+				//IntVar *b = solver.MakeIsEqualCstVar(A_input, 0);
+				IntVar *A = solver.MakeIntVar(0, std::numeric_limits<int32_t>::max(), flow_name + "_" + edge + "_" + std::to_string(c));
 				solver.AddConstraint(solver.MakeIfThenElseCt(b, solver.MakeIntConst(flow.size), solver.MakeIntConst(0), A));
+
+				// all_variables.push_back(A);
 
 				// A now contains the arrival pattern for cycle "c"
 				arrival_patterns[edge][c].push_back(A);
 			}
 		}
+
+		IntExpr *e2e_delay_sum = solver.MakeSum(e2e_delays);
+		all_variables.push_back(e2e_delay_sum->VarWithName("e2e_delay_sum_" + flow_name));
 
 		solver.AddConstraint(solver.MakeSumLessOrEqual(e2e_delays, flow.deadline));
 	}
@@ -119,18 +155,19 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 		for(int c = 0; c < 667; c++) {
 			IntExpr *sum = solver.MakeSum(As[c]);
 
-			// Edge capacity
-			int edge_capacity = edges[edge].bandwidth;
+			// Bandwidth in Mbps, to capacity in bytes per cycle
+			// TODO: Possible typo in assignment MBps/Mbps?
+			int edge_capacity = int((edges[edge].bandwidth * 125000) * 0.000012);
 
-			solver.AddConstraint(solver.MakeLessOrEqual(sum, edge_capacity));
+			// solver.AddConstraint(solver.MakeLessOrEqual(sum, edge_capacity));
 			cycle_bandwidths[edge].push_back(sum->Var());
 		}
 	}
 
 	std::vector<IntVar *> edge_bandwidths;
 	for(const auto &[edge, _] : arrival_patterns) {
-		// Edge capacity
-		int edge_capacity = edges[edge].bandwidth;
+		// Bandwidth in Mbps, to capacity in bytes per cycle
+		int edge_capacity = int((edges[edge].bandwidth * 125000) * 0.000012);
 		IntExpr *bandwidth = solver.MakeDiv(solver.MakeProd(solver.MakeMax(cycle_bandwidths[edge]), 1000), edge_capacity);
 		edge_bandwidths.push_back(bandwidth->VarWithName("edge_bandwidth_" + edge));
 	}
@@ -144,7 +181,7 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 	LOG(INFO) << "Number of constraints: " << solver.constraints();
 
 	// for(const auto &[_, var] : path_choices) all_variables.push_back(var);
-	for(const auto &[_, var] : q_choices) all_variables.push_back(var);
+	// for(const auto &[_, var] : q_choices) all_variables.push_back(var);
 	// for(const auto &[_, FAs] : arrival_patterns) {
 	// 	for(const auto &As : FAs) {
 	// 		for(const auto &A : As) all_variables.push_back(A);
@@ -187,14 +224,23 @@ int main(int argc, char **argv) {
 
 	for(int i = 0; i < 1000; ++i) {
 		std::unordered_map<std::string, int> path_choices;
-		path_choices["F1"] = rand() % 4;
-		path_choices["F2"] = rand() % 4;
-		path_choices["F3"] = rand() % 4;
-		path_choices["F4"] = rand() % 4;
-		path_choices["F5"] = rand() % 4;
-		path_choices["F6"] = rand() % 4;
-		path_choices["F7"] = rand() % 4;
-		path_choices["F8"] = rand() % 4;
+		// path_choices["F1"] = rand() % 4;
+		// path_choices["F2"] = rand() % 4;
+		// path_choices["F3"] = rand() % 4;
+		// path_choices["F4"] = rand() % 4;
+		// path_choices["F5"] = rand() % 4;
+		// path_choices["F6"] = rand() % 4;
+		// path_choices["F7"] = rand() % 4;
+		// path_choices["F8"] = rand() % 4;
+
+		path_choices["F1"] = 0;
+		path_choices["F2"] = 2;
+		path_choices["F3"] = 2;
+		path_choices["F4"] = 0;
+		path_choices["F5"] = 2;
+		path_choices["F6"] = 2;
+		path_choices["F7"] = 2;
+		path_choices["F8"] = 2;
 
 		if(TrySolve(path_choices)) {
 			for(const auto &[_, i] : path_choices) {
