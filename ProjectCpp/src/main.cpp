@@ -66,6 +66,12 @@ std::unordered_map<std::string, std::vector<std::vector<std::string>>> flow_path
 };
 
 bool TrySolve(std::unordered_map<std::string, int> path_choices) {
+	int least_common_multiple = 1;
+	for(const auto &[_, flow] : flows) {
+		least_common_multiple = std::lcm(least_common_multiple, flow.period);
+	}
+	int cycle_count = std::ceil((float)least_common_multiple / (float)CYCLE_LENGTH);
+
 	Solver solver("ConstraintSolver");
 	std::vector<IntVar *> all_variables;
 
@@ -116,28 +122,25 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 			// If the edge does not yet have an array of arrival patterns per cycle,
 			// initialize a vector that contains one vector of flow arrival patterns for each cycle. 
 			if(arrival_patterns.find(edge) == arrival_patterns.end()) {
-				arrival_patterns[edge] = std::vector<std::vector<IntVar *>>(667);
+				arrival_patterns[edge] = std::vector<std::vector<IntVar *>>(cycle_count);
 			}
-
-			IntExpr *alpha	 = solver.MakeSum(e2e_delays);
-			all_variables.push_back(alpha->VarWithName(flow_name + "A" + edge));
 
 			// IntExpr *e2e_delay = solver.MakeSum(solver.MakeProd(q_choices[flow_name + "_" + edge], CYCLE_LENGTH), edges[edge].propagation_delay);
 			// e2e_delays.push_back(e2e_delay->Var());
 			IntVar *e2e_delay = solver.MakeIntConst(q_choices[flow_name + "_" + edge] * CYCLE_LENGTH + edges[edge].propagation_delay);
+			e2e_delays.push_back(e2e_delay);
 			all_variables.push_back(e2e_delay);
 
-			e2e_delays.push_back(e2e_delay);
+			IntExpr *alpha = solver.MakeSum(e2e_delays);
+			all_variables.push_back(alpha->VarWithName(flow_name + "A" + edge));
 
-			for(int c = 0; c < 667; c++) {
+			for(int c = 0; c < cycle_count; c++) {
 				IntExpr *A_input = solver.MakeModulo(solver.MakeSum(alpha, c * CYCLE_LENGTH), flow.period);
 				// TODO: We can check less than 12, since a cycle is 12 microseconds... But the modulo still seems off..
-				IntVar *b = solver.MakeIsLessCstVar(A_input, 12);
-				//IntVar *b = solver.MakeIsEqualCstVar(A_input, 0);
+				IntVar *b = solver.MakeIsLessCstVar(A_input, CYCLE_LENGTH);
+				// IntVar *b = solver.MakeIsEqualCstVar(A_input, 0);
 				IntVar *A = solver.MakeIntVar(0, std::numeric_limits<int32_t>::max(), flow_name + "_" + edge + "_" + std::to_string(c));
 				solver.AddConstraint(solver.MakeIfThenElseCt(b, solver.MakeIntConst(flow.size), solver.MakeIntConst(0), A));
-
-				// all_variables.push_back(A);
 
 				// A now contains the arrival pattern for cycle "c"
 				arrival_patterns[edge][c].push_back(A);
@@ -152,15 +155,18 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 
 	std::unordered_map<std::string, std::vector<IntVar *>> cycle_bandwidths;
 	for(const auto &[edge, As] : arrival_patterns) {
-		for(int c = 0; c < 667; c++) {
+		for(int c = 0; c < cycle_count; c++) {
 			IntExpr *sum = solver.MakeSum(As[c]);
 
 			// Bandwidth in Mbps, to capacity in bytes per cycle
 			// TODO: Possible typo in assignment MBps/Mbps?
 			int edge_capacity = int((edges[edge].bandwidth * 125000) * 0.000012);
+			// int edge_capacity = int((edges[edge].bandwidth * 1000000) * 0.000012);
 
 			// solver.AddConstraint(solver.MakeLessOrEqual(sum, edge_capacity));
-			cycle_bandwidths[edge].push_back(sum->Var());
+			cycle_bandwidths[edge].push_back(
+				sum->VarWithName("cycle_bandwidths" + edge + "_" + std::to_string(c))
+			);
 		}
 	}
 
@@ -168,6 +174,7 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 	for(const auto &[edge, _] : arrival_patterns) {
 		// Bandwidth in Mbps, to capacity in bytes per cycle
 		int edge_capacity = int((edges[edge].bandwidth * 125000) * 0.000012);
+		// int edge_capacity = int((edges[edge].bandwidth * 1000000) * 0.000012);
 		IntExpr *bandwidth = solver.MakeDiv(solver.MakeProd(solver.MakeMax(cycle_bandwidths[edge]), 1000), edge_capacity);
 		edge_bandwidths.push_back(bandwidth->VarWithName("edge_bandwidth_" + edge));
 	}
