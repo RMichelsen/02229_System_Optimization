@@ -1,3 +1,5 @@
+#define _ITERATOR_DEBUG_LEVEL 0
+
 #include <ortools/base/logging.h>
 #include <ortools/constraint_solver/constraint_solver.h>
 
@@ -137,8 +139,8 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 			for(int c = 0; c < cycle_count; c++) {
 				IntExpr *A_input = solver.MakeModulo(solver.MakeSum(alpha, c * CYCLE_LENGTH), flow.period);
 				// TODO: We can check less than 12, since a cycle is 12 microseconds... But the modulo still seems off..
-				IntVar *b = solver.MakeIsLessCstVar(A_input, CYCLE_LENGTH);
-				// IntVar *b = solver.MakeIsEqualCstVar(A_input, 0);
+				// IntVar *b = solver.MakeIsLessCstVar(A_input, CYCLE_LENGTH);
+				IntVar *b = solver.MakeIsEqualCstVar(A_input, 0);
 				IntVar *A = solver.MakeIntVar(0, std::numeric_limits<int32_t>::max(), flow_name + "_" + edge + "_" + std::to_string(c));
 				solver.AddConstraint(solver.MakeIfThenElseCt(b, solver.MakeIntConst(flow.size), solver.MakeIntConst(0), A));
 
@@ -160,8 +162,8 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 
 			// Bandwidth in Mbps, to capacity in bytes per cycle
 			// TODO: Possible typo in assignment MBps/Mbps?
-			int edge_capacity = int((edges[edge].bandwidth * 125000) * 0.000012);
-			// int edge_capacity = int((edges[edge].bandwidth * 1000000) * 0.000012);
+			// int edge_capacity = int((edges[edge].bandwidth * 125000) * 0.000012);
+			int edge_capacity = edges[edge].bandwidth * CYCLE_LENGTH;
 
 			// solver.AddConstraint(solver.MakeLessOrEqual(sum, edge_capacity));
 			cycle_bandwidths[edge].push_back(
@@ -173,7 +175,7 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 	std::vector<IntVar *> edge_bandwidths;
 	for(const auto &[edge, _] : arrival_patterns) {
 		// Bandwidth in Mbps, to capacity in bytes per cycle
-		int edge_capacity = int((edges[edge].bandwidth * 125000) * 0.000012);
+		int edge_capacity = edges[edge].bandwidth * CYCLE_LENGTH;
 		// int edge_capacity = int((edges[edge].bandwidth * 1000000) * 0.000012);
 		IntExpr *bandwidth = solver.MakeDiv(solver.MakeProd(solver.MakeMax(cycle_bandwidths[edge]), 1000), edge_capacity);
 		edge_bandwidths.push_back(bandwidth->VarWithName("edge_bandwidth_" + edge));

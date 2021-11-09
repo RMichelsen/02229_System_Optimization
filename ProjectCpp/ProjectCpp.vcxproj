@@ -1,0 +1,1107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{698505a2-07a1-427f-949b-17651c6be971}</ProjectGuid>
+    <RootNamespace>ProjectCpp</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>dependencies\or-tools\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>ortools.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\or-tools\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>dependencies\or-tools\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>dependencies\or-tools\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ortools.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="dependencies\or-tools\include\absl\algorithm\algorithm.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\algorithm\container.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\attributes.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\call_once.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\casts.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\config.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\const_init.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\dynamic_annotations.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\atomic_hook.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\atomic_hook_test_helper.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\cycleclock.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\direct_mmap.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\dynamic_annotations.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\endian.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\errno_saver.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\exception_safety_testing.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\exception_testing.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\exponential_biased.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\fast_type_id.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\hide_ptr.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\identity.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\inline_variable.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\inline_variable_testing.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\invoke.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\low_level_alloc.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\low_level_scheduling.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\periodic_sampler.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\per_thread_tls.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\pretty_function.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\raw_logging.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\scheduling_mode.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\scoped_set_env.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\spinlock.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\spinlock_wait.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\strerror.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\sysinfo.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\thread_annotations.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\thread_identity.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\throw_delegate.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\tsan_mutex_interface.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\unaligned_access.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\internal\unscaledcycleclock.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\log_severity.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\macros.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\optimization.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\options.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\policy_checks.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\port.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\base\thread_annotations.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\cleanup\cleanup.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\cleanup\internal\cleanup.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\btree_map.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\btree_set.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\btree_test.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\fixed_array.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\flat_hash_map.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\flat_hash_set.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\inlined_vector.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\btree.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\btree_container.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\common.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\compressed_tuple.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\container_memory.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\counting_allocator.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\hashtablez_sampler.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\hashtable_debug.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\hashtable_debug_hooks.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\hash_function_defaults.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\hash_generator_testing.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\hash_policy_testing.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\hash_policy_traits.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\have_sse.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\inlined_vector.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\layout.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\node_hash_policy.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\raw_hash_map.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\raw_hash_set.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\test_instance_tracker.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\tracked.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\unordered_map_constructor_test.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\unordered_map_lookup_test.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\unordered_map_members_test.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\unordered_map_modifiers_test.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\unordered_set_constructor_test.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\unordered_set_lookup_test.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\unordered_set_members_test.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\internal\unordered_set_modifiers_test.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\node_hash_map.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\container\node_hash_set.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\debugging\failure_signal_handler.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\debugging\internal\address_is_readable.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\debugging\internal\demangle.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\debugging\internal\elf_mem_image.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\debugging\internal\examine_stack.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\debugging\internal\stacktrace_config.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\debugging\internal\stack_consumption.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\debugging\internal\symbolize.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\debugging\internal\vdso_support.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\debugging\leak_check.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\debugging\stacktrace.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\debugging\symbolize.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\commandlineflag.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\config.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\declare.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\flag.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\internal\commandlineflag.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\internal\flag.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\internal\parse.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\internal\path_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\internal\private_handle_accessor.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\internal\program_name.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\internal\registry.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\internal\sequence_lock.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\internal\usage.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\marshalling.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\parse.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\reflection.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\usage.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\flags\usage_config.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\functional\bind_front.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\functional\function_ref.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\functional\internal\front_binder.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\functional\internal\function_ref.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\hash\hash.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\hash\hash_testing.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\hash\internal\city.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\hash\internal\hash.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\hash\internal\spy_hash_state.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\hash\internal\wyhash.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\memory\memory.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\meta\type_traits.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\numeric\bits.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\numeric\int128.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\numeric\internal\bits.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\numeric\internal\representation.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\bernoulli_distribution.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\beta_distribution.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\bit_gen_ref.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\discrete_distribution.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\distributions.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\exponential_distribution.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\gaussian_distribution.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\chi_square.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\distribution_caller.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\distribution_test_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\explicit_seed_seq.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\fastmath.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\fast_uniform_bits.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\generate_real.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\iostream_state_saver.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\mock_helpers.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\mock_overload_set.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\nanobenchmark.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\nonsecure_base.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\pcg_engine.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\platform.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\pool_urbg.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\randen.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\randen_detect.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\randen_engine.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\randen_hwaes.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\randen_slow.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\randen_traits.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\salted_seed_seq.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\seed_material.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\sequence_urbg.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\traits.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\uniform_helper.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\internal\wide_multiply.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\log_uniform_int_distribution.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\mocking_bit_gen.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\mock_distributions.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\poisson_distribution.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\random.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\seed_gen_exception.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\seed_sequences.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\uniform_int_distribution.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\uniform_real_distribution.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\random\zipf_distribution.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\status\internal\statusor_internal.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\status\internal\status_internal.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\status\status.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\status\statusor.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\status\status_payload_printer.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\ascii.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\charconv.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\cord.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\cord_test_helpers.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\escaping.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\charconv_bigint.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\charconv_parse.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\char_map.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\cord_internal.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\cord_rep_flat.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\cord_rep_ring.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\cord_rep_ring_reader.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\escaping.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\escaping_test_common.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\memutil.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\numbers_test_common.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\ostringstream.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\pow10_helper.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\resize_uninitialized.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\stl_type_traits.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\string_constant.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\str_format\arg.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\str_format\bind.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\str_format\checker.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\str_format\extension.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\str_format\float_conversion.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\str_format\output.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\str_format\parser.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\str_join_internal.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\str_split_internal.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\internal\utf8.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\match.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\numbers.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\string_view.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\strip.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\str_cat.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\str_format.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\str_join.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\str_replace.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\str_split.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\strings\substitute.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\synchronization\barrier.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\synchronization\blocking_counter.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\synchronization\internal\create_thread_identity.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\synchronization\internal\futex.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\synchronization\internal\graphcycles.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\synchronization\internal\kernel_timeout.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\synchronization\internal\per_thread_sem.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\synchronization\internal\thread_pool.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\synchronization\internal\waiter.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\synchronization\mutex.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\synchronization\notification.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\time\civil_time.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\time\clock.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\time\internal\cctz\include\cctz\civil_time.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\time\internal\cctz\include\cctz\civil_time_detail.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\time\internal\cctz\include\cctz\time_zone.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\time\internal\cctz\include\cctz\zone_info_source.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\time\internal\cctz\src\time_zone_fixed.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\time\internal\cctz\src\time_zone_if.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\time\internal\cctz\src\time_zone_impl.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\time\internal\cctz\src\time_zone_info.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\time\internal\cctz\src\time_zone_libc.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\time\internal\cctz\src\time_zone_posix.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\time\internal\cctz\src\tzfile.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\time\internal\test_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\time\time.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\any.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\bad_any_cast.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\bad_optional_access.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\bad_variant_access.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\compare.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\internal\conformance_aliases.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\internal\conformance_archetype.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\internal\conformance_profile.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\internal\conformance_testing.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\internal\conformance_testing_helpers.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\internal\optional.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\internal\parentheses.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\internal\span.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\internal\transform_args.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\internal\variant.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\optional.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\span.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\types\variant.h" />
+    <ClInclude Include="dependencies\or-tools\include\absl\utility\utility.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\AbcCommon.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\AbcDualRowDantzig.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\AbcDualRowPivot.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\AbcDualRowSteepest.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\AbcMatrix.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\AbcNonLinearCost.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\AbcPrimalColumnDantzig.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\AbcPrimalColumnPivot.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\AbcPrimalColumnSteepest.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\AbcSimplex.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\AbcSimplexDual.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\AbcSimplexFactorization.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\AbcSimplexPrimal.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\AbcWarmStart.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcBranchActual.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcBranchAllDifferent.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcBranchBase.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcBranchCut.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcBranchDecision.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcBranchDefaultDecision.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcBranchDynamic.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcBranchingObject.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcBranchLotsize.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcBranchToFixLots.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcClique.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcCompare.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcCompareActual.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcCompareBase.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcCompareDefault.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcCompareDepth.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcCompareEstimate.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcCompareObjective.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcConfig.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcConsequence.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcCountRowCut.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcCutGenerator.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcCutModifier.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcCutSubsetModifier.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcDummyBranchingObject.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcEventHandler.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcFathom.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcFathomDynamicProgramming.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcFeasibilityBase.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcFixVariable.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcFollowOn.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcFullNodeInfo.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcGenCbcParam.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcGenCtlBlk.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcGeneral.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcGeneralDepth.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcGenMessages.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcGenOsiParam.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcGenParam.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristic.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicDINS.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicDive.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicDiveCoefficient.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicDiveFractional.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicDiveGuided.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicDiveLineSearch.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicDivePseudoCost.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicDiveVectorLength.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicDW.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicFPump.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicGreedy.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicLocal.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicPivotAndFix.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicRandRound.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicRENS.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicRINS.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcHeuristicVND.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcLinked.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcMessage.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcMipStartIO.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcModel.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcNode.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcNodeInfo.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcNWay.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcObject.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcObjectUpdateData.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcOrClpParam.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcParam.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcPartialNodeInfo.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcSimpleInteger.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcSimpleIntegerDynamicPseudoCost.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcSimpleIntegerPseudoCost.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcSolver.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcSolverAnalyze.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcSolverExpandKnapsack.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcSolverHeuristics.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcSOS.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcStatistics.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcStrategy.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcSubProblem.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcSymmetry.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcThread.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcTree.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CbcTreeLocal.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\Cbc_ampl.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\Cbc_C_Interface.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CglConfig.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CglCutGenerator.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CglMessage.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CglParam.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CglStored.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CglTreeInfo.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpAmplObjective.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpCholeskyBase.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpCholeskyDense.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpCholeskyMumps.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpCholeskyPardiso.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpCholeskyTaucs.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpCholeskyUfl.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpCholeskyWssmp.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpCholeskyWssmpKKT.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpConfig.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpConstraint.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpConstraintAmpl.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpConstraintLinear.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpConstraintQuadratic.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpDualRowDantzig.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpDualRowPivot.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpDualRowSteepest.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpDummyMatrix.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpDynamicExampleMatrix.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpDynamicMatrix.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpEventHandler.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpFactorization.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpGubDynamicMatrix.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpGubMatrix.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpHelperFunctions.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpInterior.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpLinearObjective.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpLsqr.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpMatrixBase.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpMessage.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpModel.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpNetworkBasis.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpNetworkMatrix.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpNode.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpNonLinearCost.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpObjective.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpPackedMatrix.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpParameters.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpPdco.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpPdcoBase.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpPEDualRowDantzig.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpPEDualRowSteepest.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpPEPrimalColumnDantzig.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpPEPrimalColumnSteepest.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpPESimplex.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpPlusMinusOneMatrix.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpPredictorCorrector.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpPresolve.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpPrimalColumnDantzig.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpPrimalColumnPivot.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpPrimalColumnSteepest.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpPrimalQuadraticDantzig.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpQuadraticObjective.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpSimplex.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpSimplexDual.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpSimplexNonlinear.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpSimplexOther.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpSimplexPrimal.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\ClpSolve.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\Clp_ampl.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\Clp_C_Interface.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinAbcBaseFactorization.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinAbcCommon.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinAbcCommonFactorization.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinAbcDenseFactorization.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinAbcFactorization.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinAbcHelperFunctions.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinAlloc.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinBuild.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinDenseFactorization.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinDenseVector.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinDistance.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinError.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinFactorization.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinFileIO.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinFinite.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinFloatEqual.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinHelperFunctions.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinIndexedVector.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinLpIO.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinMessage.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinMessageHandler.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinModel.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinModelUseful.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinMpsIO.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinOslC.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinOslFactorization.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPackedMatrix.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPackedVector.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPackedVectorBase.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinParam.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPragma.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolveDoubleton.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolveDual.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolveDupcol.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolveEmpty.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolveFixed.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolveForcing.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolveImpliedFree.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolveIsolated.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolveMatrix.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolveMonitor.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolvePsdebug.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolveSingleton.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolveSubst.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolveTighten.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolveTripleton.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolveUseless.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinPresolveZeros.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinRational.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinSearchTree.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinShallowPackedVector.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinSignal.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinSimpFactorization.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinSmartPtr.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinSnapshot.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinSort.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinStructuredModel.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinTime.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinTypes.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinUtility.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinUtilsConfig.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinWarmStart.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinWarmStartBasis.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinWarmStartDual.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinWarmStartPrimalDual.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\CoinWarmStartVector.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\Coin_C_defines.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\config_cbc_default.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\config_cgl_default.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\config_clp_default.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\config_coinutils_default.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\config_default.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\config_osi_default.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\Idiot.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\MyEventHandler.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\MyMessageHandler.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\OsiAuxInfo.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\OsiBranchingObject.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\OsiChooseVariable.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\OsiClpSolverInterface.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\OsiColCut.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\OsiCollections.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\OsiConfig.h" />
+    <ClInclude Include="dependencies\or-tools\include\coin\OsiCut.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\OsiCuts.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\OsiPresolve.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\OsiRowCut.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\OsiRowCutDebugger.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\OsiSolverBranch.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\OsiSolverInterface.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\coin\OsiSolverParameters.hpp" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\any.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\any.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\api.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\arena.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\arenastring.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\arena_impl.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\code_generator.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\command_line_interface.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\cpp\cpp_generator.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\csharp\csharp_generator.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\csharp\csharp_names.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\importer.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\java\java_generator.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\java\java_kotlin_generator.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\java\java_names.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\js\js_generator.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\js\well_known_types_embed.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\objectivec\objectivec_generator.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\objectivec\objectivec_helpers.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\parser.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\php\php_generator.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\plugin.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\plugin.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\python\python_generator.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\compiler\ruby\ruby_generator.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\descriptor.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\descriptor.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\descriptor_database.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\duration.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\dynamic_message.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\empty.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\extension_set.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\extension_set_inl.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\field_access_listener.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\field_mask.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\generated_enum_reflection.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\generated_enum_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\generated_message_bases.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\generated_message_reflection.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\generated_message_table_driven.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\generated_message_tctable_decl.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\generated_message_tctable_impl.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\generated_message_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\has_bits.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\implicit_weak_message.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\inlined_string_field.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\io\coded_stream.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\io\gzip_stream.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\io\io_win32.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\io\printer.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\io\strtod.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\io\tokenizer.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\io\zero_copy_stream.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\io\zero_copy_stream_impl.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\io\zero_copy_stream_impl_lite.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\map.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\map_entry.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\map_entry_lite.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\map_field.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\map_field_inl.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\map_field_lite.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\map_type_handler.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\message.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\message_lite.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\metadata.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\metadata_lite.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\parse_context.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\port.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\reflection.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\reflection_ops.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\repeated_field.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\service.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\source_context.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\string_member_robber.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\struct.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\bytestream.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\callback.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\casts.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\common.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\hash.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\logging.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\macros.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\map_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\mutex.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\once.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\platform_macros.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\port.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\status.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\stl_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\stringpiece.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\strutil.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\stubs\template_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\text_format.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\timestamp.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\type.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\unknown_field_set.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\util\delimited_message_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\util\field_comparator.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\util\field_mask_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\util\json_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\util\message_differencer.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\util\time_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\util\type_resolver.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\util\type_resolver_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\wire_format.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\wire_format_lite.h" />
+    <ClInclude Include="dependencies\or-tools\include\google\protobuf\wrappers.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\algorithms\dense_doubly_linked_list.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\algorithms\dynamic_partition.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\algorithms\dynamic_permutation.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\algorithms\find_graph_symmetries.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\algorithms\hungarian.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\algorithms\knapsack_solver.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\algorithms\knapsack_solver_for_cuts.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\algorithms\sparse_permutation.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\accurate_sum.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\adjustable_priority_queue-inl.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\adjustable_priority_queue.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\base_export.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\basictypes.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\bitmap.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\cleanup.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\commandlineflags.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\container_logging.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\dynamic_library.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\encodingutils.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\file.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\filelineiter.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\gzipstring.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\hash.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\integral_types.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\int_type.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\iterator_adaptors.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\jniutil.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\linked_hash_map.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\logging.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\logging_export.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\logging_utilities.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\log_severity.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\macros.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\map_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\mathutil.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\murmur.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\protobuf_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\protoutil.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\ptr_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\python-swig.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\random.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\raw_logging.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\recordio.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\small_map.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\small_ordered_set.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\status_builder.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\status_macros.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\stl_logging.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\stl_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\strong_vector.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\sysinfo.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\thorough_hash.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\threadpool.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\timer.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\typeid.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\version.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\base\vlog_is_on.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\bop\bop_base.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\bop\bop_fs.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\bop\bop_lns.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\bop\bop_ls.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\bop\bop_parameters.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\bop\bop_portfolio.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\bop\bop_solution.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\bop\bop_solver.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\bop\bop_types.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\bop\bop_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\bop\complete_optimizer.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\bop\integral_solver.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\assignment.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\constraint_solver.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\constraint_solveri.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\demon_profiler.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\routing.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\routing_enums.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\routing_filters.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\routing_flags.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\routing_index_manager.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\routing_lp_scheduling.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\routing_neighborhoods.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\routing_parameters.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\routing_parameters.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\routing_search.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\routing_types.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\search_limit.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\search_stats.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\constraint_solver\solver_parameters.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\basis_representation.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\dual_edge_norms.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\entering_variable.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\initial_basis.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\lp_solver.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\lu_factorization.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\markowitz.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\parameters.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\preprocessor.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\pricing.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\primal_edge_norms.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\rank_one_update.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\reduced_costs.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\revised_simplex.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\status.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\update_row.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\variables_info.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\glop\variable_values.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\assignment.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\christofides.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\cliques.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\connected_components.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\ebert_graph.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\eulerian_path.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\flow_problem.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\graph.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\graphs.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\hamiltonian_path.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\io.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\iterators.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\linear_assignment.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\max_flow.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\minimum_spanning_tree.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\min_cost_flow.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\one_tree_lower_bound.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\perfect_matching.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\shortestpaths.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\strongly_connected_components.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\topologicalsorter.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\graph\util.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\linear_solver\glop_utils.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\linear_solver\gurobi_proto_solver.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\linear_solver\linear_expr.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\linear_solver\linear_solver.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\linear_solver\linear_solver.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\linear_solver\linear_solver_callback.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\linear_solver\model_exporter.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\linear_solver\model_exporter_swig_helper.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\linear_solver\model_validator.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\linear_solver\sat_proto_solver.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\linear_solver\sat_solver_utils.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\linear_solver\scip_callback.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\linear_solver\scip_helper_macros.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\linear_solver\scip_proto_solver.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\lp_data.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\lp_data_utils.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\lp_decomposer.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\lp_print_utils.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\lp_types.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\lp_utils.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\matrix_scaler.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\matrix_utils.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\model_reader.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\mps_reader.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\permutation.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\proto_utils.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\scattered_vector.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\sparse.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\sparse_column.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\sparse_row.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\lp_data\sparse_vector.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\packing\arc_flow_builder.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\packing\arc_flow_solver.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\packing\vector_bin_packing.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\packing\vector_bin_packing_parser.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\port\file.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\port\proto_utils.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\port\sysinfo.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\port\utf8.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\all_different.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\boolean_problem.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\boolean_problem.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\circuit.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\clause.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cp_constraints.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cp_model.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cp_model.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cp_model_checker.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cp_model_expand.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cp_model_lns.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cp_model_loader.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cp_model_mapping.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cp_model_objective.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cp_model_postsolve.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cp_model_presolve.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cp_model_search.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cp_model_service.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cp_model_solver.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cp_model_symmetries.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cp_model_utils.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cumulative.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cumulative_energy.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\cuts.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\diffn.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\diffn_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\disjunctive.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\drat_checker.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\drat_proof_handler.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\drat_writer.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\encoding.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\feasibility_pump.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\implied_bounds.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\integer.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\integer_expr.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\integer_search.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\intervals.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\lb_tree_search.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\linear_constraint.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\linear_constraint_manager.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\linear_programming_constraint.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\linear_relaxation.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\lp_utils.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\model.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\optimization.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\parameters_validation.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\pb_constraint.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\precedences.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\presolve_context.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\presolve_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\probing.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\pseudo_costs.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\restart.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\rins.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\sat_base.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\sat_decision.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\sat_inprocessing.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\sat_parameters.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\sat_solver.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\scheduling_constraints.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\scheduling_cuts.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\simplification.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\subsolver.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\swig_helper.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\symmetry.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\symmetry_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\synchronization.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\table.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\theta_tree.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\timetable.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\timetable_edgefinding.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\util.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\var_domination.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\sat\zero_half_cuts.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\scheduling\jobshop_scheduling.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\scheduling\jobshop_scheduling_parser.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\scheduling\rcpsp.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\scheduling\rcpsp_parser.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\adaptative_parameter_value.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\affine_relation.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\bitset.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\cached_log.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\file_util.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\fp_utils.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\functions_swig_helpers.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\functions_swig_test_helpers.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\graph_export.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\integer_pq.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\lazy_mutable_copy.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\logging.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\monoid_operation_tree.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\optional_boolean.pb.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\permutation.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\piecewise_linear_function.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\proto_tools.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\random_engine.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\range_minimum_query.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\range_query_function.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\rational_approximation.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\return_macros.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\rev.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\running_stat.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\saturated_arithmetic.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\sigint.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\sort.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\sorted_interval_list.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\stats.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\string_array.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\testing_utils.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\time_limit.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\tuple_set.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\vector_map.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\vector_or_function.h" />
+    <ClInclude Include="dependencies\or-tools\include\ortools\util\zvector.h" />
+    <ClInclude Include="dependencies\or-tools\include\zconf.h" />
+    <ClInclude Include="dependencies\or-tools\include\zlib.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dependencies\or-tools\include\absl\base\internal\spinlock_akaros.inc" />
+    <None Include="dependencies\or-tools\include\absl\base\internal\spinlock_linux.inc" />
+    <None Include="dependencies\or-tools\include\absl\base\internal\spinlock_posix.inc" />
+    <None Include="dependencies\or-tools\include\absl\base\internal\spinlock_win32.inc" />
+    <None Include="dependencies\or-tools\include\absl\debugging\internal\stacktrace_aarch64-inl.inc" />
+    <None Include="dependencies\or-tools\include\absl\debugging\internal\stacktrace_arm-inl.inc" />
+    <None Include="dependencies\or-tools\include\absl\debugging\internal\stacktrace_generic-inl.inc" />
+    <None Include="dependencies\or-tools\include\absl\debugging\internal\stacktrace_powerpc-inl.inc" />
+    <None Include="dependencies\or-tools\include\absl\debugging\internal\stacktrace_unimplemented-inl.inc" />
+    <None Include="dependencies\or-tools\include\absl\debugging\internal\stacktrace_win32-inl.inc" />
+    <None Include="dependencies\or-tools\include\absl\debugging\internal\stacktrace_x86-inl.inc" />
+    <None Include="dependencies\or-tools\include\absl\debugging\symbolize_darwin.inc" />
+    <None Include="dependencies\or-tools\include\absl\debugging\symbolize_elf.inc" />
+    <None Include="dependencies\or-tools\include\absl\debugging\symbolize_unimplemented.inc" />
+    <None Include="dependencies\or-tools\include\absl\debugging\symbolize_win32.inc" />
+    <None Include="dependencies\or-tools\include\absl\numeric\int128_have_intrinsic.inc" />
+    <None Include="dependencies\or-tools\include\absl\numeric\int128_no_intrinsic.inc" />
+    <None Include="dependencies\or-tools\include\absl\time\internal\get_current_time_chrono.inc" />
+    <None Include="dependencies\or-tools\include\absl\time\internal\get_current_time_posix.inc" />
+    <None Include="dependencies\or-tools\include\absl\time\internal\zoneinfo.inc" />
+    <None Include="dependencies\or-tools\include\google\protobuf\generated_message_tctable_impl.inc" />
+    <None Include="dependencies\or-tools\include\google\protobuf\port_def.inc" />
+    <None Include="dependencies\or-tools\include\google\protobuf\port_undef.inc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="dependencies\or-tools\lib\ortools.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="dependencies\or-tools\LICENSE-2.0.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
