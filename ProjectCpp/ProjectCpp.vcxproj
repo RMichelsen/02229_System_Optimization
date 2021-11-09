@@ -116,7 +116,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>dependencies\or-tools\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>dependencies\pugixml\;dependencies\or-tools\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -136,7 +136,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>dependencies\or-tools\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>dependencies\pugixml\;dependencies\or-tools\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -1066,6 +1066,8 @@
     <ClInclude Include="dependencies\or-tools\include\ortools\util\zvector.h" />
     <ClInclude Include="dependencies\or-tools\include\zconf.h" />
     <ClInclude Include="dependencies\or-tools\include\zlib.h" />
+    <ClInclude Include="dependencies\pugixml\pugiconfig.hpp" />
+    <ClInclude Include="dependencies\pugixml\pugixml.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\or-tools\include\absl\base\internal\spinlock_akaros.inc" />
@@ -1091,11 +1093,13 @@
     <None Include="dependencies\or-tools\include\google\protobuf\generated_message_tctable_impl.inc" />
     <None Include="dependencies\or-tools\include\google\protobuf\port_def.inc" />
     <None Include="dependencies\or-tools\include\google\protobuf\port_undef.inc" />
+    <None Include="dependencies\pugixml\LICENSE.md" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="dependencies\or-tools\lib\ortools.lib" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dependencies\pugixml\pugixml.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>

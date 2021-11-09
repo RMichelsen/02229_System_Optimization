@@ -2,6 +2,7 @@
 
 #include <ortools/base/logging.h>
 #include <ortools/constraint_solver/constraint_solver.h>
+#include <pugixml.hpp>
 
 #include <cstdlib>
 
@@ -228,6 +229,8 @@ int main(int argc, char **argv) {
 	absl::SetFlag(&FLAGS_logtostderr, 1);
 
 	// Cycle count = least common multiple of flow periods
+	pugi::xml_document doc;
+	pugi::xml_parse_result result = doc.load_file("Tests/TC1/Input/Apps.xml");
 
 	srand(time(NULL));
 

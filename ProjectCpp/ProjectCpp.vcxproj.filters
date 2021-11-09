@@ -2766,6 +2766,12 @@
     <ClInclude Include="dependencies\or-tools\include\zlib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="dependencies\pugixml\pugixml.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\pugixml\pugiconfig.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\or-tools\include\absl\base\internal\spinlock_akaros.inc">
@@ -2837,12 +2843,16 @@
     <None Include="dependencies\or-tools\include\google\protobuf\port_undef.inc">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="dependencies\pugixml\LICENSE.md" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="dependencies\or-tools\lib\ortools.lib" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies\pugixml\pugixml.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
