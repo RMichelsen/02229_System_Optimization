@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-namespace projectSA.Models
 
+namespace Project.Models
 {
     class Flow
     {
