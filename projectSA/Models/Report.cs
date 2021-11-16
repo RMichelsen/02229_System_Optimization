@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace Project.Models {
+namespace projectSA.Models {
     class Report {
         
         private Solution solution {get; set;}
         private List<Message> messages {get; set;}
         public Report() {
-            solution = new Solution();
+            //solution = new Solution();
             messages = new List<Message>();
         }
     }
