@@ -3,8 +3,6 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-**.zip
-
 # User-specific files
 *.rsuser
 *.suo
@@ -209,7 +207,7 @@ PublishScripts/
 *.nuget.targets
 
 # Nuget personal access tokens and Credentials
-nuget.config
+# nuget.config
 
 # Microsoft Azure Build Output
 csx/
@@ -388,11 +386,3 @@ FodyWeavers.xsd
 # JetBrains Rider
 .idea/
 *.sln.iml
-
-Exercise/MulticoreProcessorScheduler/Program.exe
-
-Exercise/MulticoreProcessorScheduler/csv_files/*
-
-ProjectCpp/build/*
-ProjectCpp/dependencies/or-tools/lib/ortools.lib
-ProjectCpp/build.bat
