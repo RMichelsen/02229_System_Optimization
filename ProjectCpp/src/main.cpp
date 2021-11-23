@@ -4,39 +4,12 @@
 #include <ortools/constraint_solver/constraint_solver.h>
 #include <pugixml.hpp>
 
+#include "xmlReader.h"
 #include <cstdlib>
 
 using namespace operations_research;
 
 constexpr int CYCLE_LENGTH = 12;
-
-struct Edge {
-	Edge() = default;
-	Edge(int id, int bandwidth, int propagation_delay) : 
-		id(id), 
-		bandwidth(bandwidth), 
-		propagation_delay(propagation_delay) {}
-	int id;
-	int bandwidth;
-	int propagation_delay;
-};
-
-struct Flow {
-	Flow() = default;
-	Flow(std::string name, std::string source, std::string destination, int size, int period, int deadline) :
-		name(name), 
-		source(source), 
-		destination(destination), 
-		size(size), 
-		period(period), 
-		deadline(deadline) {}
-	std::string name;
-	std::string source;
-	std::string destination;
-	int size;
-	int period;
-	int deadline;
-};
 
 std::unordered_map<std::string, Edge> edges = {
 	{ "ES1SW1", Edge(1, 1000, 10) },
@@ -137,7 +110,7 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 			int induced_delay = std::ceil((float)edges[edge].propagation_delay / (float)CYCLE_LENGTH);
 			IntVar *e2e_delay = solver.MakeIntConst(q_choices[flow_name + "_" + edge] + induced_delay);
 			e2e_delays.push_back(e2e_delay);
-			all_variables.push_back(e2e_delay);
+			//all_variables.push_back(e2e_delay);
 
 			for(int c = 0; c < cycle_count; c++) {
 				// Modulo (c - a) * |c| % flow.period
@@ -232,6 +205,11 @@ int main(int argc, char **argv) {
 	pugi::xml_parse_result result = doc.load_file("Tests/TC1/Input/Apps.xml");
 
 	srand(time(NULL));
+
+	std::unordered_map<std::string, Edge> edges2;
+	std::unordered_map<std::string, Flow> flows2;
+
+	loadTestCase(example, edges2, flows2);
 
 	for(int i = 0; i < 1000; ++i) {
 		std::unordered_map<std::string, int> path_choices;
