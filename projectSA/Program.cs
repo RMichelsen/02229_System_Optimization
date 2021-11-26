@@ -7,80 +7,45 @@ using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.ShortestPath;
+using QuikGraph.Algorithms.RankedShortestPath;
 
 namespace projectSA
 {
     class Program
     {
         static void Main(string[] args)
-        {
+        {   
             Architecture architecture;
             Application application;
-            XMLReader.Read(TestCase.TC1, out architecture, out application);
-            Console.WriteLine("Hello World!");
-            //var uGraph = new UndirectedGraph<string,Edge<string>>(false);
+            XMLReader.Read(TestCase.TC4, out architecture, out application);
             var uGraph = new BidirectionalGraph<string, Edge<string>>(true);
-            uGraph.AddVertex("ES1");
-            uGraph.AddVertex("ES2");
-            uGraph.AddVertex("SW1");
-            uGraph.AddVertex("SW2");
-
-            uGraph.AddEdge(new Edge<string>("ES1","SW1"));
-            uGraph.AddEdge(new Edge<string>("ES1","SW2"));
-            uGraph.AddEdge(new Edge<string>("SW1","ES2"));
-            uGraph.AddEdge(new Edge<string>("SW2","ES2"));
-
-
+            foreach(var vertex in architecture.Vertices) {
+                uGraph.AddVertex(vertex.Name);
+            }
+            foreach(var edge in architecture.Edges) {
+                uGraph.AddEdge(new Edge<string>(edge.Source, edge.Destination));
+            }
             //var dfs = new UndirectedDepthFirstSearchAlgorithm<string, Edge<string>>(uGraph);
-            Func<Edge<string>, double> weightFunction = e => 0.0;
-            var fw = new FloydWarshallAllShortestPathAlgorithm<string, Edge<string>>(uGraph, weightFunction);
-            // Compute
-            fw.Compute();
-
+            Func<Edge<string>, double> weightFunction = e => 1.0;
+            var hp = new HoffmanPavleyRankedShortestPathAlgorithm<string, Edge<string>>(uGraph, weightFunction);
+            
             // Get interesting paths
-            IEnumerable<Edge<string>> path;
-            foreach(string source in uGraph.Vertices)
-            {
+             foreach(string source in uGraph.Vertices)
+            {   
+                if (!source.Contains("ES")) continue;
                 foreach(string target in uGraph.Vertices)
                 {
-                    if (fw.TryGetPath(source, target, out path))
-                    {
+                    if (!target.Contains("ES")) continue;
+                    hp.Compute(source, target);
+                    foreach(IEnumerable<Edge<string>> edges in hp.ComputedShortestPaths)
+                    {   
                         Console.WriteLine("Path:");
-                        foreach(Edge<string> edge in path)
-                        {
+                        foreach(Edge<string> edge in edges) {
                             Console.WriteLine(edge);
                         }
                     }
                 }
             }
-
-        //     //var dfs = new DepthFirstSearchAlgorithm<string, Edge<string>>(uGraph.ToBidirectionalGraph());
-
-        //     var observer = new UndirectedVertexPredecessorRecorderObserver<string, Edge<string>>();
-
-        //     using (observer.Attach(dfs)) // attach, detach to dfs events
-        //         dfs.Compute("ES1");
-
-        //     string vertexToFind = "ES2";
-        //     IEnumerable<Edge<string>> edges;
-        //     if (observer.TryGetPath(vertexToFind, out edges))
-        //     {
-        //         Console.WriteLine("To get to vertex '" + vertexToFind + "', take the following edges:");
-        //         foreach (Edge<string> edge in edges)
-        //             Console.WriteLine(edge.Source + " -> " + edge.Target);
-                
-        //     }
-        //     //Console.WriteLine(graph.EdgeCount.ToString());
-
-        //     if (observer.TryGetPath(vertexToFind, out edges))
-        //     {
-        //         Console.WriteLine("To get to vertex '" + vertexToFind + "', take the following edges:");
-        //         foreach (Edge<string> edge in edges)
-        //             Console.WriteLine(edge.Source + " -> " + edge.Target);
-                
-        //     }
-        // }
-    //}
         }
     } 
 }
