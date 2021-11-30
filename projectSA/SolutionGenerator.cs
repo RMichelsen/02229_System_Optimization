@@ -15,12 +15,14 @@ namespace projectSA
     public static Dictionary<string, List<List<Edge>>> flow_paths;
  	
     public static Report GetInititalSolution(){
+
         Edge ES1SW1 = new Edge("1","ES1","SW1", 1000, 10);
         Edge SW1ES2 = new Edge("2","SW1","ES2", 1000, 10);
         Edge ES1SW2 = new Edge("3","ES1","SW2", 1000, 10);
         Edge SW2ES2 = new Edge("4","SW2","ES2", 1000, 10);
         Edge SW2SW1 = new Edge("5","SW2","SW1", 1000, 10);
-/*
+
+        /*
         Dictionary<string,Edge> edges = new Dictionary<string, Edge> {
                 { "ES1SW1", new Edge("1","ES1","SW1", 1000, 10) },
                 { "SW1ES2", new Edge("2","SW1","ES2", 1000, 10) },
@@ -66,6 +68,7 @@ namespace projectSA
                 msg.Links.Add(link);
             }
             report.messages.Add(msg);
+            msg.flow = flows[flowName];
             
         }
         return report;
@@ -102,6 +105,7 @@ namespace projectSA
         foreach(var edge in newPath){
             msg.Links.Add(new Link(edge,rnd.Next(1,4)));
         }
+        
         
         return neighbour;
     }

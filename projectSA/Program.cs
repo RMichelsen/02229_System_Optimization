@@ -20,14 +20,9 @@ namespace projectSA
                  
             var report = SolutionGenerator.GetInititalSolution();
             report.toXML("original");
-            var copy = SolutionGenerator.GenerateNeighbour(report);
-
-            for(int i = 0; i < 20; i++){
-                copy = SolutionGenerator.GenerateNeighbour(copy);
-            }
-
-    
-            copy.toXML("copy");
+            
+            var SA = SimulatedAnnealing.GenerateOptimizedSolution();    
+            SA.toXML("copy");
             
             XMLReader.Read(TestCase.TC1, out architecture, out application);
             Console.WriteLine("Hello World!");
