@@ -16,6 +16,18 @@ namespace projectSA
         {
             Architecture architecture;
             Application application;
+                 
+            var report = SolutionGenerator.GetInititalSolution();
+            report.toXML("original");
+            var copy = SolutionGenerator.GenerateNeighbour(report);
+
+            for(int i = 0; i < 20; i++){
+                copy = SolutionGenerator.GenerateNeighbour(copy);
+            }
+
+            
+            copy.toXML("copy");
+            /*
             XMLReader.Read(TestCase.TC1, out architecture, out application);
             Console.WriteLine("Hello World!");
             //var uGraph = new UndirectedGraph<string,Edge<string>>(false);
@@ -53,6 +65,7 @@ namespace projectSA
                     }
                 }
             }
+            */
 
         //     //var dfs = new DepthFirstSearchAlgorithm<string, Edge<string>>(uGraph.ToBidirectionalGraph());
 

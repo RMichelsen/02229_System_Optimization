@@ -4,46 +4,117 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
+
 namespace projectSA.Models {
     class Report {
         
-        private Solution solution {get; set;}
-        private List<Message> messages {get; set;}
+        //private Solution solution {get; set;}
+        public List<Message> messages {get; set;}
         public Report() {
             //solution = new Solution();
             messages = new List<Message>();
         }
+
+        public Report Copy()
+		{	
+			Report copy = new Report();
+            
+            foreach(var m in this.messages){
+                var copyMsg = new Message(m.Name);
+                foreach(var link in m.Links){
+                    copyMsg.Links.Add(new Link(link.Edge,link.Qnumber));
+                }
+                copy.messages.Add(copyMsg);
+            }
+			return copy;
+		}
+
+    public string toXML(string nameprefix)
+	{
+		string path = @"solutions/";
+		string fullFilePath = path +nameprefix+ "solution.xml";    
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.OmitXmlDeclaration = true;        
+		//settings.ConformanceLevel = ConformanceLevel.Fragment;
+		settings.CloseOutput = false;
+			
+		using (XmlWriter xmlWriter = XmlWriter.Create(fullFilePath, settings))
+		{
+			xmlWriter.WriteStartElement("Report");
+			xmlWriter.WriteRaw("\n");
+
+			messages.ForEach(m => {
+                writeMessage(m,xmlWriter);
+            });
+			xmlWriter.WriteEndElement();  
+    		xmlWriter.Flush();
+		}
+		return fullFilePath;
+	}
+
+    public void writeMessage(Message m, XmlWriter xmlWriter){
+                xmlWriter.WriteRaw("\t");
+                xmlWriter.WriteStartElement("Message");
+                xmlWriter.WriteAttributeString("Name",m.Name);
+                xmlWriter.WriteAttributeString("maxE2E",m.MaxE2E.ToString());
+                xmlWriter.WriteRaw("\n");
+                m.Links.ForEach(l =>{
+                    writeLink(l,xmlWriter);
+                });
+                xmlWriter.WriteRaw("\t");
+                xmlWriter.WriteEndElement();
+                xmlWriter.WriteRaw("\n");
+    }
+    public void writeLink(Link l, XmlWriter xmlWriter){
+        xmlWriter.WriteRaw("\t\t");
+        xmlWriter.WriteStartElement("Link");
+        xmlWriter.WriteAttributeString("Source",l.Source);
+        xmlWriter.WriteAttributeString("Destination",l.Destination);
+        xmlWriter.WriteAttributeString("Qnumber",l.Qnumber.ToString());
+        xmlWriter.WriteRaw("\n");
+        xmlWriter.WriteRaw("\t\t");
+        xmlWriter.WriteEndElement();
+        xmlWriter.WriteRaw("\n");
+    }
+
+
     }
 
     class Solution {
-        private float Runtime {get;}
-        private int MeanE2E {get;}
-        private int MeanBW {get;} 
-        public Solution(float runtime, int meanE2E, int meanBW) {
-            Runtime = runtime;
-            MeanE2E = meanE2E;
-            MeanBW = meanBW;
+        public float Runtime {get; set;}
+        public int MeanE2E {get; set;}
+        public int MeanBW {get; set;}
+        public Solution(){//(float runtime, int meanE2E, int meanBW) {
+            //Runtime = runtime;
+            //MeanE2E = meanE2E;
+            //MeanBW = meanBW;
         }
     }
 
     class Message {
-        private String Name {get;}
-        private int MaxE2E {get; set;}
-        private List<Link> Links {get; set;}
-        public Message(String name) {
-            Name = Name;
+        public string Name {get;}
+        public int MaxE2E {get; set;}
+        public List<Link> Links {get; set;}
+        public Message(string name) {
+            Name = name;
             Links = new List<Link>();
+            MaxE2E = 0;
         }
     }
 
     class Link {
-        private Vertex Source {get;}
-        private Vertex Destination {get;}
-        private int Qnumber {get;}
-        public Link(Vertex source, Vertex destination, int qnumber) {
-            Source = source;
-            Destination = destination;
+        public string Source {get;}
+        public string Destination {get;}
+        public Edge Edge {get;}
+        public int Qnumber {get; set;}
+        public Link(Edge edge, int qnumber) {
+            Edge = edge;
+            //Source = source;
+            //Destination = destination;
             Qnumber = qnumber;
+            Source = edge.Source;
+            Destination = edge.Destination;
         }
     }
+
 }
