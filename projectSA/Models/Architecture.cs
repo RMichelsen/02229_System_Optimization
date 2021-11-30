@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using QuikGraph;
 
 namespace projectSA.Models
 {
     class Vertex
     {
-        public string Name;
+        public string Name {get;}
 
         public Vertex(string name)
         {
@@ -42,4 +43,6 @@ namespace projectSA.Models
             Edges = edges;
         }
     }
+
+    
 }
