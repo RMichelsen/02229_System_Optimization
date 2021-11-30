@@ -2775,6 +2775,9 @@
     <ClInclude Include="src\xmlReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\bfs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\or-tools\include\absl\base\internal\spinlock_akaros.inc">
@@ -2859,6 +2862,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\xmlReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bfs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

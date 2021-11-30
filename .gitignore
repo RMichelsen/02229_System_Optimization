@@ -400,3 +400,5 @@ ProjectCpp/build.bat
 .vscode/tasks.json
 projectSA/solutions/copysolution.xml
 projectSA/solutions/originalsolution.xml
+/projectSA/.vscode/tasks.json
+/projectSA/.vscode/launch.json
