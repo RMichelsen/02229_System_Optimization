@@ -2,9 +2,11 @@
 
 #include <ortools/base/logging.h>
 #include <ortools/constraint_solver/constraint_solver.h>
+//#include "ortools/sat/cp_model.h"
 #include <pugixml.hpp>
 
 #include "xmlReader.h"
+#include "bfs.h"
 #include <cstdlib>
 
 using namespace operations_research;
@@ -41,7 +43,7 @@ std::unordered_map<std::string, std::vector<std::vector<std::string>>> flow_path
 	{ "F8", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } }
 };
 
-bool TrySolve(std::unordered_map<std::string, int> path_choices) {
+bool TrySolve() {
 	int least_common_multiple = 1;
 	for(const auto &[_, flow] : flows) {
 		least_common_multiple = std::lcm(least_common_multiple, flow.period);
@@ -52,17 +54,17 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 	Solver solver("ConstraintSolver");
 	std::vector<IntVar *> all_variables;
 
-	 // std::unordered_map<std::string, IntVar *> path_choices;
-	 // for(const auto &[flow, paths] : flow_paths) {
-	 //  path_choices[flow] = solver.MakeIntVar(0, paths.size() - 1, "path_choice" + flow);
-	 // }
+	std::unordered_map<std::string, IntVar *> path_choices;
+	for(const auto &[flow, paths] : flow_paths) {
+		path_choices[flow] = solver.MakeIntVar(0, paths.size() - 1, "path_choice" + flow);
+	}
 
-	// std::unordered_map<std::string, IntVar *> q_choices;
-	// for(const auto &[flow_name, _] : flows) {
-	// 	for(const auto &edge : flow_paths[flow_name][path_choices[flow_name]]) {
-	// 		q_choices[flow_name + "_" + edge] = solver.MakeIntVar(1, 3, "q_" + edge + "_p_" + std::to_string(path_choices[flow_name]) + "_" + flow_name);
-	// 	}
-	// }
+	/*std::unordered_map<std::string, IntVar *> q_choices;
+	for(const auto &[flow_name, _] : flows) {
+		for(const auto &edge : flow_paths[flow_name][path_choices[flow_name]]) {
+			q_choices[flow_name + "_" + edge] = solver.MakeIntVar(1, 3, "q_" + edge + "_p_" + std::to_string(path_choices[flow_name]) + "_" + flow_name);
+		}
+	}*/
 
 	std::unordered_map<std::string, int> q_choices;
 	q_choices["F1_ES1SW1"] = 2;
@@ -92,8 +94,8 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 	std::unordered_map<std::string, std::vector<std::vector<IntVar *>>> arrival_patterns;
 	for(const auto &[flow_name, flow] : flows) {
 		std::vector<IntVar *> e2e_delays;
+		
 		for(const auto &edge : flow_paths[flow_name][path_choices[flow_name]]) {
-
 			std::cout << "Processing edge: " << edge << " for flow: " << flow_name << std::endl;
 
 			// If the edge does not yet have an array of arrival patterns per cycle,
@@ -218,8 +220,8 @@ int main(int argc, char **argv) {
 
 	loadTestCase(example, edges2, flows2);
 
-	//std::unordered_map<std::string, std::vector<std::vector<std::string>>> flow_paths;
-	//getFlowPath()
+	std::unordered_map<std::string, std::vector<std::vector<std::string>>> flow_paths;
+	flow_paths = getFlowPaths((edgeMap)edges2, (flowMap)flows2);
 
 	for(int i = 0; i < 1000; ++i) {
 		std::unordered_map<std::string, int> path_choices;
@@ -241,7 +243,7 @@ int main(int argc, char **argv) {
 		path_choices["F7"] = 2;
 		path_choices["F8"] = 2;
 
-		if(TrySolve(path_choices)) {
+		if(TrySolve()) {
 			for(const auto &[_, i] : path_choices) {
 				std::cout << i << ' ';
 			}
