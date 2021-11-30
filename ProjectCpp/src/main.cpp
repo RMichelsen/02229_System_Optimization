@@ -52,10 +52,10 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 	Solver solver("ConstraintSolver");
 	std::vector<IntVar *> all_variables;
 
-	// std::unordered_map<std::string, IntVar *> path_choices;
-	// for(const auto &[flow, paths] : flow_paths) {
-	// 	path_choices[flow] = solver.MakeIntVar(0, paths.size() - 1, "path_choice" + flow);
-	// }
+	 // std::unordered_map<std::string, IntVar *> path_choices;
+	 // for(const auto &[flow, paths] : flow_paths) {
+	 //  path_choices[flow] = solver.MakeIntVar(0, paths.size() - 1, "path_choice" + flow);
+	 // }
 
 	// std::unordered_map<std::string, IntVar *> q_choices;
 	// for(const auto &[flow_name, _] : flows) {
@@ -105,9 +105,9 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 			IntExpr *alpha = solver.MakeSum(e2e_delays);
 			all_variables.push_back(alpha->VarWithName(flow_name + "A" + edge));
 
-			// IntExpr *e2e_delay = solver.MakeSum(solver.MakeProd(q_choices[flow_name + "_" + edge], CYCLE_LENGTH), edges[edge].propagation_delay);
-			// e2e_delays.push_back(e2e_delay->Var());
 			int induced_delay = std::ceil((float)edges[edge].propagation_delay / (float)CYCLE_LENGTH);
+			//IntExpr *e2e_delay = solver.MakeSum(q_choices[flow_name + "_" + edge], induced_delay);
+			// e2e_delays.push_back(e2e_delay->Var());
 			IntVar *e2e_delay = solver.MakeIntConst(q_choices[flow_name + "_" + edge] + induced_delay);
 			e2e_delays.push_back(e2e_delay);
 			//all_variables.push_back(e2e_delay);
@@ -115,16 +115,22 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 			for(int c = 0; c < cycle_count; c++) {
 				// Modulo (c - a) * |c| % flow.period
 				IntExpr *A_input = solver.MakeDifference(c, alpha);
+				IntExpr *aMil = solver.MakeProd(A_input, CYCLE_LENGTH);
+				
+				// Modulo without modulo: a % b = a - (b * int(a / b))
+				// a = c * |c|
+				// b = flow.period
 				IntExpr *Ap = solver.MakeDifference(
-					solver.MakeProd(A_input, CYCLE_LENGTH), 
-					solver.MakeProd(solver.MakeDiv(A_input, flow.period), flow.period)
+					aMil,
+					solver.MakeProd(solver.MakeDiv(aMil, flow.period), flow.period)
 				);
 
 				// TODO: We can check less than 12, since a cycle is 12 microseconds... But the modulo still seems off..
 				//IntVar *b = solver.MakeIsLessCstVar(A_input, CYCLE_LENGTH);
+				IntVar *bpos = solver.MakeIsGreaterOrEqualCstVar(A_input, 0);	//make sure input is positive
 				IntVar *b = solver.MakeIsEqualCstVar(Ap, 0);
 				IntVar *A = solver.MakeIntVar(0, std::numeric_limits<int32_t>::max(), flow_name + "_" + edge + "_" + std::to_string(c));
-				solver.AddConstraint(solver.MakeIfThenElseCt(b, solver.MakeIntConst(flow.size), solver.MakeIntConst(0), A));
+				solver.AddConstraint(solver.MakeIfThenElseCt(solver.MakeProd(b, bpos)->Var(), solver.MakeIntConst(flow.size), solver.MakeIntConst(0), A));
 
 				// A now contains the arrival pattern for cycle "c"
 				arrival_patterns[edge][c].push_back(A);
@@ -135,7 +141,8 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 		all_variables.push_back(e2e_delay_sum->VarWithName("e2e_delay_sum_" + flow_name));
 
 		// TODO: Add division
-		solver.AddConstraint(solver.MakeSumLessOrEqual(e2e_delays, flow.deadline));
+		int acceptableDelay = std::ceil((float)flow.deadline / (float)CYCLE_LENGTH);
+		solver.AddConstraint(solver.MakeSumLessOrEqual(e2e_delays, acceptableDelay));
 	}
 
 	std::unordered_map<std::string, std::vector<IntVar *>> cycle_bandwidths;
@@ -146,7 +153,7 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 			// Bandwidth in Mbps, to capacity in bytes per cycle
 			int edge_capacity = int((edges[edge].bandwidth * 131072) * 0.000012);
 
-			// solver.AddConstraint(solver.MakeLessOrEqual(sum, edge_capacity));
+			solver.AddConstraint(solver.MakeLessOrEqual(sum, edge_capacity));
 			cycle_bandwidths[edge].push_back(
 				sum->VarWithName("cycle_bandwidths" + edge + "_" + std::to_string(c))
 			);
@@ -163,7 +170,7 @@ bool TrySolve(std::unordered_map<std::string, int> path_choices) {
 	}
 	for(const auto &var : edge_bandwidths) all_variables.push_back(var);
 
-	IntVar *mean_bandwidth_usage = solver.MakeDiv(solver.MakeSum(edge_bandwidths), edges.size())->VarWithName("mean_bandwidth_usage");
+	IntVar *mean_bandwidth_usage = solver.MakeDiv(solver.MakeSum(edge_bandwidths), edges.size()*2)->VarWithName("mean_bandwidth_usage");
 	all_variables.push_back(mean_bandwidth_usage);
 	OptimizeVar *omega = solver.MakeMaximize(mean_bandwidth_usage, 10);
 
@@ -210,6 +217,9 @@ int main(int argc, char **argv) {
 	std::unordered_map<std::string, Flow> flows2;
 
 	loadTestCase(example, edges2, flows2);
+
+	//std::unordered_map<std::string, std::vector<std::vector<std::string>>> flow_paths;
+	//getFlowPath()
 
 	for(int i = 0; i < 1000; ++i) {
 		std::unordered_map<std::string, int> path_choices;
