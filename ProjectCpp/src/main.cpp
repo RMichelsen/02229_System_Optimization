@@ -241,7 +241,6 @@ bool TrySolve() {
 
 		IntExpr *e2e_delay_sum = solver.MakeSum(e2e_delays);
 
-		// TODO: Add division
 		int acceptableDelay = std::ceil((float)flow.deadline / (float)CYCLE_LENGTH);
 		solver.AddConstraint(solver.MakeSumLessOrEqual(e2e_delays, acceptableDelay));
 
@@ -356,35 +355,6 @@ int main(int argc, char **argv) {
 	flow_paths = getFlowPaths((edgeMap)edges2, (flowMap)flows2);
 
 	TrySolve();
-
-	//for(int i = 0; i < 1000; ++i) {
-	//	std::unordered_map<std::string, int> path_choices;
-	//	// path_choices["F1"] = rand() % 4;
-	//	// path_choices["F2"] = rand() % 4;
-	//	// path_choices["F3"] = rand() % 4;
-	//	// path_choices["F4"] = rand() % 4;
-	//	// path_choices["F5"] = rand() % 4;
-	//	// path_choices["F6"] = rand() % 4;
-	//	// path_choices["F7"] = rand() % 4;
-	//	// path_choices["F8"] = rand() % 4;
-
-	//	path_choices["F1"] = 0;
-	//	path_choices["F2"] = 2;
-	//	path_choices["F3"] = 2;
-	//	path_choices["F4"] = 0;
-	//	path_choices["F5"] = 2;
-	//	path_choices["F6"] = 2;
-	//	path_choices["F7"] = 2;
-	//	path_choices["F8"] = 2;
-
-	//	if(TrySolve()) {
-	//		for(const auto &[_, i] : path_choices) {
-	//			std::cout << i << ' ';
-	//		}
-
-	//		break;
-	//	}
-	//}
 
 	return 0;
 }
