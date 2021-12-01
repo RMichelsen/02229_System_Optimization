@@ -33,7 +33,7 @@ std::unordered_map<std::string, Flow> flows = {
 };
 
 std::unordered_map<std::string, std::vector<std::vector<std::string>>> flow_paths = {
- 	{ "F1", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
+	{ "F1", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
 	{ "F2", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
 	{ "F3", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
 	{ "F4", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
@@ -71,9 +71,17 @@ bool TrySolve() {
 
 	std::unordered_map<std::string, IntVar *> path_choices;
 	for(const auto &[flow, paths] : flow_paths) {
-		path_choices[flow] = solver.MakeIntVar(0, paths.size() - 1, "path_choice" + flow);
-		all_variables.push_back(path_choices[flow]);
+		//path_choices[flow] = solver.MakeIntVar(0, paths.size() - 1, "path_choice" + flow);
 	}
+
+	path_choices["F1"] = solver.MakeIntConst(0);
+	path_choices["F2"] = solver.MakeIntConst(2);
+	path_choices["F3"] = solver.MakeIntConst(2);
+	path_choices["F4"] = solver.MakeIntConst(0);
+	path_choices["F5"] = solver.MakeIntConst(2);
+	path_choices["F6"] = solver.MakeIntConst(2);
+	path_choices["F7"] = solver.MakeIntConst(2);
+	path_choices["F8"] = solver.MakeIntConst(2);
 
 	size_t longest_path = 0;
 	for(const auto &[flow, paths] : flow_paths) {
@@ -175,7 +183,8 @@ bool TrySolve() {
 			// ceil(edge_propagation_delay / CYCLE_LENGTH) manually
 			// -- there is no ceil function in the constraint solver library
 			IntExpr *induced_delay = solver.MakeSum(solver.MakeDiv(solver.MakeSum(edge_propagation_delay, -1), CYCLE_LENGTH), 1);
-			IntVar *q = solver.MakeIntVar(1, 3, flow_name + "_e_" + std::to_string(e) + "_q");
+			//IntVar *q = solver.MakeIntVar(1, 3, flow_name + "_e_" + std::to_string(e) + "_q");
+			IntVar *q = solver.MakeIntConst(ChooseMyQ(f,e), flow_name + "_e_" + std::to_string(e) + "_q");
 
 			// Calculate an e2e delay candidate, multiply by 0 if the edge is invalid (not part of solution)
 			IntExpr *e2e_delay_candidate = solver.MakeSum(q, induced_delay);
@@ -203,8 +212,9 @@ bool TrySolve() {
 				IntExpr *composite_boolean = solver.MakeProd(A_input_positive_check, A_boolean);
 
 				// Calculate the arrival pattern, multiply by 0 if the edge is invalid (not part of solution)
-				IntVar *A = solver.MakeIntVar(0, std::numeric_limits<int32_t>::max());
-				solver.AddConstraint(solver.MakeIfThenElseCt(composite_boolean->Var(), solver.MakeIntConst(flow.size), solver.MakeIntConst(0), A));
+				IntVar *A_candidate = solver.MakeIntVar(0, std::numeric_limits<int32_t>::max());
+				solver.AddConstraint(solver.MakeIfThenElseCt(composite_boolean->Var(), solver.MakeIntConst(flow.size), solver.MakeIntConst(0), A_candidate));
+				IntVar *A = solver.MakeProd(A_candidate, is_valid_edge)->Var();
 
 				// Set the corresponding element of the arrival_patterns array, indexing with the edge ID integer variable.
 				IntExpr *E = solver.MakeElement(arrival_patterns[c][f], edge_id);
@@ -234,7 +244,7 @@ bool TrySolve() {
 				// TODO: Make efficient
 				auto item = flows.begin();
 				std::advance(item, f);
-                IntVar *path_choice = path_choices[item->second.name];
+				IntVar *path_choice = path_choices[item->second.name];
 				IntExpr *arrival_pattern = arrival_patterns[c][f][e];
 				IntExpr *is_valid_edge = solver.MakeElement(edge_validity[f][e], path_choice);
 				// Add partial arrival pattern sum, multiply by 0 if the edge is invalid (not part of solution)
@@ -243,15 +253,15 @@ bool TrySolve() {
 
 			cycle_edge_bandwidths[e][c] = solver.MakeSum(tmp_sum)->Var();
 
-            // TODO: Make efficient
-            int edge_capacity = 0;
-            for(const auto &[_, edge] : edges) {
-                if(edge.id == e) {
+			// TODO: Make efficient
+			int edge_capacity = 0;
+			for(const auto &[_, edge] : edges) {
+				if(edge.id == e) {
 					edge_capacity = int(edge.bandwidth * 131072.0f * 0.000012f);
-                }
-            }
+				}
+			}
 
-            solver.AddConstraint(solver.MakeLessOrEqual(cycle_edge_bandwidths[e][c], edge_capacity));
+			solver.AddConstraint(solver.MakeLessOrEqual(cycle_edge_bandwidths[e][c], edge_capacity));
 		}
 	}
 
@@ -261,18 +271,18 @@ bool TrySolve() {
 	for(int e = 1; e <= edges.size(); e++) {
 		IntExpr *max_consumed_bandwidth = solver.MakeMax(cycle_edge_bandwidths[e]);
 
-        // TODO: Make efficient
-        int edge_capacity = 0;
-        for(const auto &[_, edge] : edges) {
-            if(edge.id == e) {
-                edge_capacity = int(edge.bandwidth * 131072.0f * 0.000012f);
-            }
-        }
+		// TODO: Make efficient
+		int edge_capacity = 0;
+		for(const auto &[_, edge] : edges) {
+			if(edge.id == e) {
+				edge_capacity = int(edge.bandwidth * 131072.0f * 0.000012f);
+			}
+		}
 
 		edge_consumed_bandwidths[e] = solver.MakeDiv(solver.MakeProd(max_consumed_bandwidth, 1000), edge_capacity)->VarWithName("Edge_" + std::to_string(e) + "_Bandwidth");
 	}
 
-	IntVar *mean_bandwidth_usage = solver.MakeDiv(solver.MakeSum(edge_consumed_bandwidths), edges.size()*2)->VarWithName("mean_bandwidth_usage");
+	IntVar *mean_bandwidth_usage = solver.MakeDiv(solver.MakeSum(edge_consumed_bandwidths), edges.size() * 2)->VarWithName("mean_bandwidth_usage");
 	all_variables.push_back(mean_bandwidth_usage);
 
 	OptimizeVar *omega = solver.MakeMinimize(mean_bandwidth_usage, 5);
@@ -281,9 +291,9 @@ bool TrySolve() {
 	LOG(INFO) << "Number of constraints: " << solver.constraints();
 
 	DecisionBuilder *const db = solver.MakePhase(
-	  all_variables, 
-	  Solver::CHOOSE_FIRST_UNBOUND, 
-	  Solver::ASSIGN_MIN_VALUE
+		all_variables,
+		Solver::CHOOSE_FIRST_UNBOUND,
+		Solver::ASSIGN_MIN_VALUE
 	);
 	SearchMonitor *const search_log = solver.MakeSearchLog(100, omega);
 	//SolutionCollector *const collector = solver.MakeFirstSolutionCollector();
@@ -293,7 +303,7 @@ bool TrySolve() {
 	//LOG(INFO) << collector->solution(0)->DebugString();
 
 	solver.NewSearch(db, search_log);
-	while (solver.NextSolution()) {
+	while(solver.NextSolution()) {
 		for(const auto &variable : all_variables) {
 			LOG(INFO) << variable << " = " << variable->Value();
 
