@@ -59,6 +59,22 @@ int ChooseMyQ(int f, int e) {
 	}
 }
 
+int ChooseMyQ2(int f, int e) {
+	switch(f) {
+	case 0: return (e == 0) ? 1 : 1;
+	case 1: return (e == 0) ? 1 : 1;
+	case 2: return (e == 0) ? 2 : 1;
+	case 3: return (e == 0) ? 2 : 1;
+	case 4: return (e == 0) ? 1 : 1;
+	case 5: return (e == 0) ? 1 : 1;
+	case 6: return (e == 0) ? 1 : 1;
+	case 7: return (e == 0) ? 1 : 1;
+	default:
+		assert(false);
+		return 0;
+	}
+}
+
 bool TrySolve() {
 	int least_common_multiple = 1;
 	for(const auto &[_, flow] : flows) {
@@ -71,17 +87,18 @@ bool TrySolve() {
 
 	std::unordered_map<std::string, IntVar *> path_choices;
 	for(const auto &[flow, paths] : flow_paths) {
-		//path_choices[flow] = solver.MakeIntVar(0, paths.size() - 1, "path_choice" + flow);
+		path_choices[flow] = solver.MakeIntVar(0, paths.size() - 1, "path_choice" + flow);
+		all_variables.push_back(path_choices[flow]);
 	}
 
-	path_choices["F1"] = solver.MakeIntConst(0);
-	path_choices["F2"] = solver.MakeIntConst(2);
-	path_choices["F3"] = solver.MakeIntConst(2);
-	path_choices["F4"] = solver.MakeIntConst(0);
-	path_choices["F5"] = solver.MakeIntConst(2);
-	path_choices["F6"] = solver.MakeIntConst(2);
-	path_choices["F7"] = solver.MakeIntConst(2);
-	path_choices["F8"] = solver.MakeIntConst(2);
+	//path_choices["F1"] = solver.MakeIntConst(0);
+	//path_choices["F2"] = solver.MakeIntConst(0);
+	//path_choices["F3"] = solver.MakeIntConst(0);
+	//path_choices["F4"] = solver.MakeIntConst(0);
+	//path_choices["F5"] = solver.MakeIntConst(2);
+	//path_choices["F6"] = solver.MakeIntConst(0);
+	//path_choices["F7"] = solver.MakeIntConst(0);
+	//path_choices["F8"] = solver.MakeIntConst(2);
 
 	size_t longest_path = 0;
 	for(const auto &[flow, paths] : flow_paths) {
@@ -178,13 +195,13 @@ bool TrySolve() {
 			IntExpr *edge_propagation_delay = solver.MakeElement(edge_propagation_delays[f][e], path_choice);
 
 			IntExpr *alpha = solver.MakeSum(e2e_delays);
-			//all_variables.push_back(alpha->VarWithName(flow_name + "_e_" + std::to_string(e) + "_alpha"));
 
 			// ceil(edge_propagation_delay / CYCLE_LENGTH) manually
 			// -- there is no ceil function in the constraint solver library
 			IntExpr *induced_delay = solver.MakeSum(solver.MakeDiv(solver.MakeSum(edge_propagation_delay, -1), CYCLE_LENGTH), 1);
-			//IntVar *q = solver.MakeIntVar(1, 3, flow_name + "_e_" + std::to_string(e) + "_q");
-			IntVar *q = solver.MakeIntConst(ChooseMyQ(f,e), flow_name + "_e_" + std::to_string(e) + "_q");
+			IntVar *q = solver.MakeIntVar(1, 3, flow_name + "_e_" + std::to_string(e) + "_q");
+			//IntVar *q = solver.MakeIntConst(ChooseMyQ2(f,e), flow_name + "_e_" + std::to_string(e) + "_q");
+			all_variables.push_back(q);
 
 			// Calculate an e2e delay candidate, multiply by 0 if the edge is invalid (not part of solution)
 			IntExpr *e2e_delay_candidate = solver.MakeSum(q, induced_delay);
@@ -296,20 +313,21 @@ bool TrySolve() {
 		Solver::ASSIGN_MIN_VALUE
 	);
 	SearchMonitor *const search_log = solver.MakeSearchLog(100, omega);
-	//SolutionCollector *const collector = solver.MakeFirstSolutionCollector();
-	//collector->Add(all_variables);
-	//solver.Solve(db, omega, search_log, collector);
+	SolutionCollector *const collector = solver.MakeLastSolutionCollector();
 
-	//LOG(INFO) << collector->solution(0)->DebugString();
+	collector->Add(all_variables);
+	solver.Solve(db, omega, search_log, collector);
 
-	solver.NewSearch(db, search_log);
-	while(solver.NextSolution()) {
-		for(const auto &variable : all_variables) {
-			LOG(INFO) << variable << " = " << variable->Value();
+	LOG(INFO) << collector->solution(0)->DebugString();
 
-		}
-	}
-	solver.EndSearch();
+	//solver.NewSearch(db, search_log);
+	//while(solver.NextSolution()) {
+	//	for(const auto &variable : all_variables) {
+	//		LOG(INFO) << variable << " = " << variable->Value();
+
+	//	}
+	//}
+	//solver.EndSearch();
 	LOG(INFO) << "Number of solutions: " << solver.solutions();
 	LOG(INFO) << "";
 	LOG(INFO) << "Advanced usage:";
