@@ -18,15 +18,12 @@ namespace projectSA
         {   
             Architecture architecture;
             Application application;
-              
-            //var report = SolutionGenerator.GetInititalSolution();
-            //report.toXML("original");
-            //var copy = SolutionGenerator.GenerateNeighbour(report);
-//
-            //for(int i = 0; i < 20; i++){
-            //    copy = SolutionGenerator.GenerateNeighbour(copy);
-            //}
-            //copy.toXML("copy");
+                 
+            var report = SolutionGenerator.GetInititalSolution();
+            report.toXML("original");
+            
+            var SA = SimulatedAnnealing.GenerateOptimizedSolution();    
+            SA.toXML("copy");
             
             XMLReader.Read(TestCase.TC1, out architecture, out application);
             var uGraph = new BidirectionalGraph<string, TaggedEdge<string, Edge>>(false);

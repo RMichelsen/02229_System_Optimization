@@ -10,8 +10,9 @@ namespace projectSA.Models {
         
         //private Solution solution {get; set;}
         public List<Message> messages {get; set;}
+        public Solution solution {get;set;}
         public Report() {
-            //solution = new Solution();
+            solution = new Solution(0.0f,8888,8888);
             messages = new List<Message>();
         }
 
@@ -24,24 +25,28 @@ namespace projectSA.Models {
                 foreach(var link in m.Links){
                     copyMsg.Links.Add(new Link(link.Edge,link.Qnumber));
                 }
+                copyMsg.flow = m.flow;
+                copyMsg.MaxE2E = m.MaxE2E;
                 copy.messages.Add(copyMsg);
+
             }
 			return copy;
 		}
+
 
     public string toXML(string nameprefix)
 	{
 		string path = @"solutions/";
 		string fullFilePath = path +nameprefix+ "solution.xml";    
 		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.OmitXmlDeclaration = true;        
-		//settings.ConformanceLevel = ConformanceLevel.Fragment;
-		settings.CloseOutput = false;
+		settings.OmitXmlDeclaration = true;
+    	settings.CloseOutput = false;
 			
 		using (XmlWriter xmlWriter = XmlWriter.Create(fullFilePath, settings))
 		{
 			xmlWriter.WriteStartElement("Report");
 			xmlWriter.WriteRaw("\n");
+            writeSolution(xmlWriter);
 
 			messages.ForEach(m => {
                 writeMessage(m,xmlWriter);
@@ -77,6 +82,17 @@ namespace projectSA.Models {
         xmlWriter.WriteRaw("\n");
     }
 
+    public void writeSolution(XmlWriter xmlWriter){
+        xmlWriter.WriteRaw("\t");
+        xmlWriter.WriteStartElement("Solution");
+        xmlWriter.WriteAttributeString("Runtime",solution.Runtime.ToString());
+        xmlWriter.WriteAttributeString("MeanE2E",solution.MeanE2E.ToString());
+        xmlWriter.WriteAttributeString("MeanBW",solution.MeanBW.ToString());
+        xmlWriter.WriteRaw("\n");
+        xmlWriter.WriteEndElement();
+        xmlWriter.WriteRaw("\n");
+    }
+
 
     }
 
@@ -84,17 +100,27 @@ namespace projectSA.Models {
         public float Runtime {get; set;}
         public int MeanE2E {get; set;}
         public int MeanBW {get; set;}
-        public Solution(){//(float runtime, int meanE2E, int meanBW) {
-            //Runtime = runtime;
-            //MeanE2E = meanE2E;
-            //MeanBW = meanBW;
+        public Solution(float runtime, int meanE2E, int meanBW){
+            Runtime = runtime;
+            MeanE2E = meanE2E;
+            MeanBW = meanBW;
         }
     }
 
     class Message {
+        
+        private Flow _flow;
+		public Flow flow { 
+			get { return _flow; } 
+			set {
+				_flow = value;
+				//MaxE2E = _flow.Deadline;
+			} 
+		}
         public string Name {get;}
         public int MaxE2E {get; set;}
         public List<Link> Links {get; set;}
+        
         public Message(string name) {
             Name = name;
             Links = new List<Link>();
@@ -106,6 +132,7 @@ namespace projectSA.Models {
         public string Source {get;}
         public string Destination {get;}
         public Edge Edge {get;}
+        public int PropagationDelay {get;}
         public int Qnumber {get; set;}
         public Link(Edge edge, int qnumber) {
             Edge = edge;
@@ -114,6 +141,7 @@ namespace projectSA.Models {
             Qnumber = qnumber;
             Source = edge.Source;
             Destination = edge.Destination;
+            PropagationDelay = edge.PropagationDelay;
         }
     }
 

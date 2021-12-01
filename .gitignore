@@ -398,3 +398,7 @@ ProjectCpp/dependencies/or-tools/lib/ortools.lib
 ProjectCpp/build.bat
 .vscode/launch.json
 .vscode/tasks.json
+projectSA/solutions/copysolution.xml
+projectSA/solutions/originalsolution.xml
+/projectSA/.vscode/tasks.json
+/projectSA/.vscode/launch.json

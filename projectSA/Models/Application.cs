@@ -4,12 +4,12 @@ namespace projectSA.Models
 {
     class Flow
     {
-        public string Name;
-        public string Source;
-        public string Destination;
-        public int Size;
-        public int Period;
-        public int Deadline;
+        public string Name{get;}
+        public string Source{get;}
+        public string Destination{get;}
+        public int Size{get;}
+        public int Period{get;}
+        public int Deadline{get;}
 
         public Flow(string name, string source, string destination,
             int size, int period, int deadline)
