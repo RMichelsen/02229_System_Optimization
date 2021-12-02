@@ -18,7 +18,9 @@ namespace projectSA
     class SolutionGenerator{
     static Random rnd = new Random();
     public static Dictionary<string,Flow> flows;
-    public static Dictionary<string, List<List<Edge>>> flow_paths;
+    public static Dictionary<string, List<List<Edge>>> flow_paths {get; set;}
+
+
  	
     // public SolutionGenerator(Application application, Architecture architecture){
     //     var uGraph = new BidirectionalGraph<string, TaggedEdge<string, Edge>>(false);
@@ -91,19 +93,17 @@ namespace projectSA
             { "F8", new Flow("F8", "ES1", "ES2", 400, 8000, 4000) },
         };
 
-        flow_paths = new Dictionary<string, List<List<Edge>>>{
-            { "F1", new List<List<Edge>>{ new List<Edge>{ ES1SW1, SW1ES2 }, new List<Edge>{ ES1SW1, SW2SW1, SW2ES2 }, new List<Edge>{ ES1SW2, SW2ES2 }, new List<Edge>{ ES1SW2, SW2SW1, SW1ES2 } } },
-            { "F2", new List<List<Edge>>{ new List<Edge>{ ES1SW1, SW1ES2 }, new List<Edge>{ ES1SW1, SW2SW1, SW2ES2 }, new List<Edge>{ ES1SW2, SW2ES2 }, new List<Edge>{ ES1SW2, SW2SW1, SW1ES2 } } },
-            { "F3", new List<List<Edge>>{ new List<Edge>{ ES1SW1, SW1ES2 }, new List<Edge>{ ES1SW1, SW2SW1, SW2ES2 }, new List<Edge>{ ES1SW2, SW2ES2 }, new List<Edge>{ ES1SW2, SW2SW1, SW1ES2 } } },
-            { "F4", new List<List<Edge>>{ new List<Edge>{ ES1SW1, SW1ES2 }, new List<Edge>{ ES1SW1, SW2SW1, SW2ES2 }, new List<Edge>{ ES1SW2, SW2ES2 }, new List<Edge>{ ES1SW2, SW2SW1, SW1ES2 } } },
-            { "F5", new List<List<Edge>>{ new List<Edge>{ SW1ES2, ES1SW1 }, new List<Edge>{ SW1ES2, SW2SW1, ES1SW2 }, new List<Edge>{ SW2ES2, ES1SW2 }, new List<Edge>{ SW2ES2, SW2SW1, ES1SW1 } } },
-            { "F6", new List<List<Edge>>{ new List<Edge>{ SW1ES2, ES1SW1 }, new List<Edge>{ SW1ES2, SW2SW1, ES1SW2 }, new List<Edge>{ SW2ES2, ES1SW2 }, new List<Edge>{ SW2ES2, SW2SW1, ES1SW1 } } },
-            { "F7", new List<List<Edge>>{ new List<Edge>{ SW1ES2, ES1SW1 }, new List<Edge>{ SW1ES2, SW2SW1, ES1SW2 }, new List<Edge>{ SW2ES2, ES1SW2 }, new List<Edge>{ SW2ES2, SW2SW1, ES1SW1 } } },
-            { "F8", new List<List<Edge>>{ new List<Edge>{ ES1SW1, SW1ES2 }, new List<Edge>{ ES1SW1, SW2SW1, SW2ES2 }, new List<Edge>{ ES1SW2, SW2ES2 }, new List<Edge>{ ES1SW2, SW2SW1, SW1ES2 } } },
-        };
+        //flow_paths = new Dictionary<string, List<List<Edge>>>{
+        //    { "F1", new List<List<Edge>>{ new List<Edge>{ ES1SW1, SW1ES2 }, new List<Edge>{ ES1SW1, SW2SW1, SW2ES2 }, new List<Edge>{ ES1SW2, SW2ES2 }, new List<Edge>{ ES1SW2, SW2SW1, SW1ES2 } } },
+        //    { "F2", new List<List<Edge>>{ new List<Edge>{ ES1SW1, SW1ES2 }, new List<Edge>{ ES1SW1, SW2SW1, SW2ES2 }, new List<Edge>{ ES1SW2, SW2ES2 }, new List<Edge>{ ES1SW2, SW2SW1, SW1ES2 } } },
+        //    { "F3", new List<List<Edge>>{ new List<Edge>{ ES1SW1, SW1ES2 }, new List<Edge>{ ES1SW1, SW2SW1, SW2ES2 }, new List<Edge>{ ES1SW2, SW2ES2 }, new List<Edge>{ ES1SW2, SW2SW1, SW1ES2 } } },
+        //    { "F4", new List<List<Edge>>{ new List<Edge>{ ES1SW1, SW1ES2 }, new List<Edge>{ ES1SW1, SW2SW1, SW2ES2 }, new List<Edge>{ ES1SW2, SW2ES2 }, new List<Edge>{ ES1SW2, SW2SW1, SW1ES2 } } },
+        //    { "F5", new List<List<Edge>>{ new List<Edge>{ SW1ES2, ES1SW1 }, new List<Edge>{ SW1ES2, SW2SW1, ES1SW2 }, new List<Edge>{ SW2ES2, ES1SW2 }, new List<Edge>{ SW2ES2, SW2SW1, ES1SW1 } } },
+        //    { "F6", new List<List<Edge>>{ new List<Edge>{ SW1ES2, ES1SW1 }, new List<Edge>{ SW1ES2, SW2SW1, ES1SW2 }, new List<Edge>{ SW2ES2, ES1SW2 }, new List<Edge>{ SW2ES2, SW2SW1, ES1SW1 } } },
+        //    { "F7", new List<List<Edge>>{ new List<Edge>{ SW1ES2, ES1SW1 }, new List<Edge>{ SW1ES2, SW2SW1, ES1SW2 }, new List<Edge>{ SW2ES2, ES1SW2 }, new List<Edge>{ SW2ES2, SW2SW1, ES1SW1 } } },
+        //    { "F8", new List<List<Edge>>{ new List<Edge>{ ES1SW1, SW1ES2 }, new List<Edge>{ ES1SW1, SW2SW1, SW2ES2 }, new List<Edge>{ ES1SW2, SW2ES2 }, new List<Edge>{ ES1SW2, SW2SW1, SW1ES2 } } },
+        //};
              
-
-
         var report = new Report();
 
         foreach(var flowName in flow_paths.Keys){
