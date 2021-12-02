@@ -2,9 +2,11 @@
 #include "xmlReader.h"
 #include <iostream>
 
-std::string getTestCasePath(TestCase tc) 
+using namespace std;
+
+string getTestCasePath(TestCase tc) 
 {
-	std::string res = "Tests\\";
+	string res = "Tests\\";
 	switch (tc)
 	{
 		case example:
@@ -42,7 +44,7 @@ std::string getTestCasePath(TestCase tc)
 	return res + "\\Input\\";
 }
 
-//std::unordered_map<std::string, Edge> edges = {
+//unordered_map<string, Edge> edges = {
 //	{ "ES1SW1", Edge(1, 1000, 10) },
 //	{ "SW1ES2", Edge(2, 1000, 10) },
 //	{ "ES1SW2", Edge(3, 1000, 10) },
@@ -50,7 +52,7 @@ std::string getTestCasePath(TestCase tc)
 //	{ "SW2SW1", Edge(5, 1000, 10) }
 //};
 //
-//std::unordered_map<std::string, Flow> flows = {
+//unordered_map<string, Flow> flows = {
 //	{ "F1", Flow("F1", "ES1", "ES2", 300, 1000, 1000) },
 //	{ "F2", Flow("F2", "ES1", "ES2", 400, 2000, 2000) },
 //	{ "F3", Flow("F3", "ES1", "ES2", 500, 4000, 4000) },
@@ -61,11 +63,11 @@ std::string getTestCasePath(TestCase tc)
 //	{ "F8", Flow("F8", "ES1", "ES2", 400, 8000, 4000) }
 //};
 
-bool loadTestCase(TestCase tc, std::unordered_map<std::string, Edge> &edges, std::unordered_map<std::string, Flow> &flows) {
-	std::string path = getTestCasePath(tc);
+bool loadTestCase(TestCase tc, unordered_map<string, Edge> &edges, unordered_map<string, Flow> &flows) {
+	string path = getTestCasePath(tc);
 
-	std::string configPath = path + "Config.xml";
-	std::string appsPath = path + "Apps.xml";
+	string configPath = path + "Config.xml";
+	string appsPath = path + "Apps.xml";
 
 	pugi::xml_document configDoc;
 	pugi::xml_parse_result configXml = configDoc.load_file(configPath.c_str());
@@ -77,31 +79,33 @@ bool loadTestCase(TestCase tc, std::unordered_map<std::string, Edge> &edges, std
 	if (!appsXml)
 		return -1;
 
-	std::string linkName;
+	string linkName;
 	int id;
 	int bw;
 	int delay;
 	for (pugi::xml_node edge : configDoc.child("Architecture").children("Edge"))
 	{
-		linkName = (std::string) edge.attribute("Source").value() + edge.attribute("Destination").value();
+		string source = (string) edge.attribute("Source").value();
+		string destination = (string) edge.attribute("Destination").value();
+		linkName = source + destination;
 		id = (int) edge.attribute("Id").as_int();
 		bw = (int) edge.attribute("BW").as_int();
 		delay = (int) edge.attribute("PropDelay").as_int();
-		edges[linkName] = *(new Edge(id, bw, delay));
+		edges[linkName] = *(new Edge(id, bw, delay, source, destination));
 	}
 
-	std::string flowName;
-	std::string src;
-	std::string dest;
+	string flowName;
+	string src;
+	string dest;
 	int size;
 	int period;
 	int deadLine;
 	for (pugi::xml_node flow : appsDoc.child("Application").children("Message"))
 	{
 	
-		flowName = (std::string)flow.attribute("Name").value();
-		src = (std::string)flow.attribute("Source").value();
-		dest = (std::string)flow.attribute("Destination").value();
+		flowName = (string)flow.attribute("Name").value();
+		src = (string)flow.attribute("Source").value();
+		dest = (string)flow.attribute("Destination").value();
 
 		int size = (int)flow.attribute("Size").as_int();
 		int period = (int)flow.attribute("Period").as_int();
