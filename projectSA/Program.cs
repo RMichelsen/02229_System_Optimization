@@ -18,12 +18,11 @@ namespace projectSA
         {   
             Architecture architecture;
             Application application;
-            
-
-            var example = SolutionGenerator.GenerateExampleReport();
-            example.toXML("example");
-            var solvedExample = SimulatedAnnealing.solveExample(example,5);
-            solvedExample.toXML("solvedExample");
+                    
+            // var example = SolutionGenerator.GenerateExampleReport();
+            // example.toXML("example");
+            // var solvedExample = SimulatedAnnealing.solveExample(example,5);
+            // solvedExample.toXML("solvedExample");
 
             var SA = SimulatedAnnealing.GenerateOptimizedSolution(5);    //TODO: don't hardcode edgecount
             SA.toXML("copy");

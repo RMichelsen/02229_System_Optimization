@@ -66,6 +66,7 @@ namespace projectSA //TODO: MaxE2E
 
             stopwatch.Stop();
             bestReport.solution.Runtime = stopwatch.ElapsedMilliseconds/1000.0f;
+            Console.WriteLine((stopwatch.ElapsedMilliseconds/1000.0f).ToString());
 
             return bestReport;
         }
