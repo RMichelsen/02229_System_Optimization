@@ -2,20 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using projectSA.Models;
+using System.Diagnostics;
 
 namespace projectSA //TODO: MaxE2E
 {
     class SimulatedAnnealing
     {
         public static int CYCLE_LENGTH = 12;
-        public static Report GenerateOptimizedSolution()
+        public static int magicInt  = 131072;
+        public static double magicDouble = 0.000012;
+        public static Report GenerateOptimizedSolution(int edgeCount)
 		{
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             int least_common_multiple = 1;          
 			// start values
-        	double T = 100000.0;
-        	double r = 0.003;
+            int EdgeCount = edgeCount;
+            int E2Esum = 0;
+        	double T = 10000000.0;
+        	double r = 0.002;
             bool LCC, DC;
-            int meanBW = 9999, meanE2E = 9999;
             Dictionary<Edge, int[]> Bs;
     		var C = SolutionGenerator.GetInititalSolution();
             //var (E,_) = ResponseTimeAnalysis(C);
@@ -29,52 +35,48 @@ namespace projectSA //TODO: MaxE2E
 
         	Random rnd = new Random();
 
-
             int count = 1;
             while (T > 0.1) {
                 var neighbourC = SolutionGenerator.GenerateNeighbour(C);
-                //var (nE, passRTA) = ResponseTimeAnalysis(neighbourC);
 
-
-                // TODO: add probability of accepting a worse solution
-
-
-                //double dE = nE - E;
-                //double probability = AccProbability(dE, T);
                 DC = DeadlineConstraint(neighbourC);
                 LCC = LinkCapacityConstraint(neighbourC,cycle_count,out Bs);
+                neighbourC.solution.MeanBW = ObjectiveFunction(Bs, EdgeCount);
+                double dE = neighbourC.solution.MeanBW - C.solution.MeanBW;
+                double probability = AccProbability(dE, T);
+
                 if (DC & LCC) {
-                    Console.WriteLine("In");
-                     //if (dE > 0 || probability > rnd.NextDouble()) {
-                        //double totalLaxity = TotalLaxity(neighbourC);
-                        //if (bestSolution.Item1 < totalLaxity) {
-                           // bestSolution = (totalLaxity, neighbourC);
-                        //}
-                    meanBW = ObjectiveFunction(Bs);
-                    if(meanBW < bestReport.solution.MeanBW){
+                    if(dE > 0 || probability > rnd.NextDouble()){
                         C = neighbourC;
-                        var solution = new Solution(0.2f, meanE2E, meanBW);
-                        C.solution = solution;
-                        bestReport = C;
+                        if(C.solution.MeanBW < bestReport.solution.MeanBW){
+                            bestReport = C;
+                        }
                     }   
-                    
                 }
-                    //E = nE;
                 T = T * (1 - r);
                 count++;
             }
 
             Console.WriteLine("Number of loops: " + count);
 
-            return bestReport;
-        }   
-        
+            foreach(var msg in bestReport.messages){
+                E2Esum += msg.MaxE2E;
+            }
+            bestReport.solution.MeanE2E = E2Esum/bestReport.messages.Count();
 
-        public static double AccProbability(double dE, double T) {
+            stopwatch.Stop();
+            bestReport.solution.Runtime = stopwatch.ElapsedMilliseconds/1000.0f;
+            Console.WriteLine((stopwatch.ElapsedMilliseconds/1000.0f).ToString());
+
+            return bestReport;
+        }
+
+
+    
+        protected static double AccProbability(double dE, double T) {
             var frag = dE / T;
             return Math.Exp(frag);
         }
-
         public static bool DeadlineConstraint(Report report){
 
             foreach(var message in report.messages){
@@ -105,7 +107,7 @@ namespace projectSA //TODO: MaxE2E
             foreach(var message in report.messages){
                 var alpha = 0;
                 foreach(var link in message.Links){
-                    
+
                     for(int i = 0; i < cycle_count; i++){
                         B[link.Edge][i] += ArrivalFunction(i,alpha,message.flow.Period,message.flow.Size);
                     }
@@ -117,26 +119,26 @@ namespace projectSA //TODO: MaxE2E
             }
 
             foreach(var edge in B.Keys){
+                var bandwidthBytesPerCycle = (int)((edge.Bandwidth * magicInt)*magicDouble);
                 foreach(var b in B[edge]){
-                    if(b > edge.Bandwidth){
+                    if(b > bandwidthBytesPerCycle){
                         return false;
                     }
                 }
             }
-            
             return true;
-
         }
 
-        public static int ObjectiveFunction(Dictionary<Edge, int[]> B){
+        public static int ObjectiveFunction(Dictionary<Edge, int[]> B,int edgeCount){
             int bSum = 0;
             int omega;
 
             foreach(var edge in B.Keys){
-                bSum += ((B[edge].Max())/(edge.Bandwidth))*1000;
+                var bandwidthBytesPerCycle = (int) Math.Ceiling((edge.Bandwidth * magicInt)*magicDouble);
+                bSum += B[edge].Max()*1000/bandwidthBytesPerCycle;
             }
 
-            omega = bSum/B.Keys.Count();
+            omega = bSum/(edgeCount*2);
             return omega;
         }
 
@@ -170,6 +172,29 @@ namespace projectSA //TODO: MaxE2E
         static int lcm(int a, int b)
         {
             return (a / gcf(a, b)) * b;
+        }
+
+        public static Report solveExample(Report report, int edgeCount){
+            bool LCC, DC;
+            int least_common_multiple = 1;
+            Dictionary<Edge, int[]> Bs;
+
+            foreach(var message in report.messages) {
+                least_common_multiple = lcm(least_common_multiple, message.flow.Period);
+            }
+            int cycle_count = (int) Math.Ceiling((float)least_common_multiple / (float)CYCLE_LENGTH);
+
+            DC = DeadlineConstraint(report);
+            LCC = LinkCapacityConstraint(report,cycle_count,out Bs);
+            Console.WriteLine(DC.ToString());
+            Console.WriteLine(LCC.ToString());
+
+            var meanBW = ObjectiveFunction(Bs, edgeCount);
+
+            var solution = new Solution(0.0f, 999, meanBW);
+            report.solution = solution;
+
+            return report;
         }
 
     }

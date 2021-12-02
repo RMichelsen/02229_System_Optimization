@@ -15,11 +15,11 @@ namespace projectSA.Models
 
     class Edge
     {
-        public string Id;
-        public string Source;
-        public string Destination;
-        public int Bandwidth;
-        public int PropagationDelay;
+        public string Id{get;}
+        public string Source {get;}
+        public string Destination {get;}
+        public int Bandwidth {get;}
+        public int PropagationDelay {get;}
 
         public Edge(string id, string source, string destination,
             int bandwidth, int propagationDelay)
