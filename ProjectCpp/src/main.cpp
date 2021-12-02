@@ -6,7 +6,7 @@
 #include <pugixml.hpp>
 
 #include "xmlReader.h"
-#include "bfs.h"
+#include "graph.h"
 #include <cstdlib>
 
 using namespace operations_research;
@@ -22,11 +22,11 @@ std::unordered_map<std::string, Edge> edges = {
 };
 
 std::unordered_map<std::string, Flow> flows = {
-	{ "F1", Flow("F1", "ES1", "ES2", 300, 1000, 1000) },
+	{ "F1", Flow("F1", "ES1", "ES2", 300, 2000, 2000) },
 	{ "F2", Flow("F2", "ES1", "ES2", 400, 2000, 2000) },
 	{ "F3", Flow("F3", "ES1", "ES2", 500, 4000, 4000) },
 	{ "F4", Flow("F4", "ES1", "ES2", 300, 8000, 4000) },
-	{ "F5", Flow("F5", "ES2", "ES1", 400, 1000, 1000) },
+	{ "F5", Flow("F5", "ES2", "ES1", 400, 2000, 2000) },
 	{ "F6", Flow("F6", "ES2", "ES1", 500, 2000, 2000) },
 	{ "F7", Flow("F7", "ES2", "ES1", 300, 4000, 4000) },
 	{ "F8", Flow("F8", "ES1", "ES2", 400, 8000, 4000) }
@@ -76,6 +76,8 @@ int ChooseMyQ2(int f, int e) {
 }
 
 bool TrySolve() {
+//bool TrySolve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
+//bool TrySolve(edge_map_t edges2, flow_map_t flows2, flow_paths_t flow_paths2) {
 	int least_common_multiple = 1;
 	for(const auto &[_, flow] : flows) {
 		least_common_multiple = std::lcm(least_common_multiple, flow.period);
@@ -346,15 +348,16 @@ int main(int argc, char **argv) {
 
 	srand(time(NULL));
 
-	std::unordered_map<std::string, Edge> edges2;
-	std::unordered_map<std::string, Flow> flows2;
+	edge_map_t edges2;
+	flow_map_t flows2;
 
 	loadTestCase(example, edges2, flows2);
 
-	std::unordered_map<std::string, std::vector<std::vector<std::string>>> flow_paths;
-	flow_paths = getFlowPaths((edgeMap)edges2, (flowMap)flows2);
+	flow_paths_t flow_paths;
+	flow_paths = getFlowPaths(edges2, flows2);
 
 	TrySolve();
+	//TrySolve(edges2, flows2, flow_paths);
 
 	return 0;
 }

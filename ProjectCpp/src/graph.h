@@ -37,6 +37,7 @@ public:
     paths_t BFS(string src, string dest);
 private:
     bool nodeVisitedInPath(string node, vector<string> path);
+    paths_t ConvertPathsNames(paths_t paths);
 };
 
 //Graph::Graph(int V)
@@ -95,7 +96,7 @@ paths_t Graph::BFS(string src, string dest)
         }
     }
 
-    return paths;
+    return ConvertPathsNames(paths);
 }
 
 bool Graph::nodeVisitedInPath(string node, vector<string> path)
@@ -111,22 +112,40 @@ bool Graph::nodeVisitedInPath(string node, vector<string> path)
     return false;
 }
 
-int test(edge_map_t edges, flow_map_t flows)
+paths_t Graph::ConvertPathsNames(paths_t paths)
 {
-    Graph g;
-    for (auto i = edges.begin(); i != edges.end(); i++)
-    {
-        Edge e = i->second;
-        g.addEdge(e.src, e.dest);
-    }
+    paths_t converted;
 
-    for (auto i = flows.begin(); i != flows.end(); i++) {
-        Flow f = i->second;
-        paths_t paths = g.BFS(f.source, f.destination);
-    }
+    for (const auto &path : paths) {
+        vector<string> pathWithNewNames;
 
-    return 1;
+        for (int i = 1; i < path.size(); i++)
+        {
+            pathWithNewNames.push_back(path[i - 1] + path[i]);
+        }
+        converted.push_back(pathWithNewNames);
+    }
+    
+    return converted;
 }
+
+
+//int test(edge_map_t edges, flow_map_t flows)
+//{
+//    Graph g;
+//    for (auto i = edges.begin(); i != edges.end(); i++)
+//    {
+//        Edge e = i->second;
+//        g.addEdge(e.src, e.dest);
+//    }
+//
+//    for (auto i = flows.begin(); i != flows.end(); i++) {
+//        Flow f = i->second;
+//        paths_t paths = g.BFS(f.source, f.destination);
+//    }
+//
+//    return 1;
+//}
 
 int tryFindPaths(string src, string dest, flow_paths_t flow_paths, paths_t& paths)
 {
