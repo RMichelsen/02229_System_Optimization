@@ -18,11 +18,14 @@ namespace projectSA
         {   
             Architecture architecture;
             Application application;
-                 
-            var report = SolutionGenerator.GetInititalSolution();
-            report.toXML("original");
             
-            var SA = SimulatedAnnealing.GenerateOptimizedSolution();    
+
+            var example = SolutionGenerator.GenerateExampleReport();
+            example.toXML("example");
+            var solvedExample = SimulatedAnnealing.solveExample(example,5);
+            solvedExample.toXML("solvedExample");
+
+            var SA = SimulatedAnnealing.GenerateOptimizedSolution(5);    //TODO: don't hardcode edgecount
             SA.toXML("copy");
             
             XMLReader.Read(TestCase.TC1, out architecture, out application);

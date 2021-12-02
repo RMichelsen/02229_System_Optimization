@@ -27,6 +27,7 @@ namespace projectSA.Models {
                 }
                 copyMsg.flow = m.flow;
                 copyMsg.MaxE2E = m.MaxE2E;
+                copyMsg.pathIndex = m.pathIndex;
                 copy.messages.Add(copyMsg);
 
             }
@@ -85,10 +86,11 @@ namespace projectSA.Models {
     public void writeSolution(XmlWriter xmlWriter){
         xmlWriter.WriteRaw("\t");
         xmlWriter.WriteStartElement("Solution");
-        xmlWriter.WriteAttributeString("Runtime",solution.Runtime.ToString());
+        xmlWriter.WriteAttributeString("Runtime",solution.Runtime.ToString()+" s");
         xmlWriter.WriteAttributeString("MeanE2E",solution.MeanE2E.ToString());
         xmlWriter.WriteAttributeString("MeanBW",solution.MeanBW.ToString());
         xmlWriter.WriteRaw("\n");
+        xmlWriter.WriteRaw("\t");
         xmlWriter.WriteEndElement();
         xmlWriter.WriteRaw("\n");
     }
@@ -118,6 +120,7 @@ namespace projectSA.Models {
 			} 
 		}
         public string Name {get;}
+        public int pathIndex {get;set;}
         public int MaxE2E {get; set;}
         public List<Link> Links {get; set;}
         
