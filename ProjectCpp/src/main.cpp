@@ -21,12 +21,13 @@ void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 	int cycle_count = std::ceil((float)least_common_multiple / (float)CYCLE_LENGTH);
 
 	Solver solver("ConstraintSolver");
-	std::vector<IntVar *> all_variables;
+	std::vector<IntVar *> path_variables;
+	std::vector<IntVar *> q_variables;
 
 	std::unordered_map<std::string, IntVar *> path_choices;
 	for(const auto &[flow, paths] : flow_paths) {
 		path_choices[flow] = solver.MakeIntVar(0, paths.size() - 1, "path_choice" + flow);
-		all_variables.push_back(path_choices[flow]);
+		path_variables.push_back(path_choices[flow]);
 	}
 
 	size_t longest_path = 0;
@@ -127,8 +128,7 @@ void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 			// -- there is no ceil function in the constraint solver library
 			IntExpr *induced_delay = solver.MakeSum(solver.MakeDiv(solver.MakeSum(edge_propagation_delay, -1), CYCLE_LENGTH), 1);
 			IntVar *q = solver.MakeIntVar(1, 3, flow_name + "_e_" + std::to_string(e) + "_q");
-			//IntVar *q = solver.MakeIntConst(ChooseMyQ(f,e), flow_name + "_e_" + std::to_string(e) + "_q");
-			all_variables.push_back(q);
+			q_variables.push_back(q);
 
 			IntExpr *alpha = solver.MakeSum(q, solver.MakeSum(e2e_delays));
 
@@ -228,23 +228,28 @@ void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 	}
 
 	IntVar *mean_bandwidth_usage = solver.MakeDiv(solver.MakeSum(edge_consumed_bandwidths), edges.size())->VarWithName("mean_bandwidth_usage");
-	all_variables.push_back(mean_bandwidth_usage);
 
 	OptimizeVar *omega = solver.MakeMinimize(mean_bandwidth_usage, 10);
 
-	LOG(INFO) << "Number of variables: " << all_variables.size();
 	LOG(INFO) << "Number of constraints: " << solver.constraints();
 
-	DecisionBuilder *const db = solver.MakePhase(
-		all_variables,
+	DecisionBuilder *const db1 = solver.MakePhase(
+		path_variables,
 		Solver::CHOOSE_FIRST_UNBOUND,
 		Solver::ASSIGN_MIN_VALUE
 	);
+	DecisionBuilder *const db2 = solver.MakePhase(
+		q_variables,
+		Solver::CHOOSE_FIRST_UNBOUND,
+		Solver::ASSIGN_RANDOM_VALUE
+	);
+	DecisionBuilder *const db = solver.Compose(db1, db2);
 	SearchMonitor *const search_log = solver.MakeSearchLog(100000, omega);
-	RegularLimit *const time_limit = solver.MakeTimeLimit(10000);
+	RegularLimit *const time_limit = solver.MakeTimeLimit(60000);
 	SolutionCollector *const collector = solver.MakeLastSolutionCollector();
 
-	collector->Add(all_variables);
+	collector->Add(path_variables);
+	collector->Add(q_variables);
 	solver.Solve(db, omega, search_log, time_limit, collector);
 
 	LOG(INFO) << collector->solution(0)->DebugString();
@@ -256,7 +261,7 @@ int main(int argc, char **argv) {
 
 	edge_map_t edges;
 	flow_map_t flows;
-	loadTestCase(TestCase::TC1, edges, flows);
+	loadTestCase(TestCase::TC2, edges, flows);
 
 	flow_paths_t flow_paths;
 	flow_paths = getFlowPaths(edges, flows);
