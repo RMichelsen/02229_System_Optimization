@@ -47,8 +47,8 @@ private:
 
 void Graph::addEdge(string s, string t)
 {
-    adj[s].push_back(t); // Add dest to src’s adjacency.
-    adj[t].push_back(s); // Add src to dest’s adjacency (bi directional).
+    adj[s].push_back(t); // Add dest to srcï¿½s adjacency.
+    // adj[t].push_back(s); // Add src to destï¿½s adjacency (bi directional).
 }
 
 //we do not need visited, but rather visited_in_path()
