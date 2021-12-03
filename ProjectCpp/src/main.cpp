@@ -13,35 +13,35 @@ using namespace operations_research;
 
 constexpr int CYCLE_LENGTH = 12;
 
-std::unordered_map<std::string, Edge> edges = {
-	{ "ES1SW1", Edge(1, 1000, 10) },
-	{ "SW1ES2", Edge(2, 1000, 10) },
-	{ "ES1SW2", Edge(3, 1000, 10) },
-	{ "SW2ES2", Edge(4, 1000, 10) },
-	{ "SW2SW1", Edge(5, 1000, 10) }
-};
-
-std::unordered_map<std::string, Flow> flows = {
-	{ "F1", Flow("F1", "ES1", "ES2", 300, 2000, 2000) },
-	{ "F2", Flow("F2", "ES1", "ES2", 400, 2000, 2000) },
-	{ "F3", Flow("F3", "ES1", "ES2", 500, 4000, 4000) },
-	{ "F4", Flow("F4", "ES1", "ES2", 300, 8000, 4000) },
-	{ "F5", Flow("F5", "ES2", "ES1", 400, 2000, 2000) },
-	{ "F6", Flow("F6", "ES2", "ES1", 500, 2000, 2000) },
-	{ "F7", Flow("F7", "ES2", "ES1", 300, 4000, 4000) },
-	{ "F8", Flow("F8", "ES1", "ES2", 400, 8000, 4000) }
-};
-
-std::unordered_map<std::string, std::vector<std::vector<std::string>>> flow_paths = {
-	{ "F1", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
-	{ "F2", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
-	{ "F3", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
-	{ "F4", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
-	{ "F5", { { "SW1ES2", "ES1SW1" }, { "SW1ES2", "SW2SW1", "ES1SW2" }, { "SW2ES2", "ES1SW2" }, { "SW2ES2", "SW2SW1", "ES1SW1" } } },
-	{ "F6", { { "SW1ES2", "ES1SW1" }, { "SW1ES2", "SW2SW1", "ES1SW2" }, { "SW2ES2", "ES1SW2" }, { "SW2ES2", "SW2SW1", "ES1SW1" } } },
-	{ "F7", { { "SW1ES2", "ES1SW1" }, { "SW1ES2", "SW2SW1", "ES1SW2" }, { "SW2ES2", "ES1SW2" }, { "SW2ES2", "SW2SW1", "ES1SW1" } } },
-	{ "F8", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } }
-};
+//std::unordered_map<std::string, Edge> edges = {
+//	{ "ES1SW1", Edge(1, 1000, 10) },
+//	{ "SW1ES2", Edge(2, 1000, 10) },
+//	{ "ES1SW2", Edge(3, 1000, 10) },
+//	{ "SW2ES2", Edge(4, 1000, 10) },
+//	{ "SW2SW1", Edge(5, 1000, 10) }
+//};
+//
+//std::unordered_map<std::string, Flow> flows = {
+//	{ "F1", Flow("F1", "ES1", "ES2", 300, 2000, 2000) },
+//	{ "F2", Flow("F2", "ES1", "ES2", 400, 2000, 2000) },
+//	{ "F3", Flow("F3", "ES1", "ES2", 500, 4000, 4000) },
+//	{ "F4", Flow("F4", "ES1", "ES2", 300, 8000, 4000) },
+//	{ "F5", Flow("F5", "ES2", "ES1", 400, 2000, 2000) },
+//	{ "F6", Flow("F6", "ES2", "ES1", 500, 2000, 2000) },
+//	{ "F7", Flow("F7", "ES2", "ES1", 300, 4000, 4000) },
+//	{ "F8", Flow("F8", "ES1", "ES2", 400, 8000, 4000) }
+//};
+//
+//std::unordered_map<std::string, std::vector<std::vector<std::string>>> flow_paths = {
+//	{ "F1", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
+//	{ "F2", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
+//	{ "F3", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
+//	{ "F4", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
+//	{ "F5", { { "SW1ES2", "ES1SW1" }, { "SW1ES2", "SW2SW1", "ES1SW2" }, { "SW2ES2", "ES1SW2" }, { "SW2ES2", "SW2SW1", "ES1SW1" } } },
+//	{ "F6", { { "SW1ES2", "ES1SW1" }, { "SW1ES2", "SW2SW1", "ES1SW2" }, { "SW2ES2", "ES1SW2" }, { "SW2ES2", "SW2SW1", "ES1SW1" } } },
+//	{ "F7", { { "SW1ES2", "ES1SW1" }, { "SW1ES2", "SW2SW1", "ES1SW2" }, { "SW2ES2", "ES1SW2" }, { "SW2ES2", "SW2SW1", "ES1SW1" } } },
+//	{ "F8", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } }
+//};
 
 int ChooseMyQ(int f, int e) {
 	switch(f) {
@@ -75,8 +75,8 @@ int ChooseMyQ2(int f, int e) {
 	}
 }
 
-bool TrySolve() {
-//bool TrySolve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
+//bool TrySolve() {
+bool TrySolve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 //bool TrySolve(edge_map_t edges2, flow_map_t flows2, flow_paths_t flow_paths2) {
 	int least_common_multiple = 1;
 	for(const auto &[_, flow] : flows) {
@@ -93,14 +93,14 @@ bool TrySolve() {
 		all_variables.push_back(path_choices[flow]);
 	}
 
-	//path_choices["F1"] = solver.MakeIntConst(0);
-	//path_choices["F2"] = solver.MakeIntConst(2);
-	//path_choices["F3"] = solver.MakeIntConst(2);
-	//path_choices["F4"] = solver.MakeIntConst(0);
-	//path_choices["F5"] = solver.MakeIntConst(2);
-	//path_choices["F6"] = solver.MakeIntConst(2);
-	//path_choices["F7"] = solver.MakeIntConst(2);
-	//path_choices["F8"] = solver.MakeIntConst(2);
+	path_choices["F1"] = solver.MakeIntConst(0);
+	path_choices["F2"] = solver.MakeIntConst(1);
+	path_choices["F3"] = solver.MakeIntConst(1);
+	path_choices["F4"] = solver.MakeIntConst(0);
+	path_choices["F5"] = solver.MakeIntConst(0);
+	path_choices["F6"] = solver.MakeIntConst(0);
+	path_choices["F7"] = solver.MakeIntConst(0);
+	path_choices["F8"] = solver.MakeIntConst(1);
 
 	size_t longest_path = 0;
 	for(const auto &[flow, paths] : flow_paths) {
@@ -199,8 +199,8 @@ bool TrySolve() {
 			// ceil(edge_propagation_delay / CYCLE_LENGTH) manually
 			// -- there is no ceil function in the constraint solver library
 			IntExpr *induced_delay = solver.MakeSum(solver.MakeDiv(solver.MakeSum(edge_propagation_delay, -1), CYCLE_LENGTH), 1);
-			IntVar *q = solver.MakeIntVar(1, 3, flow_name + "_e_" + std::to_string(e) + "_q");
-			//IntVar *q = solver.MakeIntConst(ChooseMyQ(f,e), flow_name + "_e_" + std::to_string(e) + "_q");
+			//IntVar *q = solver.MakeIntVar(1, 3, flow_name + "_e_" + std::to_string(e) + "_q");
+			IntVar *q = solver.MakeIntConst(ChooseMyQ(f,e), flow_name + "_e_" + std::to_string(e) + "_q");
 			all_variables.push_back(q);
 
 			IntExpr *alpha = solver.MakeSum(q, solver.MakeSum(e2e_delays));
@@ -300,7 +300,7 @@ bool TrySolve() {
 		edge_consumed_bandwidths[e] = solver.MakeDiv(solver.MakeProd(max_consumed_bandwidth, 1000), edge_capacity)->VarWithName("Edge_" + std::to_string(e) + "_Bandwidth");
 	}
 
-	IntVar *mean_bandwidth_usage = solver.MakeDiv(solver.MakeSum(edge_consumed_bandwidths), edges.size() * 2)->VarWithName("mean_bandwidth_usage");
+	IntVar *mean_bandwidth_usage = solver.MakeDiv(solver.MakeSum(edge_consumed_bandwidths), edges.size())->VarWithName("mean_bandwidth_usage");
 	all_variables.push_back(mean_bandwidth_usage);
 
 	OptimizeVar *omega = solver.MakeMinimize(mean_bandwidth_usage, 5);
@@ -348,16 +348,14 @@ int main(int argc, char **argv) {
 
 	srand(time(NULL));
 
-	edge_map_t edges2;
-	flow_map_t flows2;
-
-	loadTestCase(example, edges2, flows2);
+	edge_map_t edges;
+	flow_map_t flows;
+	loadTestCase(example, edges, flows);
 
 	flow_paths_t flow_paths;
-	flow_paths = getFlowPaths(edges2, flows2);
+	flow_paths = getFlowPaths(edges, flows);
 
-	TrySolve();
-	//TrySolve(edges2, flows2, flow_paths);
+	TrySolve(edges, flows, flow_paths);
 
 	return 0;
 }

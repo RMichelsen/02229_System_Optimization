@@ -91,9 +91,9 @@ bool loadTestCase(TestCase tc, unordered_map<string, Edge> &edges, unordered_map
 		id = (int) edge.attribute("Id").as_int();
 		bw = (int) edge.attribute("BW").as_int();
 		delay = (int) edge.attribute("PropDelay").as_int();
-		edges[linkName] = *(new Edge(id, bw, delay, source, destination));
+		edges[linkName] = Edge(id, bw, delay, source, destination);
 		linkName = destination + source;
-		edges[linkName] = *(new Edge(id, bw, delay, destination, source));
+		edges[linkName] = Edge(id + 5, bw, delay, destination, source);
 	}
 
 	string flowName;
