@@ -79,6 +79,11 @@ bool loadTestCase(TestCase tc, unordered_map<string, Edge> &edges, unordered_map
 	if (!appsXml)
 		return -1;
 
+	int numEdges = 0;
+	for(pugi::xml_node edge : configDoc.child("Architecture").children("Edge")) {
+		numEdges++;
+	}
+
 	string linkName;
 	int id;
 	int bw;
@@ -93,7 +98,7 @@ bool loadTestCase(TestCase tc, unordered_map<string, Edge> &edges, unordered_map
 		delay = (int) edge.attribute("PropDelay").as_int();
 		edges[linkName] = Edge(id, bw, delay, source, destination);
 		linkName = destination + source;
-		edges[linkName] = Edge(id + 5, bw, delay, destination, source);
+		edges[linkName] = Edge(id + numEdges, bw, delay, destination, source);
 	}
 
 	string flowName;
