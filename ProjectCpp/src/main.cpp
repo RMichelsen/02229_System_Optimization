@@ -93,14 +93,14 @@ bool TrySolve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 		all_variables.push_back(path_choices[flow]);
 	}
 
-	path_choices["F1"] = solver.MakeIntConst(0);
-	path_choices["F2"] = solver.MakeIntConst(1);
-	path_choices["F3"] = solver.MakeIntConst(1);
-	path_choices["F4"] = solver.MakeIntConst(0);
-	path_choices["F5"] = solver.MakeIntConst(0);
-	path_choices["F6"] = solver.MakeIntConst(0);
-	path_choices["F7"] = solver.MakeIntConst(0);
-	path_choices["F8"] = solver.MakeIntConst(1);
+	//path_choices["F1"] = solver.MakeIntConst(0);
+	//path_choices["F2"] = solver.MakeIntConst(1);
+	//path_choices["F3"] = solver.MakeIntConst(1);
+	//path_choices["F4"] = solver.MakeIntConst(0);
+	//path_choices["F5"] = solver.MakeIntConst(0);
+	//path_choices["F6"] = solver.MakeIntConst(0);
+	//path_choices["F7"] = solver.MakeIntConst(0);
+	//path_choices["F8"] = solver.MakeIntConst(1);
 
 	size_t longest_path = 0;
 	for(const auto &[flow, paths] : flow_paths) {
@@ -199,8 +199,8 @@ bool TrySolve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 			// ceil(edge_propagation_delay / CYCLE_LENGTH) manually
 			// -- there is no ceil function in the constraint solver library
 			IntExpr *induced_delay = solver.MakeSum(solver.MakeDiv(solver.MakeSum(edge_propagation_delay, -1), CYCLE_LENGTH), 1);
-			//IntVar *q = solver.MakeIntVar(1, 3, flow_name + "_e_" + std::to_string(e) + "_q");
-			IntVar *q = solver.MakeIntConst(ChooseMyQ(f,e), flow_name + "_e_" + std::to_string(e) + "_q");
+			IntVar *q = solver.MakeIntVar(1, 3, flow_name + "_e_" + std::to_string(e) + "_q");
+			//IntVar *q = solver.MakeIntConst(ChooseMyQ(f,e), flow_name + "_e_" + std::to_string(e) + "_q");
 			all_variables.push_back(q);
 
 			IntExpr *alpha = solver.MakeSum(q, solver.MakeSum(e2e_delays));
@@ -313,7 +313,7 @@ bool TrySolve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 		Solver::CHOOSE_FIRST_UNBOUND,
 		Solver::ASSIGN_MIN_VALUE
 	);
-	SearchMonitor *const search_log = solver.MakeSearchLog(100, omega);
+	SearchMonitor *const search_log = solver.MakeSearchLog(10000, omega);
 	SolutionCollector *const collector = solver.MakeLastSolutionCollector();
 
 	collector->Add(all_variables);
