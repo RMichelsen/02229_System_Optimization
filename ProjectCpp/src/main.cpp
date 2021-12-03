@@ -94,12 +94,12 @@ bool TrySolve() {
 	}
 
 	//path_choices["F1"] = solver.MakeIntConst(0);
-	//path_choices["F2"] = solver.MakeIntConst(0);
-	//path_choices["F3"] = solver.MakeIntConst(0);
+	//path_choices["F2"] = solver.MakeIntConst(2);
+	//path_choices["F3"] = solver.MakeIntConst(2);
 	//path_choices["F4"] = solver.MakeIntConst(0);
 	//path_choices["F5"] = solver.MakeIntConst(2);
-	//path_choices["F6"] = solver.MakeIntConst(0);
-	//path_choices["F7"] = solver.MakeIntConst(0);
+	//path_choices["F6"] = solver.MakeIntConst(2);
+	//path_choices["F7"] = solver.MakeIntConst(2);
 	//path_choices["F8"] = solver.MakeIntConst(2);
 
 	size_t longest_path = 0;
@@ -196,14 +196,14 @@ bool TrySolve() {
 			IntVar *edge_id = solver.MakeElement(edge_ids[f][e], path_choice)->Var();
 			IntExpr *edge_propagation_delay = solver.MakeElement(edge_propagation_delays[f][e], path_choice);
 
-			IntExpr *alpha = solver.MakeSum(e2e_delays);
-
 			// ceil(edge_propagation_delay / CYCLE_LENGTH) manually
 			// -- there is no ceil function in the constraint solver library
 			IntExpr *induced_delay = solver.MakeSum(solver.MakeDiv(solver.MakeSum(edge_propagation_delay, -1), CYCLE_LENGTH), 1);
 			IntVar *q = solver.MakeIntVar(1, 3, flow_name + "_e_" + std::to_string(e) + "_q");
-			//IntVar *q = solver.MakeIntConst(ChooseMyQ2(f,e), flow_name + "_e_" + std::to_string(e) + "_q");
+			//IntVar *q = solver.MakeIntConst(ChooseMyQ(f,e), flow_name + "_e_" + std::to_string(e) + "_q");
 			all_variables.push_back(q);
+
+			IntExpr *alpha = solver.MakeSum(q, solver.MakeSum(e2e_delays));
 
 			// Calculate an e2e delay candidate, multiply by 0 if the edge is invalid (not part of solution)
 			IntExpr *e2e_delay_candidate = solver.MakeSum(q, induced_delay);
