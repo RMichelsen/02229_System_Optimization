@@ -18,7 +18,7 @@ void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 	for(const auto &[_, flow] : flows) {
 		least_common_multiple = std::lcm(least_common_multiple, flow.period);
 	}
-	int cycle_count = std::ceil((float)least_common_multiple / (float)CYCLE_LENGTH);
+	int cycle_count = static_cast<int>(std::ceil(static_cast<float>(least_common_multiple) / static_cast<float>(CYCLE_LENGTH)));
 
 	Solver solver("ConstraintSolver");
 	std::vector<IntVar *> path_variables;
@@ -39,8 +39,9 @@ void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 
 	// This array will provide an integer in domain {0, 1}, 0 if the index is an edge which is part of path p of flow f.
 	// edge_validity[f][e][p] - flow [f], edge [e] and path [p]
-	std::vector<std::vector<std::vector<int>>> edge_validity;
-	edge_validity.resize(flows.size());
+	std::vector<std::vector<std::vector<int>>> edge_validity(flows.size());
+
+	// Set all edges in the array to 0 (invalid)
 	int f = 0;
 	for(const auto &[flow, paths] : flow_paths) {
 		edge_validity[f].resize(edges.size() + 1);
@@ -51,6 +52,7 @@ void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 		f++;
 	}
 
+	// Set all potentially valid edges to 1
 	f = 0;
 	for(const auto &[flow, paths] : flow_paths) {
 		for(int e = 0; e <= edges.size(); e++) {
@@ -70,31 +72,22 @@ void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 
 	// Pack edge values in int vectors
 	// edge_X[f][e][p] - flow [f], edge [e] and path [p]
-	std::vector<std::vector<std::vector<int>>> edge_ids(flows.size());
-	std::vector<std::vector<std::vector<int>>> edge_bandwidths(flows.size());
-	std::vector<std::vector<std::vector<int>>> edge_propagation_delays(flows.size());
+	std::vector<std::vector<std::vector<int>>> edge_ids(flows.size(), std::vector<std::vector<int>>(longest_path));
+	std::vector<std::vector<std::vector<int>>> edge_bandwidths(flows.size(), std::vector<std::vector<int>>(longest_path));
+	std::vector<std::vector<std::vector<int>>> edge_propagation_delays(flows.size(), std::vector<std::vector<int>>(longest_path));
 
 	f = 0;
 	for(const auto &[flow, paths] : flow_paths) {
-		edge_ids[f].resize(longest_path);
-		edge_bandwidths[f].resize(longest_path);
-		edge_propagation_delays[f].resize(longest_path);
-		for(int p = 0; p < paths.size(); p++) {
-			const auto &path = paths[p];
-			for(int e = 0; e < longest_path; e++) {
-				edge_ids[f][e].resize(paths.size());
-				edge_bandwidths[f][e].resize(paths.size());
-				edge_propagation_delays[f][e].resize(paths.size());
-				if(e < path.size()) {
-					edge_ids[f][e][p] = edges[path[e]].id;
-					edge_bandwidths[f][e][p] = edges[path[e]].bandwidth;
-					edge_propagation_delays[f][e][p] = edges[path[e]].propagation_delay;
-				}
-				else {
-					edge_ids[f][e][p] = 0;
-					edge_bandwidths[f][e][p] = -1;
-					edge_propagation_delays[f][e][p] = -1;
-				}
+		for(int e = 0; e < longest_path; e++) {
+            edge_ids[f][e].resize(paths.size());
+            edge_bandwidths[f][e].resize(paths.size());
+            edge_propagation_delays[f][e].resize(paths.size());
+			for(int p = 0; p < paths.size(); p++) {
+				const auto &path = paths[p];
+				bool valid_edge = e < path.size();
+				edge_ids[f][e][p] = valid_edge ? edges[path[e]].id : 0;
+				edge_bandwidths[f][e][p] = valid_edge ? edges[path[e]].bandwidth : -1;
+				edge_propagation_delays[f][e][p] = valid_edge ? edges[path[e]].propagation_delay : -1;
 			}
 		}
 
@@ -106,7 +99,7 @@ void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 	arrival_patterns.resize(cycle_count);
 	for(int c = 0; c < cycle_count; c++) {
 		arrival_patterns[c].resize(flows.size());
-		for(int f = 0; f < flows.size(); f++) {
+		for(f = 0; f < flows.size(); f++) {
 			arrival_patterns[c][f].resize(edges.size() + 1);
 			arrival_patterns[c][f][0] = solver.MakeIntConst(0);
 			for(int e = 1; e <= edges.size(); e++) {
@@ -170,10 +163,9 @@ void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 
 		IntExpr *e2e_delay_sum = solver.MakeSum(e2e_delays);
 
-		int acceptableDelay = std::ceil((float)flow.deadline / (float)CYCLE_LENGTH);
+		int acceptableDelay = static_cast<int>(std::ceil(static_cast<float>(flow.deadline) / static_cast<float>(CYCLE_LENGTH)));
 		solver.AddConstraint(solver.MakeSumLessOrEqual(e2e_delays, acceptableDelay));
 
-		// TODO: Change after we know flow/edge input details
 		f++;
 	}
 
@@ -198,13 +190,8 @@ void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 
 			cycle_edge_bandwidths[e][c] = solver.MakeSum(tmp_sum)->Var();
 
-			// TODO: Make efficient
-			int edge_capacity = 0;
-			for(const auto &[_, edge] : edges) {
-				if(edge.id == e) {
-					edge_capacity = int(edge.bandwidth * 131072.0f * 0.000012f);
-				}
-			}
+			Edge edge = (*std::find_if(edges.begin(), edges.end(), [=](const auto &kv) { return kv.second.id == e; })).second;
+			int edge_capacity = int(edge.bandwidth * 131072.0f * 0.000012f);
 
 			solver.AddConstraint(solver.MakeLessOrEqual(cycle_edge_bandwidths[e][c], edge_capacity));
 		}
@@ -216,13 +203,8 @@ void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 	for(int e = 1; e <= edges.size(); e++) {
 		IntExpr *max_consumed_bandwidth = solver.MakeMax(cycle_edge_bandwidths[e]);
 
-		// TODO: Make efficient
-		int edge_capacity = 0;
-		for(const auto &[_, edge] : edges) {
-			if(edge.id == e) {
-				edge_capacity = int(edge.bandwidth * 131072.0f * 0.000012f);
-			}
-		}
+		Edge edge = (*std::find_if(edges.begin(), edges.end(), [=](const auto &kv) { return kv.second.id == e; })).second;
+        int edge_capacity = int(edge.bandwidth * 131072.0f * 0.000012f);
 
 		edge_consumed_bandwidths[e] = solver.MakeDiv(solver.MakeProd(max_consumed_bandwidth, 1000), edge_capacity)->VarWithName("Edge_" + std::to_string(e) + "_Bandwidth");
 	}
@@ -245,7 +227,7 @@ void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 	);
 	DecisionBuilder *const db = solver.Compose(db1, db2);
 	SearchMonitor *const search_log = solver.MakeSearchLog(100000, omega);
-	RegularLimit *const time_limit = solver.MakeTimeLimit(60000);
+	RegularLimit *const time_limit = solver.MakeTimeLimit(10000);
 	SolutionCollector *const collector = solver.MakeLastSolutionCollector();
 
 	collector->Add(path_variables);
