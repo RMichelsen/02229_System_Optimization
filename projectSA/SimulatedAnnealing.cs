@@ -11,7 +11,7 @@ namespace projectSA //TODO: MaxE2E
         public static int CYCLE_LENGTH = 12;
         public static int magicInt  = 131072;
         public static double magicDouble = 0.000012;
-        public static Report GenerateOptimizedSolution(int edgeCount)
+        public static Report GenerateOptimizedSolution(SolutionGenerator solutionGenerator,int edgeCount)
 		{
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -19,11 +19,11 @@ namespace projectSA //TODO: MaxE2E
 			// start values
             int EdgeCount = edgeCount;
             int E2Esum = 0;
-        	double T = 10000000.0;
-        	double r = 0.002;
+        	double T = 1000000.0;
+        	double r = 0.0002;
             bool LCC, DC;
             Dictionary<Edge, int[]> Bs;
-    		var C = SolutionGenerator.GetInititalSolution();
+    		var C = solutionGenerator.GetInititalSolution();
             //var (E,_) = ResponseTimeAnalysis(C);
             Report bestReport = C;
 
@@ -37,10 +37,11 @@ namespace projectSA //TODO: MaxE2E
 
             int count = 1;
             while (T > 0.1) {
-                var neighbourC = SolutionGenerator.GenerateNeighbour(C);
+                var neighbourC = solutionGenerator.GenerateNeighbour(C);
 
                 DC = DeadlineConstraint(neighbourC);
                 LCC = LinkCapacityConstraint(neighbourC,cycle_count,out Bs);
+                //Console.WriteLine("LCC" +LCC);
                 neighbourC.solution.MeanBW = ObjectiveFunction(Bs, EdgeCount);
                 double dE = neighbourC.solution.MeanBW - C.solution.MeanBW;
                 double probability = AccProbability(dE, T);
@@ -106,14 +107,16 @@ namespace projectSA //TODO: MaxE2E
 
             foreach(var message in report.messages){
                 var alpha = 0;
+                
                 foreach(var link in message.Links){
+                    alpha += link.Qnumber;
 
                     for(int i = 0; i < cycle_count; i++){
                         B[link.Edge][i] += ArrivalFunction(i,alpha,message.flow.Period,message.flow.Size);
                     }
                     
                     var InducedDelay = (int) Math.Ceiling((decimal)link.PropagationDelay/(decimal)CYCLE_LENGTH);
-                    alpha += InducedDelay+link.Qnumber;
+                    alpha += InducedDelay;
                     
                 }
             }
@@ -138,7 +141,7 @@ namespace projectSA //TODO: MaxE2E
                 bSum += B[edge].Max()*1000/bandwidthBytesPerCycle;
             }
 
-            omega = bSum/(edgeCount*2);
+            omega = bSum/(edgeCount);
             return omega;
         }
 

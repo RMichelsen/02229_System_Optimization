@@ -1,11 +1,13 @@
 ﻿using System.Xml.Linq;
 using projectSA.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace projectSA
 {
     enum TestCase
     {
+        TC0,
         TC1,
         TC2,
         TC3,
@@ -47,6 +49,16 @@ namespace projectSA
                     (int)edge.Attribute("BW"),
                     (int)edge.Attribute("PropDelay")
                 ));
+
+                edges.Add(new Edge(
+                    ((int)edge.Attribute("Id")+edgeEntries.Count()).ToString(),
+                    (string)edge.Attribute("Destination"),
+                    (string)edge.Attribute("Source"),
+                    (int)edge.Attribute("BW"),
+                    (int)edge.Attribute("PropDelay")
+                ));
+
+
             }
             architecture = new Architecture(vertices, edges);
 

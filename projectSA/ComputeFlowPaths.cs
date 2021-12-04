@@ -14,19 +14,22 @@ namespace projectSA
 {
     class ComputeFlowPaths
     {
-        public static Dictionary<string, List<List<Edge>>> Compute(Application application, Architecture architecture) {
-            var uGraph = new BidirectionalGraph<string, TaggedEdge<string, Edge>>(false);
-            foreach(var vertex in architecture.Vertices) 
+        public static (Dictionary<string,Flow>,Dictionary<string, List<List<Edge>>>) Compute(Application application, Architecture architecture) {
+            var uGraph = new BidirectionalGraph<string, TaggedEdge<string, Edge>>(true);
+            foreach(var vertex in architecture.Vertices)
             {
                 uGraph.AddVertex(vertex.Name);
             }
             foreach(var edge in architecture.Edges) 
             {
                 uGraph.AddEdge(new TaggedEdge<string, Edge>(edge.Source, edge.Destination, edge));
-                uGraph.AddEdge(new TaggedEdge<string, Edge>(edge.Destination, edge.Source, edge));
+                //uGraph.AddEdge(new TaggedEdge<string, Edge>(edge.Destination, edge.Source, edge));
             }
             var flow_paths = new Dictionary<string, List<List<Edge>>>();
-            Func<Edge<string>, double> weightFunction = e => 0.0;
+            var flows = new Dictionary<string,Flow>();
+
+
+            Func<Edge<string>, double> weightFunction = e => 1.0;
             var hp = new HoffmanPavleyRankedShortestPathAlgorithm<string, TaggedEdge<string, Edge>>(uGraph, weightFunction);
             var uniquePaths = 100;
             hp.ShortestPathCount = architecture.Edges.Count * uniquePaths;
@@ -40,7 +43,8 @@ namespace projectSA
                     if (!target.Contains("ES")) continue;
                     hp.Compute(source, target);
                     foreach(Flow flow in application.Flows) 
-                    {
+                    {   
+                        if(!flows.ContainsKey(flow.Name)) flows.Add(flow.Name, flow);
                         if (flow.Source == source && flow.Destination == target)
                         {   
                             flow_paths.Add(flow.Name, new List<List<Edge>>());
@@ -53,7 +57,7 @@ namespace projectSA
                     
                 }
             }
-            return flow_paths;
+            return (flows,flow_paths);
         }
 
         public void printFlowPaths(Dictionary<string, List<List<Edge>>> flow_paths) {
