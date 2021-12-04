@@ -4,46 +4,6 @@
 
 using namespace std;
 
-string getTestCasePath(TestCase tc) 
-{
-	string res = "Tests\\";
-	switch (tc)
-	{
-		case example:
-			res += "example\\";
-			break;
-		case TC1:
-			res += "TC1\\";
-			break;
-		case TC2:
-			res += "TC2\\";
-			break;
-		case TC3:
-			res += "TC3\\";
-			break;
-		case TC4:
-			res += "TC4\\";
-			break;
-		case TC5:
-			res += "TC5\\";
-			break;
-		case TC6:
-			res += "TC6\\";
-			break;
-		case TC7:
-			res += "TC7\\";
-			break;
-		case TC8:
-			res += "TC8\\";
-			break;
-		case TC9:
-			res += "TC9\\";
-			break;
-	}
-
-	return res + "\\Input\\";
-}
-
 //unordered_map<string, Edge> edges = {
 //	{ "ES1SW1", Edge(1, 1000, 10) },
 //	{ "SW1ES2", Edge(2, 1000, 10) },
@@ -64,7 +24,7 @@ string getTestCasePath(TestCase tc)
 //};
 
 bool loadTestCase(TestCase tc, unordered_map<string, Edge> &edges, unordered_map<string, Flow> &flows) {
-	string path = getTestCasePath(tc);
+	string path = getTestCasePath(tc) + "Input\\";
 
 	string configPath = path + "Config.xml";
 	string appsPath = path + "Apps.xml";

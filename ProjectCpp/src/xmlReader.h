@@ -18,6 +18,44 @@ enum TestCase {
 	TC9
 };
 
+inline string getTestCasePath(TestCase tc) {
+	string res = "Tests\\";
+	switch(tc) {
+	case example:
+		res += "example\\";
+		break;
+	case TC1:
+		res += "TC1\\";
+		break;
+	case TC2:
+		res += "TC2\\";
+		break;
+	case TC3:
+		res += "TC3\\";
+		break;
+	case TC4:
+		res += "TC4\\";
+		break;
+	case TC5:
+		res += "TC5\\";
+		break;
+	case TC6:
+		res += "TC6\\";
+		break;
+	case TC7:
+		res += "TC7\\";
+		break;
+	case TC8:
+		res += "TC8\\";
+		break;
+	case TC9:
+		res += "TC9\\";
+		break;
+	}
+
+	return res;
+}
+
 struct Edge {
 	Edge() = default;
 	Edge(int id, int bandwidth, int propagation_delay, string src, string dest) :

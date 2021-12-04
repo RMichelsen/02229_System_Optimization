@@ -8,12 +8,20 @@
 #include "xmlReader.h"
 #include "graph.h"
 #include <cstdlib>
+#include <filesystem>
 
 using namespace operations_research;
 
 constexpr int CYCLE_LENGTH = 12;
 
-void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
+void Solve(TestCase test_case) {
+	edge_map_t edges;
+	flow_map_t flows;
+	loadTestCase(test_case, edges, flows);
+
+	flow_paths_t flow_paths;
+	flow_paths = getFlowPaths(edges, flows);
+
 	int least_common_multiple = 1;
 	for(const auto &[_, flow] : flows) {
 		least_common_multiple = std::lcm(least_common_multiple, flow.period);
@@ -108,6 +116,7 @@ void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 		}
 	}
 
+	std::vector<IntVar *> max_e2e_delays;
 	f = 0;
 	for(const auto &[flow_name, flow] : flows) {
 		std::vector<IntVar *> e2e_delays;
@@ -162,6 +171,7 @@ void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 		}
 
 		IntExpr *e2e_delay_sum = solver.MakeSum(e2e_delays);
+		max_e2e_delays.push_back(e2e_delay_sum->Var());
 
 		int acceptableDelay = static_cast<int>(std::ceil(static_cast<float>(flow.deadline) / static_cast<float>(CYCLE_LENGTH)));
 		solver.AddConstraint(solver.MakeSumLessOrEqual(e2e_delays, acceptableDelay));
@@ -232,23 +242,61 @@ void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 
 	collector->Add(path_variables);
 	collector->Add(q_variables);
+	collector->Add(max_e2e_delays);
+	collector->AddObjective(mean_bandwidth_usage);
 	solver.Solve(db, omega, search_log, time_limit, collector);
 
 	LOG(INFO) << collector->solution(0)->DebugString();
+
+	pugi::xml_document result_xml;
+	auto report = result_xml.append_child("Report");
+	auto solution = report.append_child("Solution");
+	solution.append_attribute("Runtime") = static_cast<float>(collector->wall_time(0)) / 1000.0f;
+	int mean_e2e = 0;
+	for(f = 0; f < flows.size(); f++) { mean_e2e += collector->Value(0, max_e2e_delays[f]); }
+	solution.append_attribute("MeanE2E") = mean_e2e / flows.size();
+	solution.append_attribute("MeanBW") = collector->objective_value(0);
+
+	f = 0;
+	for(const auto &[flow_name, flow] : flows) {
+		auto message = report.append_child("Message");
+		message.append_attribute("Name") = flow_name.c_str();
+		message.append_attribute("maxE2E") = collector->Value(0, max_e2e_delays[f]);
+		int chosen_path = collector->Value(0, path_variables[f]);
+
+		int e = 0;
+		for(const auto &edge : flow_paths[flow_name][chosen_path]) {
+			auto link = message.append_child("Link");
+			link.append_attribute("Source") = edge.substr(0, 3).c_str();
+			link.append_attribute("Destination") = edge.substr(3, 3).c_str();
+			IntVar *q_var = *std::find_if(q_variables.begin(), q_variables.end(), [=](const auto &s) { 
+				return s->name() == flow_name + "_e_" + std::to_string(e) + "_q"; 
+			});
+			link.append_attribute("Qnumber") = collector->Value(0, q_var);
+
+			e++;
+		}
+
+		f++;
+	}
+	
+	std::filesystem::create_directory(getTestCasePath(test_case) + "Output");
+	auto b = result_xml.save_file((getTestCasePath(test_case) + "Output\\Report.xml").c_str());
 }
 
 int main(int argc, char **argv) {
 	google::InitGoogleLogging(argv[0]);
 	absl::SetFlag(&FLAGS_logtostderr, 1);
 
-	edge_map_t edges;
-	flow_map_t flows;
-	loadTestCase(TestCase::TC2, edges, flows);
-
-	flow_paths_t flow_paths;
-	flow_paths = getFlowPaths(edges, flows);
-
-	Solve(edges, flows, flow_paths);
+	Solve(TestCase::TC1);
+	Solve(TestCase::TC2);
+	Solve(TestCase::TC3);
+	Solve(TestCase::TC4);
+	Solve(TestCase::TC5);
+	Solve(TestCase::TC6);
+	Solve(TestCase::TC7);
+	Solve(TestCase::TC8);
+	Solve(TestCase::TC9);
 
 	return 0;
 }
