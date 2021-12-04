@@ -2775,7 +2775,7 @@
     <ClInclude Include="src\xmlReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\bfs.h">
+    <ClInclude Include="src\graph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2862,9 +2862,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\xmlReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\bfs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

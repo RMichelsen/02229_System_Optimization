@@ -1068,7 +1068,7 @@
     <ClInclude Include="dependencies\or-tools\include\zlib.h" />
     <ClInclude Include="dependencies\pugixml\pugiconfig.hpp" />
     <ClInclude Include="dependencies\pugixml\pugixml.hpp" />
-    <ClInclude Include="src\bfs.h" />
+    <ClInclude Include="src\graph.h" />
     <ClInclude Include="src\xmlReader.h" />
   </ItemGroup>
   <ItemGroup>
@@ -1102,7 +1102,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\pugixml\pugixml.cpp" />
-    <ClCompile Include="src\bfs.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\xmlReader.cpp" />
   </ItemGroup>

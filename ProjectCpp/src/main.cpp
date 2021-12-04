@@ -6,76 +6,14 @@
 #include <pugixml.hpp>
 
 #include "xmlReader.h"
-#include "bfs.h"
+#include "graph.h"
 #include <cstdlib>
 
 using namespace operations_research;
 
 constexpr int CYCLE_LENGTH = 12;
 
-std::unordered_map<std::string, Edge> edges = {
-	{ "ES1SW1", Edge(1, 1000, 10) },
-	{ "SW1ES2", Edge(2, 1000, 10) },
-	{ "ES1SW2", Edge(3, 1000, 10) },
-	{ "SW2ES2", Edge(4, 1000, 10) },
-	{ "SW2SW1", Edge(5, 1000, 10) }
-};
-
-std::unordered_map<std::string, Flow> flows = {
-	{ "F1", Flow("F1", "ES1", "ES2", 300, 1000, 1000) },
-	{ "F2", Flow("F2", "ES1", "ES2", 400, 2000, 2000) },
-	{ "F3", Flow("F3", "ES1", "ES2", 500, 4000, 4000) },
-	{ "F4", Flow("F4", "ES1", "ES2", 300, 8000, 4000) },
-	{ "F5", Flow("F5", "ES2", "ES1", 400, 1000, 1000) },
-	{ "F6", Flow("F6", "ES2", "ES1", 500, 2000, 2000) },
-	{ "F7", Flow("F7", "ES2", "ES1", 300, 4000, 4000) },
-	{ "F8", Flow("F8", "ES1", "ES2", 400, 8000, 4000) }
-};
-
-std::unordered_map<std::string, std::vector<std::vector<std::string>>> flow_paths = {
-	{ "F1", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
-	{ "F2", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
-	{ "F3", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
-	{ "F4", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } },
-	{ "F5", { { "SW1ES2", "ES1SW1" }, { "SW1ES2", "SW2SW1", "ES1SW2" }, { "SW2ES2", "ES1SW2" }, { "SW2ES2", "SW2SW1", "ES1SW1" } } },
-	{ "F6", { { "SW1ES2", "ES1SW1" }, { "SW1ES2", "SW2SW1", "ES1SW2" }, { "SW2ES2", "ES1SW2" }, { "SW2ES2", "SW2SW1", "ES1SW1" } } },
-	{ "F7", { { "SW1ES2", "ES1SW1" }, { "SW1ES2", "SW2SW1", "ES1SW2" }, { "SW2ES2", "ES1SW2" }, { "SW2ES2", "SW2SW1", "ES1SW1" } } },
-	{ "F8", { { "ES1SW1", "SW1ES2" }, { "ES1SW1", "SW2SW1", "SW2ES2" }, { "ES1SW2", "SW2ES2" }, { "ES1SW2", "SW2SW1", "SW1ES2" } } }
-};
-
-int ChooseMyQ(int f, int e) {
-	switch(f) {
-	case 0: return (e == 0) ? 2 : 1;
-	case 1: return (e == 0) ? 1 : 3;
-	case 2: return (e == 0) ? 3 : 3;
-	case 3: return (e == 0) ? 1 : 3;
-	case 4: return (e == 0) ? 2 : 2;
-	case 5: return (e == 0) ? 2 : 1;
-	case 6: return (e == 0) ? 3 : 2;
-	case 7: return (e == 0) ? 2 : 1;
-	default:
-		assert(false);
-		return 0;
-	}
-}
-
-int ChooseMyQ2(int f, int e) {
-	switch(f) {
-	case 0: return (e == 0) ? 1 : 1;
-	case 1: return (e == 0) ? 1 : 1;
-	case 2: return (e == 0) ? 2 : 1;
-	case 3: return (e == 0) ? 2 : 1;
-	case 4: return (e == 0) ? 1 : 1;
-	case 5: return (e == 0) ? 1 : 1;
-	case 6: return (e == 0) ? 1 : 1;
-	case 7: return (e == 0) ? 1 : 1;
-	default:
-		assert(false);
-		return 0;
-	}
-}
-
-bool TrySolve() {
+void Solve(edge_map_t edges, flow_map_t flows, flow_paths_t flow_paths) {
 	int least_common_multiple = 1;
 	for(const auto &[_, flow] : flows) {
 		least_common_multiple = std::lcm(least_common_multiple, flow.period);
@@ -83,22 +21,14 @@ bool TrySolve() {
 	int cycle_count = std::ceil((float)least_common_multiple / (float)CYCLE_LENGTH);
 
 	Solver solver("ConstraintSolver");
-	std::vector<IntVar *> all_variables;
+	std::vector<IntVar *> path_variables;
+	std::vector<IntVar *> q_variables;
 
 	std::unordered_map<std::string, IntVar *> path_choices;
 	for(const auto &[flow, paths] : flow_paths) {
 		path_choices[flow] = solver.MakeIntVar(0, paths.size() - 1, "path_choice" + flow);
-		all_variables.push_back(path_choices[flow]);
+		path_variables.push_back(path_choices[flow]);
 	}
-
-	//path_choices["F1"] = solver.MakeIntConst(0);
-	//path_choices["F2"] = solver.MakeIntConst(0);
-	//path_choices["F3"] = solver.MakeIntConst(0);
-	//path_choices["F4"] = solver.MakeIntConst(0);
-	//path_choices["F5"] = solver.MakeIntConst(2);
-	//path_choices["F6"] = solver.MakeIntConst(0);
-	//path_choices["F7"] = solver.MakeIntConst(0);
-	//path_choices["F8"] = solver.MakeIntConst(2);
 
 	size_t longest_path = 0;
 	for(const auto &[flow, paths] : flow_paths) {
@@ -194,14 +124,13 @@ bool TrySolve() {
 			IntVar *edge_id = solver.MakeElement(edge_ids[f][e], path_choice)->Var();
 			IntExpr *edge_propagation_delay = solver.MakeElement(edge_propagation_delays[f][e], path_choice);
 
-			IntExpr *alpha = solver.MakeSum(e2e_delays);
-
 			// ceil(edge_propagation_delay / CYCLE_LENGTH) manually
 			// -- there is no ceil function in the constraint solver library
 			IntExpr *induced_delay = solver.MakeSum(solver.MakeDiv(solver.MakeSum(edge_propagation_delay, -1), CYCLE_LENGTH), 1);
 			IntVar *q = solver.MakeIntVar(1, 3, flow_name + "_e_" + std::to_string(e) + "_q");
-			//IntVar *q = solver.MakeIntConst(ChooseMyQ2(f,e), flow_name + "_e_" + std::to_string(e) + "_q");
-			all_variables.push_back(q);
+			q_variables.push_back(q);
+
+			IntExpr *alpha = solver.MakeSum(q, solver.MakeSum(e2e_delays));
 
 			// Calculate an e2e delay candidate, multiply by 0 if the edge is invalid (not part of solution)
 			IntExpr *e2e_delay_candidate = solver.MakeSum(q, induced_delay);
@@ -225,7 +154,7 @@ bool TrySolve() {
 				// Boolean variable used in the arrival pattern functions, 
 				// also an extra boolean to set the output to 0 if the input is negative
 				IntVar *A_input_positive_check = solver.MakeIsGreaterOrEqualCstVar(A_input, 0);
-				IntVar *A_boolean = solver.MakeIsEqualCstVar(A_calc, 0);
+				IntVar *A_boolean = solver.MakeIsLessCstVar(A_calc, CYCLE_LENGTH);
 				IntExpr *composite_boolean = solver.MakeProd(A_input_positive_check, A_boolean);
 
 				// Calculate the arrival pattern, multiply by 0 if the edge is invalid (not part of solution)
@@ -298,160 +227,47 @@ bool TrySolve() {
 		edge_consumed_bandwidths[e] = solver.MakeDiv(solver.MakeProd(max_consumed_bandwidth, 1000), edge_capacity)->VarWithName("Edge_" + std::to_string(e) + "_Bandwidth");
 	}
 
-	IntVar *mean_bandwidth_usage = solver.MakeDiv(solver.MakeSum(edge_consumed_bandwidths), edges.size() * 2)->VarWithName("mean_bandwidth_usage");
-	all_variables.push_back(mean_bandwidth_usage);
+	IntVar *mean_bandwidth_usage = solver.MakeDiv(solver.MakeSum(edge_consumed_bandwidths), edges.size())->VarWithName("mean_bandwidth_usage");
 
-	OptimizeVar *omega = solver.MakeMinimize(mean_bandwidth_usage, 5);
+	OptimizeVar *omega = solver.MakeMinimize(mean_bandwidth_usage, 10);
 
-	LOG(INFO) << "Number of variables: " << all_variables.size();
 	LOG(INFO) << "Number of constraints: " << solver.constraints();
 
-	DecisionBuilder *const db = solver.MakePhase(
-		all_variables,
+	DecisionBuilder *const db1 = solver.MakePhase(
+		path_variables,
 		Solver::CHOOSE_FIRST_UNBOUND,
 		Solver::ASSIGN_MIN_VALUE
 	);
-	SearchMonitor *const search_log = solver.MakeSearchLog(100, omega);
+	DecisionBuilder *const db2 = solver.MakePhase(
+		q_variables,
+		Solver::CHOOSE_FIRST_UNBOUND,
+		Solver::ASSIGN_RANDOM_VALUE
+	);
+	DecisionBuilder *const db = solver.Compose(db1, db2);
+	SearchMonitor *const search_log = solver.MakeSearchLog(100000, omega);
+	RegularLimit *const time_limit = solver.MakeTimeLimit(60000);
 	SolutionCollector *const collector = solver.MakeLastSolutionCollector();
 
-	collector->Add(all_variables);
-	solver.Solve(db, omega, search_log, collector);
+	collector->Add(path_variables);
+	collector->Add(q_variables);
+	solver.Solve(db, omega, search_log, time_limit, collector);
 
 	LOG(INFO) << collector->solution(0)->DebugString();
-
-	//solver.NewSearch(db, search_log);
-	//while(solver.NextSolution()) {
-	//	for(const auto &variable : all_variables) {
-	//		LOG(INFO) << variable << " = " << variable->Value();
-
-	//	}
-	//}
-	//solver.EndSearch();
-	LOG(INFO) << "Number of solutions: " << solver.solutions();
-	LOG(INFO) << "";
-	LOG(INFO) << "Advanced usage:";
-	LOG(INFO) << "Problem solved in " << solver.wall_time() << "ms";
-	LOG(INFO) << "Memory usage: " << Solver::MemoryUsage() << " bytes";
-
-	return solver.solutions() > 0;
 }
 
 int main(int argc, char **argv) {
 	google::InitGoogleLogging(argv[0]);
 	absl::SetFlag(&FLAGS_logtostderr, 1);
 
-	// Cycle count = least common multiple of flow periods
-	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("Tests/TC1/Input/Apps.xml");
+	edge_map_t edges;
+	flow_map_t flows;
+	loadTestCase(TestCase::TC2, edges, flows);
 
-	srand(time(NULL));
+	flow_paths_t flow_paths;
+	flow_paths = getFlowPaths(edges, flows);
 
-	std::unordered_map<std::string, Edge> edges2;
-	std::unordered_map<std::string, Flow> flows2;
-
-	loadTestCase(example, edges2, flows2);
-
-	std::unordered_map<std::string, std::vector<std::vector<std::string>>> flow_paths;
-	flow_paths = getFlowPaths((edgeMap)edges2, (flowMap)flows2);
-
-	TrySolve();
+	Solve(edges, flows, flow_paths);
 
 	return 0;
 }
 
-
-
-//for(int e = 1; e < edges.size(); e++) {
-//	std::vector<IntVar *> e_arrival_patterns;
-//	for(int c = 0; c < cycle_count; c++) {
-//		e_arrival_patterns.push_back(arrival_patterns[c][e]->Var());
-//	}
-
-//       IntExpr *sum = solver.MakeSum(arrival_patterns[c]);
-
-   //	// TODO: Make efficient
-   //	int edge_capacity = 0;
-   //	for(const auto &[_, edge] : edges) {
-   //		if(edge.id == e) {
-   //			edge_capacity = int(edge.bandwidth * 131072) * 0.000012;
-   //		}
-   //	}
-
-//       solver.AddConstraint(solver.MakeLessOrEqual(sum, edge_capacity));
-
-//       cycle_bandwidths[edge].push_back(
-//           sum->VarWithName("cycle_bandwidths" + edge + "_" + std::to_string(c))
-//       );
-   //}
-
-
-//for(const auto &edge : flow_paths[flow_name][path_choices[flow_name]]) {
-//	std::cout << "Processing edge: " << edge << " for flow: " << flow_name << std::endl;
-
-//	// If the edge does not yet have an array of arrival patterns per cycle,
-//	// initialize a vector that contains one vector of flow arrival patterns for each cycle. 
-//	if(arrival_patterns.find(edge) == arrival_patterns.end()) {
-//		arrival_patterns[edge] = std::vector<std::vector<IntVar *>>(cycle_count);
-//	}
-
-//	IntExpr *alpha = solver.MakeSum(e2e_delays);
-//	all_variables.push_back(alpha->VarWithName(flow_name + "A" + edge));
-
-//	int induced_delay = std::ceil((float)edges[edge].propagation_delay / (float)CYCLE_LENGTH);
-//	//IntExpr *e2e_delay = solver.MakeSum(q_choices[flow_name + "_" + edge], induced_delay);
-//	// e2e_delays.push_back(e2e_delay->Var());
-//	IntVar *e2e_delay = solver.MakeIntConst(q_choices[flow_name + "_" + edge] + induced_delay);
-//	e2e_delays.push_back(e2e_delay);
-//	//all_variables.push_back(e2e_delay);
-
-//	for(int c = 0; c < cycle_count; c++) {
-//		// Modulo (c - a) * |c| % flow.period
-//		IntExpr *A_input = solver.MakeDifference(c, alpha);
-//		IntExpr *aMil = solver.MakeProd(A_input, CYCLE_LENGTH);
-//		
-//		// Modulo without modulo: a % b = a - (b * int(a / b))
-//		// a = c * |c|
-//		// b = flow.period
-//		IntExpr *Ap = solver.MakeDifference(
-//			aMil,
-//			solver.MakeProd(solver.MakeDiv(aMil, flow.period), flow.period)
-//		);
-
-//		// TODO: We can check less than 12, since a cycle is 12 microseconds... But the modulo still seems off..
-//		//IntVar *b = solver.MakeIsLessCstVar(A_input, CYCLE_LENGTH);
-//		IntVar *bpos = solver.MakeIsGreaterOrEqualCstVar(A_input, 0);	//make sure input is positive
-//		IntVar *b = solver.MakeIsEqualCstVar(Ap, 0);
-//		IntVar *A = solver.MakeIntVar(0, std::numeric_limits<int32_t>::max(), flow_name + "_" + edge + "_" + std::to_string(c));
-//		solver.AddConstraint(solver.MakeIfThenElseCt(solver.MakeProd(b, bpos)->Var(), solver.MakeIntConst(flow.size), solver.MakeIntConst(0), A));
-
-//		// A now contains the arrival pattern for cycle "c"
-//		arrival_patterns[edge][c].push_back(A);
-//	}
-//}
-
-
-
-	//std::unordered_map<std::string, std::vector<IntVar *>> cycle_bandwidths;
-	//for(const auto &[edge, As] : arrival_patterns) {
-	//	for(int c = 0; c < cycle_count; c++) {
-	//		IntExpr *sum = solver.MakeSum(As[c]);
-
-	//		// Bandwidth in Mbps, to capacity in bytes per cycle
-	//		int edge_capacity = int((edges[edge].bandwidth * 131072) * 0.000012);
-
-	//		solver.AddConstraint(solver.MakeLessOrEqual(sum, edge_capacity));
-	//		cycle_bandwidths[edge].push_back(
-	//			sum->VarWithName("cycle_bandwidths" + edge + "_" + std::to_string(c))
-	//		);
-	//	}
-	//}
-
-	//std::vector<IntVar *> edge_bandwidthss;
-	//for(const auto &[edge, _] : arrival_patterns) {
-	//	// Bandwidth in Mbps, to capacity in bytes per cycle
-	//	int edge_capacity = int((edges[edge].bandwidth * 131072) * 0.000012);
-
-	//	IntExpr *bandwidth = solver.MakeDiv(solver.MakeProd(solver.MakeMax(cycle_bandwidths[edge]), 1000), edge_capacity);
-	//	edge_bandwidthss.push_back(bandwidth->VarWithName("edge_bandwidth_" + edge));
-	//}
-	//for(const auto &var : edge_bandwidthss) all_variables.push_back(var);

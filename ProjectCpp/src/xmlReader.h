@@ -2,7 +2,8 @@
 
 #include <pugixml.hpp>
 #include <unordered_map>
-#include <cstdlib>
+
+using namespace std;
 
 enum TestCase {
 	example,
@@ -19,32 +20,40 @@ enum TestCase {
 
 struct Edge {
 	Edge() = default;
+	Edge(int id, int bandwidth, int propagation_delay, string src, string dest) :
+		id(id),
+		bandwidth(bandwidth),
+		propagation_delay(propagation_delay),
+		src(src),
+		dest(dest) {}
 	Edge(int id, int bandwidth, int propagation_delay) :
 		id(id),
 		bandwidth(bandwidth),
 		propagation_delay(propagation_delay) {}
 	int id;
+	string src;
+	string dest;
 	int bandwidth;
 	int propagation_delay;
 };
 
 struct Flow {
 	Flow() = default;
-	Flow(std::string name, std::string source, std::string destination, int size, int period, int deadline) :
+	Flow(string name, string source, string destination, int size, int period, int deadline) :
 		name(name),
 		source(source),
 		destination(destination),
 		size(size),
 		period(period),
 		deadline(deadline) {}
-	std::string name;
-	std::string source;
-	std::string destination;
+	string name;
+	string source;
+	string destination;
 	int size;
 	int period;
 	int deadline;
 };
 
-bool loadTestCase(TestCase tc, std::unordered_map<std::string, Edge>& edges, std::unordered_map<std::string, Flow>& flows);
+bool loadTestCase(TestCase tc, unordered_map<string, Edge>& edges, unordered_map<string, Flow>& flows);
 
 
