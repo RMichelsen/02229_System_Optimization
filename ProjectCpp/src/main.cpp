@@ -12,8 +12,11 @@
 using namespace operations_research;
 
 constexpr int CYCLE_LENGTH = 12;
+int printFile = 1;
+string subfolder = "";
 
-void Solve(TestCase test_case) {
+
+int Solve(TestCase test_case, Solver::IntValueStrategy q_choice_strat, Solver::IntValueStrategy path_choice_strat, int millis, string fileTag = "") {
 	edge_map_t edges;
 	flow_map_t flows;
 	loadTestCase(test_case, edges, flows);
@@ -227,16 +230,16 @@ void Solve(TestCase test_case) {
 	DecisionBuilder *const db1 = solver.MakePhase(
 		path_variables,
 		Solver::CHOOSE_FIRST_UNBOUND,
-		Solver::ASSIGN_MIN_VALUE
+		path_choice_strat
 	);
 	DecisionBuilder *const db2 = solver.MakePhase(
 		q_variables,
 		Solver::CHOOSE_FIRST_UNBOUND,
-		Solver::ASSIGN_RANDOM_VALUE
+		q_choice_strat
 	);
 	DecisionBuilder *const db = solver.Compose(db1, db2);
 	SearchMonitor *const search_log = solver.MakeSearchLog(100000, omega);
-	RegularLimit *const time_limit = solver.MakeTimeLimit(10000);
+	RegularLimit *const time_limit = solver.MakeTimeLimit(1000);
 	SolutionCollector *const collector = solver.MakeLastSolutionCollector();
 
 	collector->Add(path_variables);
@@ -245,7 +248,17 @@ void Solve(TestCase test_case) {
 	collector->AddObjective(mean_bandwidth_usage);
 	solver.Solve(db, omega, search_log, time_limit, collector);
 
+	if (collector->solution_count() == 0) {
+		cout << "Could not find solution within given time constraint.." << endl << endl;
+		return -1;
+	}
+
+	if (printFile == 0) {
+		return collector->objective_value(0);
+	}
+
 	LOG(INFO) << collector->solution(0)->DebugString();
+	cout << endl;
 
 	pugi::xml_document result_xml;
 	auto report = result_xml.append_child("Report");
@@ -278,25 +291,89 @@ void Solve(TestCase test_case) {
 
 		f++;
 	}
+
+	string arguments = "";
+	arguments += (q_choice_strat == Solver::ASSIGN_MIN_VALUE ? "_qMin" : "_qRand");
+	arguments += path_choice_strat == Solver::ASSIGN_MIN_VALUE ? "_pMin" : "_pRand";
+	arguments += "_" + to_string(millis);
 	
-	std::filesystem::create_directory(getTestCasePath(test_case) + "Output");
-	auto b = result_xml.save_file((getTestCasePath(test_case) + "Output\\Report.xml").c_str());
+	string path = getTestCasePath(test_case) + "Output";
+	string fileName = "Report" + arguments + fileTag +".xml";
+	std::filesystem::create_directory(path + "\\" + subfolder);
+	auto b = result_xml.save_file((path + "\\" + subfolder + "\\" + fileName).c_str());
+
+	return collector->objective_value(0);
+}
+
+/*
+	method ideas:
+		- repeat x times and saves all files to subfolder, output objective value statistics
+		- generate min/rand mix files
+		- 
+*/
+
+void testHelper1(TestCase tc, Solver::IntValueStrategy q_choice, Solver::IntValueStrategy path_choice, int millis, int repeats)
+{
+	string folderName;
+	string tcStr = tc == example? "example" : getTestCasePath(tc).substr(6, 3);
+	folderName += tcStr;
+	folderName += (q_choice == Solver::ASSIGN_MIN_VALUE ? "_qMin" : "_qRand");
+	folderName += path_choice == Solver::ASSIGN_MIN_VALUE ? "_pMin" : "_pRand";
+	folderName += "_" + to_string(millis);
+	folderName += "_" + to_string(repeats) + "repeats";
+	
+	printFile = 0;
+
+	vector<int> obj_values;
+	int obj_val;
+	for (int i = 0; i < repeats; i++)
+	{
+		obj_val = Solve(tc, q_choice, path_choice, millis);
+		obj_values.push_back(obj_val);
+	}
+
+	cout << endl << "Arguments: " << folderName << endl << endl;
+	cout << "Objective values: " << endl;
+
+	cout << "\t[";
+	for (int val : obj_values) {
+		cout << to_string(val) << ",";
+	}
+	cout << "]" << endl;
+
+	int obj_sum = std::accumulate(obj_values.begin(), obj_values.end(), 0);
+	cout << "Avg. obj. value: " << to_string(obj_sum / repeats) << endl << endl;
+
 }
 
 int main(int argc, char **argv) {
 	google::InitGoogleLogging(argv[0]);
 	absl::SetFlag(&FLAGS_logtostderr, 1);
 
-	Solve(TestCase::TC1);
-	Solve(TestCase::TC2);
-	Solve(TestCase::TC3);
-	Solve(TestCase::TC4);
-	Solve(TestCase::TC5);
-	Solve(TestCase::TC6);
-	Solve(TestCase::TC7);
-	Solve(TestCase::TC8);
-	Solve(TestCase::TC9);
+	Solver::IntValueStrategy min = Solver::ASSIGN_MIN_VALUE;
+	Solver::IntValueStrategy random = Solver::ASSIGN_RANDOM_VALUE;
 
+	testHelper1(TC1, min, min, 10000, 1);
+	testHelper1(example, min, min, 10000, 1);
+	//testHelper1(TC1, random, random, 10000, 10);
+	//testHelper1(TC1, min, random, 10000, 10);
+	//testHelper1(TC1, random, min, 10000, 10);
+
+	/*Solve(TestCase::example, min, min, 10000);
+	Solve(TestCase::example, random, random, 10000);
+	Solve(TestCase::example, min, random, 10000);
+	Solve(TestCase::example, random, min, 10000);*/
+	
+	/*Solve(TestCase::TC1, min, random, 10000);
+	Solve(TestCase::TC2, min, random, 10000);
+	Solve(TestCase::TC3, min, random, 10000);
+	Solve(TestCase::TC4, min, random, 10000);
+	Solve(TestCase::TC5, min, random, 10000);
+	Solve(TestCase::TC6, min, random, 10000);
+	Solve(TestCase::TC7, min, random, 10000);
+	Solve(TestCase::TC8, min, random, 10000);
+	Solve(TestCase::TC9, min, random, 10000);*/
+	
 	return 0;
 }
 
