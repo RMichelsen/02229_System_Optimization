@@ -8,6 +8,7 @@
 #include "graph.h"
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 
 using namespace operations_research;
 
@@ -15,14 +16,51 @@ constexpr int CYCLE_LENGTH = 12;
 int printFile = 1;
 string subfolder = "";
 
+TestCase oldTestCase;
+edge_map_t oldEdges;
+flow_map_t oldFlows;
+flow_paths_t oldFlow_paths;
+
+
+string getStrategyString(Solver::IntValueStrategy strat) {
+	switch (strat)
+	{
+	case operations_research::Solver::INT_VALUE_DEFAULT:
+	case operations_research::Solver::INT_VALUE_SIMPLE:
+	case operations_research::Solver::ASSIGN_MIN_VALUE:
+	case operations_research::Solver::SPLIT_LOWER_HALF:
+		return "min";
+	case operations_research::Solver::ASSIGN_MAX_VALUE:
+	case operations_research::Solver::SPLIT_UPPER_HALF:
+		return "max";
+	case operations_research::Solver::ASSIGN_RANDOM_VALUE:
+		return "rand";
+	case operations_research::Solver::ASSIGN_CENTER_VALUE:
+		return "center";
+	default:
+		return "unknown";
+	}
+}
 
 int Solve(TestCase test_case, Solver::IntValueStrategy q_choice_strat, Solver::IntValueStrategy path_choice_strat, int millis, string fileTag = "") {
 	edge_map_t edges;
 	flow_map_t flows;
-	loadTestCase(test_case, edges, flows);
-
 	flow_paths_t flow_paths;
-	flow_paths = getFlowPaths(edges, flows);
+	if (test_case == oldTestCase && oldEdges.size() != 0) {
+		edges = oldEdges;
+		flows = oldFlows;
+		flow_paths = oldFlow_paths;
+	}
+	else {
+		loadTestCase(test_case, edges, flows);
+		flow_paths = getFlowPaths(edges, flows);
+		
+		oldEdges = edges;
+		oldFlows = flows;
+		oldFlow_paths = flow_paths;
+		oldTestCase = test_case;
+	}
+
 
 	int least_common_multiple = 1;
 	for(const auto &[_, flow] : flows) {
@@ -162,9 +200,10 @@ int Solve(TestCase test_case, Solver::IntValueStrategy q_choice_strat, Solver::I
 				IntExpr *composite_boolean = solver.MakeProd(A_input_positive_check, A_boolean);
 
 				// Calculate the arrival pattern, multiply by 0 if the edge is invalid (not part of solution)
-				IntVar *A_candidate = solver.MakeIntVar(0, std::numeric_limits<int32_t>::max());
-				solver.AddConstraint(solver.MakeIfThenElseCt(composite_boolean->Var(), solver.MakeIntConst(flow.size), solver.MakeIntConst(0), A_candidate));
-				IntVar *A = solver.MakeProd(A_candidate, is_valid_edge)->Var();
+				//IntVar *A_candidate = solver.MakeIntVar(0, std::numeric_limits<int32_t>::max());
+				//solver.AddConstraint(solver.MakeIfThenElseCt(composite_boolean->Var(), solver.MakeIntConst(flow.size), solver.MakeIntConst(0), A_candidate));
+				//IntVar *A = solver.MakeProd(A_candidate, is_valid_edge)->Var();
+				IntVar* A = solver.MakeProd(solver.MakeProd(composite_boolean, flow.size), is_valid_edge)->Var();
 
 				// Set the corresponding element of the arrival_patterns array, indexing with the edge ID integer variable.
 				IntExpr *E = solver.MakeElement(arrival_patterns[c][f], edge_id);
@@ -239,7 +278,7 @@ int Solve(TestCase test_case, Solver::IntValueStrategy q_choice_strat, Solver::I
 	);
 	DecisionBuilder *const db = solver.Compose(db1, db2);
 	SearchMonitor *const search_log = solver.MakeSearchLog(100000, omega);
-	RegularLimit *const time_limit = solver.MakeTimeLimit(1000);
+	RegularLimit *const time_limit = solver.MakeTimeLimit(millis);
 	SolutionCollector *const collector = solver.MakeLastSolutionCollector();
 
 	collector->Add(path_variables);
@@ -293,8 +332,8 @@ int Solve(TestCase test_case, Solver::IntValueStrategy q_choice_strat, Solver::I
 	}
 
 	string arguments = "";
-	arguments += (q_choice_strat == Solver::ASSIGN_MIN_VALUE ? "_qMin" : "_qRand");
-	arguments += path_choice_strat == Solver::ASSIGN_MIN_VALUE ? "_pMin" : "_pRand";
+	arguments += "_q" + getStrategyString(q_choice_strat);
+	arguments += "_p" + getStrategyString(path_choice_strat);
 	arguments += "_" + to_string(millis);
 	
 	string path = getTestCasePath(test_case) + "Output";
@@ -312,15 +351,15 @@ int Solve(TestCase test_case, Solver::IntValueStrategy q_choice_strat, Solver::I
 		- 
 */
 
-void testHelper1(TestCase tc, Solver::IntValueStrategy q_choice, Solver::IntValueStrategy path_choice, int millis, int repeats)
+void testHelper1(TestCase tc, Solver::IntValueStrategy q_choice, Solver::IntValueStrategy path_choice, int millis, int repeats, string pathToResultFile = "")
 {
-	string folderName;
+	string arguments;
 	string tcStr = tc == example? "example" : getTestCasePath(tc).substr(6, 3);
-	folderName += tcStr;
-	folderName += (q_choice == Solver::ASSIGN_MIN_VALUE ? "_qMin" : "_qRand");
-	folderName += path_choice == Solver::ASSIGN_MIN_VALUE ? "_pMin" : "_pRand";
-	folderName += "_" + to_string(millis);
-	folderName += "_" + to_string(repeats) + "repeats";
+	arguments += tcStr;
+	arguments += "_q" + getStrategyString(q_choice);
+	arguments += "_p" + getStrategyString(path_choice);
+	arguments += "_" + to_string(millis);
+	arguments += "_" + to_string(repeats) + "repeats";
 	
 	printFile = 0;
 
@@ -329,10 +368,11 @@ void testHelper1(TestCase tc, Solver::IntValueStrategy q_choice, Solver::IntValu
 	for (int i = 0; i < repeats; i++)
 	{
 		obj_val = Solve(tc, q_choice, path_choice, millis);
-		obj_values.push_back(obj_val);
+		if (obj_val != -1) 
+			obj_values.push_back(obj_val);
 	}
 
-	cout << endl << "Arguments: " << folderName << endl << endl;
+	cout << endl << "Arguments: " << arguments << endl << endl;
 	cout << "Objective values: " << endl;
 
 	cout << "\t[";
@@ -342,7 +382,28 @@ void testHelper1(TestCase tc, Solver::IntValueStrategy q_choice, Solver::IntValu
 	cout << "]" << endl;
 
 	int obj_sum = std::accumulate(obj_values.begin(), obj_values.end(), 0);
-	cout << "Avg. obj. value: " << to_string(obj_sum / repeats) << endl << endl;
+	int avgObj = obj_values.size() != 0 ? obj_sum / obj_values.size() : 0;
+	cout << "Avg. obj. value: " << to_string(avgObj) << endl << endl;
+
+	if (pathToResultFile != "")
+	{
+		string path = getTestCasePath(tc) + "Output";
+		ofstream result_file(path + "\\" + pathToResultFile, std::ios_base::app);
+		if (result_file.is_open())
+		{
+			result_file.seekp(0, ios::end);
+			result_file << endl << "Arguments: " << arguments << endl << endl;
+			result_file << "Objective values: " << endl;
+
+			result_file << "\t[";
+			for (int val : obj_values) {
+				result_file << to_string(val) << ",";
+			}
+			result_file << "]" << endl;
+
+			result_file << "Avg. obj. value: " << to_string(avgObj) << endl << endl;
+		}
+	}
 
 }
 
@@ -351,29 +412,72 @@ int main(int argc, char **argv) {
 	absl::SetFlag(&FLAGS_logtostderr, 1);
 
 	Solver::IntValueStrategy min = Solver::ASSIGN_MIN_VALUE;
+	Solver::IntValueStrategy max = Solver::ASSIGN_MAX_VALUE;
 	Solver::IntValueStrategy random = Solver::ASSIGN_RANDOM_VALUE;
+	Solver::IntValueStrategy center = Solver::ASSIGN_CENTER_VALUE;
 
-	testHelper1(TC1, min, min, 10000, 1);
-	testHelper1(example, min, min, 10000, 1);
-	//testHelper1(TC1, random, random, 10000, 10);
-	//testHelper1(TC1, min, random, 10000, 10);
-	//testHelper1(TC1, random, min, 10000, 10);
+	string resultfile = "crossTest.txt";
+	TestCase tc = TC1;
+	int millis = 1000;
+	int repeats = 10;
 
-	/*Solve(TestCase::example, min, min, 10000);
-	Solve(TestCase::example, random, random, 10000);
-	Solve(TestCase::example, min, random, 10000);
-	Solve(TestCase::example, random, min, 10000);*/
+	testHelper1(tc, min, min, millis, repeats, resultfile);
+	testHelper1(tc, min, max, millis, repeats, resultfile);
+	testHelper1(tc, min, center, millis, repeats, resultfile);
+	testHelper1(tc, min, random, millis, repeats, resultfile);
+	testHelper1(tc, max, min, millis, repeats, resultfile);
+	testHelper1(tc, max, max, millis, repeats, resultfile);
+	testHelper1(tc, max, center, millis, repeats, resultfile);
+	testHelper1(tc, max, random, millis, repeats, resultfile);
+	testHelper1(tc, center, min, millis, repeats, resultfile);
+	testHelper1(tc, center, max, millis, repeats, resultfile);
+	testHelper1(tc, center, center, millis, repeats, resultfile);
+	testHelper1(tc, center, random, millis, repeats, resultfile);
+	testHelper1(tc, random, min, millis, repeats, resultfile);
+	testHelper1(tc, random, max, millis, repeats, resultfile);
+	testHelper1(tc, random, center, millis, repeats, resultfile);
+	testHelper1(tc, random, random, millis, repeats, resultfile);
 	
-	/*Solve(TestCase::TC1, min, random, 10000);
-	Solve(TestCase::TC2, min, random, 10000);
-	Solve(TestCase::TC3, min, random, 10000);
-	Solve(TestCase::TC4, min, random, 10000);
-	Solve(TestCase::TC5, min, random, 10000);
-	Solve(TestCase::TC6, min, random, 10000);
-	Solve(TestCase::TC7, min, random, 10000);
-	Solve(TestCase::TC8, min, random, 10000);
-	Solve(TestCase::TC9, min, random, 10000);*/
-	
+	millis = 10000;
+	tc = TC5;
+
+	testHelper1(tc, min, min, millis, repeats, resultfile);
+	testHelper1(tc, min, max, millis, repeats, resultfile);
+	testHelper1(tc, min, center, millis, repeats, resultfile);
+	testHelper1(tc, min, random, millis, repeats, resultfile);
+	testHelper1(tc, max, min, millis, repeats, resultfile);
+	testHelper1(tc, max, max, millis, repeats, resultfile);
+	testHelper1(tc, max, center, millis, repeats, resultfile);
+	testHelper1(tc, max, random, millis, repeats, resultfile);
+	testHelper1(tc, center, min, millis, repeats, resultfile);
+	testHelper1(tc, center, max, millis, repeats, resultfile);
+	testHelper1(tc, center, center, millis, repeats, resultfile);
+	testHelper1(tc, center, random, millis, repeats, resultfile);
+	testHelper1(tc, random, min, millis, repeats, resultfile);
+	testHelper1(tc, random, max, millis, repeats, resultfile);
+	testHelper1(tc, random, center, millis, repeats, resultfile);
+	testHelper1(tc, random, random, millis, repeats, resultfile);
+
+	millis = 20000;
+	tc = TC9;
+
+	testHelper1(tc, min, min, millis, repeats, resultfile);
+	testHelper1(tc, min, max, millis, repeats, resultfile);
+	testHelper1(tc, min, center, millis, repeats, resultfile);
+	testHelper1(tc, min, random, millis, repeats, resultfile);
+	testHelper1(tc, max, min, millis, repeats, resultfile);
+	testHelper1(tc, max, max, millis, repeats, resultfile);
+	testHelper1(tc, max, center, millis, repeats, resultfile);
+	testHelper1(tc, max, random, millis, repeats, resultfile);
+	testHelper1(tc, center, min, millis, repeats, resultfile);
+	testHelper1(tc, center, max, millis, repeats, resultfile);
+	testHelper1(tc, center, center, millis, repeats, resultfile);
+	testHelper1(tc, center, random, millis, repeats, resultfile);
+	testHelper1(tc, random, min, millis, repeats, resultfile);
+	testHelper1(tc, random, max, millis, repeats, resultfile);
+	testHelper1(tc, random, center, millis, repeats, resultfile);
+	testHelper1(tc, random, random, millis, repeats, resultfile);
+
 	return 0;
 }
 
