@@ -16,26 +16,52 @@ namespace projectSA
     {
         static void Main(string[] args)
         {   
+            //runTestCase(TestCase.TC0);
+            runAllTestCases();
+           
+        }
+
+        public static void runAllTestCases(){
             Architecture architecture;
             Application application;
+            HashSet<Report> schedulables;
+            bool solutionFound = false;
             Report SA;
 
-            XMLReader.Read(TestCase.TC0, out architecture, out application);
+            foreach(TestCase t in Enum.GetValues(typeof(TestCase))){
+                XMLReader.Read(t, out architecture, out application);
+                var (flows,flowpaths) = ComputeFlowPaths.Compute(application, architecture);
+                var solutionGenerator = new SolutionGenerator(flows,flowpaths);
+                schedulables = SimulatedAnnealing.GenerateSchedulables(solutionGenerator, architecture.Edges.Count());
+                (solutionFound, SA) = SimulatedAnnealing.findBestReport(schedulables);
+                if(solutionFound){
+                    Console.WriteLine(t.ToString()+": "+schedulables.Count()+" Solution(s) found; Runtime: "+SA.solution.Runtime.ToString()+"s; Best MeanBW: "+SA.solution.MeanBW.ToString());
+                    SA.toXML(t.ToString()+"V3");
+                } else{
+                    Console.WriteLine(t.ToString()+": Solution not found");
+                }
+            }
+        }
+
+        public static void runTestCase(TestCase t){
+            Architecture architecture;
+            Application application;
+            HashSet<Report> schedulables;
+            bool solutionFound = false;
+            Report SA;
+
+            XMLReader.Read(t, out architecture, out application);
             var (flows,flowpaths) = ComputeFlowPaths.Compute(application, architecture);
             var solutionGenerator = new SolutionGenerator(flows,flowpaths);
-            do{
-            SA = SimulatedAnnealing.GenerateOptimizedSolution(solutionGenerator, architecture.Edges.Count());
-            Console.WriteLine(SA.solution.MeanBW);            
-            }while(SA.solution.MeanBW == 8888);
-            SA.toXML("example");
-                    
-            // var example = SolutionGenerator.GenerateExampleReport();
-            // example.toXML("example");
-            // var solvedExample = SimulatedAnnealing.solveExample(example,5);
-            // solvedExample.toXML("solvedExample");
-
-            //var SA = SimulatedAnnealing.GenerateOptimizedSolution(5);    //TODO: don't hardcode edgecount
-            //SA.toXML("copy");
+            schedulables = SimulatedAnnealing.GenerateSchedulables(solutionGenerator, architecture.Edges.Count());
+            (solutionFound, SA) = SimulatedAnnealing.findBestReport(schedulables);
+            if(solutionFound){
+                Console.WriteLine(t.ToString()+": "+schedulables.Count()+" Solution(s) found; Runtime: "+SA.solution.Runtime.ToString()+"s; Best MeanBW: "+SA.solution.MeanBW.ToString());
+                SA.toXML(t.ToString()+"V2");
+            } else{
+                Console.WriteLine(t.ToString()+": Solution not found");
+            }
         }
+
     } 
 }

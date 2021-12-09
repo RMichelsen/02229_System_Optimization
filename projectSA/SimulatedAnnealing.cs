@@ -11,21 +11,22 @@ namespace projectSA //TODO: MaxE2E
         public static int CYCLE_LENGTH = 12;
         public static int magicInt  = 131072;
         public static double magicDouble = 0.000012;
-        public static Report GenerateOptimizedSolution(SolutionGenerator solutionGenerator,int edgeCount)
+        public static HashSet<Report> GenerateSchedulables(SolutionGenerator solutionGenerator,int edgeCount)
 		{
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
+            HashSet<Report> schedulables = new HashSet<Report>();
             int least_common_multiple = 1;          
 			// start values
             int EdgeCount = edgeCount;
             int E2Esum = 0;
-        	double T = 1000000.0;
-        	double r = 0.0002;
+        	double T = 10000000.0;
+        	double r = 0.002;
             bool LCC, DC;
             Dictionary<Edge, int[]> Bs;
     		var C = solutionGenerator.GetInititalSolution();
             //var (E,_) = ResponseTimeAnalysis(C);
-            Report bestReport = C;
+            //Report bestReport = C;
 
             foreach(var message in C.messages) {
                 least_common_multiple = lcm(least_common_multiple, message.flow.Period);
@@ -45,31 +46,60 @@ namespace projectSA //TODO: MaxE2E
                 neighbourC.solution.MeanBW = ObjectiveFunction(Bs, EdgeCount);
                 double dE = neighbourC.solution.MeanBW - C.solution.MeanBW;
                 double probability = AccProbability(dE, T);
-
-                if (DC & LCC) {
-                    if(dE > 0 || probability > rnd.NextDouble()){
-                        C = neighbourC;
-                        if(C.solution.MeanBW < bestReport.solution.MeanBW){
-                            bestReport = C;
+                if(dE > 0 || probability > rnd.NextDouble()){
+                    C = neighbourC;
+                    //if(C.solution.MeanBW < bestReport.solution.MeanBW){
+                    //    bestReport = C;
+                    //}
+                    if (DC & LCC) {
+                        schedulables.Add(C);
+                        foreach(var msg in C.messages){
+                            E2Esum += msg.MaxE2E;
                         }
-                    }   
-                }
+                    }
+                }   
+                
                 T = T * (1 - r);
                 count++;
             }
 
-            Console.WriteLine("Number of loops: " + count);
+            //Console.WriteLine("Number of loops: " + count);
 
+            //foreach(var msg in bestReport.messages){
+            //    E2Esum += msg.MaxE2E;
+            //}
+            //bestReport.solution.MeanE2E = E2Esum/bestReport.messages.Count();
+
+            stopwatch.Stop();
+            //bestReport.solution.Runtime = stopwatch.ElapsedMilliseconds/1000.0f;
+            //Console.WriteLine((stopwatch.ElapsedMilliseconds/1000.0f).ToString());
+            foreach(var report in schedulables){
+                report.solution.Runtime = stopwatch.ElapsedMilliseconds/1000.0f;
+            }
+
+            return schedulables;
+        }
+    
+        public static (bool, Report) findBestReport(HashSet<Report> schedulabes){
+            int bestMeanBW = 99999;
+            bool solutionFound = false;
+            Report bestReport = new Report();
+
+            foreach(var report in schedulabes){
+                if(report.solution.MeanBW < bestMeanBW){
+                    solutionFound = true;
+                    bestMeanBW = report.solution.MeanBW;
+                    bestReport = report;                   
+                }
+            }
+
+            int E2Esum = 0;
             foreach(var msg in bestReport.messages){
                 E2Esum += msg.MaxE2E;
             }
             bestReport.solution.MeanE2E = E2Esum/bestReport.messages.Count();
 
-            stopwatch.Stop();
-            bestReport.solution.Runtime = stopwatch.ElapsedMilliseconds/1000.0f;
-            Console.WriteLine((stopwatch.ElapsedMilliseconds/1000.0f).ToString());
-
-            return bestReport;
+            return (solutionFound, bestReport);
         }
 
 

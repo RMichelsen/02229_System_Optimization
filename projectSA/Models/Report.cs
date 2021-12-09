@@ -12,7 +12,7 @@ namespace projectSA.Models {
         public List<Message> messages {get; set;}
         public Solution solution {get;set;}
         public Report() {
-            solution = new Solution(0.0f,8888,8888);
+            solution = new Solution(0.0f,99999,99999);
             messages = new List<Message>();
         }
 
