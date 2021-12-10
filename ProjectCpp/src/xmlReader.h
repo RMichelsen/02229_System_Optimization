@@ -15,7 +15,8 @@ enum TestCase {
 	TC6,
 	TC7,
 	TC8,
-	TC9
+	TC9,
+	RealisticMedium
 };
 
 inline string getTestCasePath(TestCase tc) {
@@ -50,6 +51,9 @@ inline string getTestCasePath(TestCase tc) {
 		break;
 	case TC9:
 		res += "TC9\\";
+		break;
+	case RealisticMedium:
+		res += "RealisticMedium\\";
 		break;
 	}
 
