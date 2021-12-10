@@ -4,29 +4,26 @@ using System.Linq;
 using projectSA.Models;
 using System.Diagnostics;
 
-namespace projectSA //TODO: MaxE2E
+namespace projectSA
 {
     class SimulatedAnnealing
     {
         public static int CYCLE_LENGTH = 12;
-        public static int magicInt  = 131072;
-        public static double magicDouble = 0.000012;
+        public static int bits  = 131072;
+        public static double dbl = 0.000012;
         public static HashSet<Report> GenerateSchedulables(SolutionGenerator solutionGenerator,int edgeCount)
 		{
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             HashSet<Report> schedulables = new HashSet<Report>();
             int least_common_multiple = 1;          
-			// start values
             int EdgeCount = edgeCount;
             int E2Esum = 0;
         	double T = 10000000.0;
-        	double r = 0.002;
+        	double r = 0.0005;
             bool LCC, DC;
             Dictionary<Edge, int[]> Bs;
     		var C = solutionGenerator.GetInititalSolution();
-            //var (E,_) = ResponseTimeAnalysis(C);
-            //Report bestReport = C;
 
             foreach(var message in C.messages) {
                 least_common_multiple = lcm(least_common_multiple, message.flow.Period);
@@ -42,15 +39,11 @@ namespace projectSA //TODO: MaxE2E
 
                 DC = DeadlineConstraint(neighbourC);
                 LCC = LinkCapacityConstraint(neighbourC,cycle_count,out Bs);
-                //Console.WriteLine("LCC" +LCC);
                 neighbourC.solution.MeanBW = ObjectiveFunction(Bs, EdgeCount);
                 double dE = neighbourC.solution.MeanBW - C.solution.MeanBW;
                 double probability = AccProbability(dE, T);
                 if(dE > 0 || probability > rnd.NextDouble()){
                     C = neighbourC;
-                    //if(C.solution.MeanBW < bestReport.solution.MeanBW){
-                    //    bestReport = C;
-                    //}
                     if (DC & LCC) {
                         schedulables.Add(C);
                         foreach(var msg in C.messages){
@@ -63,16 +56,8 @@ namespace projectSA //TODO: MaxE2E
                 count++;
             }
 
-            //Console.WriteLine("Number of loops: " + count);
-
-            //foreach(var msg in bestReport.messages){
-            //    E2Esum += msg.MaxE2E;
-            //}
-            //bestReport.solution.MeanE2E = E2Esum/bestReport.messages.Count();
-
             stopwatch.Stop();
-            //bestReport.solution.Runtime = stopwatch.ElapsedMilliseconds/1000.0f;
-            //Console.WriteLine((stopwatch.ElapsedMilliseconds/1000.0f).ToString());
+
             foreach(var report in schedulables){
                 report.solution.Runtime = stopwatch.ElapsedMilliseconds/1000.0f;
             }
@@ -102,8 +87,6 @@ namespace projectSA //TODO: MaxE2E
             return (solutionFound, bestReport);
         }
 
-
-    
         protected static double AccProbability(double dE, double T) {
             var frag = dE / T;
             return Math.Exp(frag);
@@ -152,7 +135,7 @@ namespace projectSA //TODO: MaxE2E
             }
 
             foreach(var edge in B.Keys){
-                var bandwidthBytesPerCycle = (int)((edge.Bandwidth * magicInt)*magicDouble);
+                var bandwidthBytesPerCycle = (int)((edge.Bandwidth * bits)*dbl);
                 foreach(var b in B[edge]){
                     if(b > bandwidthBytesPerCycle){
                         return false;
@@ -167,7 +150,7 @@ namespace projectSA //TODO: MaxE2E
             int omega;
 
             foreach(var edge in B.Keys){
-                var bandwidthBytesPerCycle = (int) Math.Ceiling((edge.Bandwidth * magicInt)*magicDouble);
+                var bandwidthBytesPerCycle = (int) Math.Ceiling((edge.Bandwidth * bits)*dbl);
                 bSum += B[edge].Max()*1000/bandwidthBytesPerCycle;
             }
 

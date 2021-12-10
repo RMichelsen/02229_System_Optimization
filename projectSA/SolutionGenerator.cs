@@ -27,43 +27,6 @@ namespace projectSA
         flow_paths = Flow_paths;
     }
     public Report GetInititalSolution(){
-        
-//         Edge ES1SW1 = new Edge("1","ES1","SW1", 1000, 10);
-//         Edge SW1ES2 = new Edge("2","SW1","ES2", 1000, 10);
-//         Edge ES1SW2 = new Edge("3","ES1","SW2", 1000, 10);
-//         Edge SW2ES2 = new Edge("4","SW2","ES2", 1000, 10);
-//         Edge SW2SW1 = new Edge("5","SW2","SW1", 1000, 10);
-        
-//         /*
-//         Dictionary<string,Edge> edges = new Dictionary<string, Edge> {
-//                 { "ES1SW1", new Edge("1","ES1","SW1", 1000, 10) },
-//                 { "SW1ES2", new Edge("2","SW1","ES2", 1000, 10) },
-//                 { "ES1SW2", new Edge("3","ES1","SW2", 1000, 10) },
-//                 { "SW2ES2", new Edge("4","SW2","ES2", 1000, 10) },
-//                 { "SW2SW1", new Edge("5","SW2","SW1", 1000, 10) },
-//         };
-// */
-//         flows = new Dictionary<string, Flow>{
-//             { "F1", new Flow("F1", "ES1", "ES2", 300, 1000, 1000) },
-//             { "F2", new Flow("F2", "ES1", "ES2", 400, 2000, 2000) },
-//             { "F3", new Flow("F3", "ES1", "ES2", 500, 4000, 4000) },
-//             { "F4", new Flow("F4", "ES1", "ES2", 300, 8000, 4000) },
-//             { "F5", new Flow("F5", "ES2", "ES1", 400, 1000, 1000) },
-//             { "F6", new Flow("F6", "ES2", "ES1", 500, 2000, 2000) },
-//             { "F7", new Flow("F7", "ES2", "ES1", 300, 4000, 4000) },
-//             { "F8", new Flow("F8", "ES1", "ES2", 400, 8000, 4000) },
-//         };
-
-//         flow_paths = new Dictionary<string, List<List<Edge>>>{
-//            { "F1", new List<List<Edge>>{ new List<Edge>{ ES1SW1, SW1ES2 }, new List<Edge>{ ES1SW1, SW2SW1, SW2ES2 }, new List<Edge>{ ES1SW2, SW2ES2 }, new List<Edge>{ ES1SW2, SW2SW1, SW1ES2 } } },
-//            { "F2", new List<List<Edge>>{ new List<Edge>{ ES1SW1, SW1ES2 }, new List<Edge>{ ES1SW1, SW2SW1, SW2ES2 }, new List<Edge>{ ES1SW2, SW2ES2 }, new List<Edge>{ ES1SW2, SW2SW1, SW1ES2 } } },
-//            { "F3", new List<List<Edge>>{ new List<Edge>{ ES1SW1, SW1ES2 }, new List<Edge>{ ES1SW1, SW2SW1, SW2ES2 }, new List<Edge>{ ES1SW2, SW2ES2 }, new List<Edge>{ ES1SW2, SW2SW1, SW1ES2 } } },
-//            { "F4", new List<List<Edge>>{ new List<Edge>{ ES1SW1, SW1ES2 }, new List<Edge>{ ES1SW1, SW2SW1, SW2ES2 }, new List<Edge>{ ES1SW2, SW2ES2 }, new List<Edge>{ ES1SW2, SW2SW1, SW1ES2 } } },
-//            { "F5", new List<List<Edge>>{ new List<Edge>{ SW1ES2, ES1SW1 }, new List<Edge>{ SW1ES2, SW2SW1, ES1SW2 }, new List<Edge>{ SW2ES2, ES1SW2 }, new List<Edge>{ SW2ES2, SW2SW1, ES1SW1 } } },
-//            { "F6", new List<List<Edge>>{ new List<Edge>{ SW1ES2, ES1SW1 }, new List<Edge>{ SW1ES2, SW2SW1, ES1SW2 }, new List<Edge>{ SW2ES2, ES1SW2 }, new List<Edge>{ SW2ES2, SW2SW1, ES1SW1 } } },
-//            { "F7", new List<List<Edge>>{ new List<Edge>{ SW1ES2, ES1SW1 }, new List<Edge>{ SW1ES2, SW2SW1, ES1SW2 }, new List<Edge>{ SW2ES2, ES1SW2 }, new List<Edge>{ SW2ES2, SW2SW1, ES1SW1 } } },
-//            { "F8", new List<List<Edge>>{ new List<Edge>{ ES1SW1, SW1ES2 }, new List<Edge>{ ES1SW1, SW2SW1, SW2ES2 }, new List<Edge>{ ES1SW2, SW2ES2 }, new List<Edge>{ ES1SW2, SW2SW1, SW1ES2 } } },
-//         };
              
         var report = new Report();
 
@@ -167,7 +130,7 @@ namespace projectSA
     }
 
     public Report GenerateNeighbour(Report report) {
-            if(rnd.NextDouble() > 0.5) {
+            if(rnd.NextDouble() > 0.7) {
 				return changeFlowPath(report);
             }
 			else {

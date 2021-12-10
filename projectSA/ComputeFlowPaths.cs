@@ -23,7 +23,6 @@ namespace projectSA
             foreach(var edge in architecture.Edges) 
             {
                 uGraph.AddEdge(new TaggedEdge<string, Edge>(edge.Source, edge.Destination, edge));
-                //uGraph.AddEdge(new TaggedEdge<string, Edge>(edge.Destination, edge.Source, edge));
             }
             var flow_paths = new Dictionary<string, List<List<Edge>>>();
             var flows = new Dictionary<string,Flow>();

@@ -16,7 +16,10 @@ namespace projectSA
         TC6,
         TC7,
         TC8,
-        TC9
+        TC9,
+        TC10,
+        TC11,
+        TC12,
     }
 
     enum InputFileType

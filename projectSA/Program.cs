@@ -16,9 +16,8 @@ namespace projectSA
     {
         static void Main(string[] args)
         {   
-            //runTestCase(TestCase.TC0);
+            //runTestCase(TestCase.TC10);
             runAllTestCases();
-           
         }
 
         public static void runAllTestCases(){
@@ -29,6 +28,11 @@ namespace projectSA
             Report SA;
 
             foreach(TestCase t in Enum.GetValues(typeof(TestCase))){
+                
+                if(t == TestCase.TC10 || t == TestCase.TC12 || t == TestCase.TC12){
+                    break;
+                }
+
                 XMLReader.Read(t, out architecture, out application);
                 var (flows,flowpaths) = ComputeFlowPaths.Compute(application, architecture);
                 var solutionGenerator = new SolutionGenerator(flows,flowpaths);

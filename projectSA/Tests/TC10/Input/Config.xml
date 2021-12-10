@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Architecture>
+	<Vertex Name="ES_nrfr0">
+	</Vertex>
+	<Vertex Name="ES_nctrl2">
+	</Vertex>
+	<Vertex Name="ES_nfr0">
+	</Vertex>
+	<Vertex Name="ES_nrrr0">
+	</Vertex>
+   <Vertex Name="ES_nfc0">
+	</Vertex>
+	<Vertex Name="ES_nlfr0">
+	</Vertex>
+  <Vertex Name="ES_nctrl1">
+	</Vertex>
+  <Vertex Name="ES_nlsvcam0">
+	</Vertex>
+  <Vertex Name="ES_nrsvcam0">
+	</Vertex>
+  <Vertex Name="ES_nfsvcam0">
+	</Vertex>
+  <Vertex Name="ES_necm0">
+	</Vertex>
+  <Vertex Name="ES_nrearsvcam0">
+	</Vertex>
+  <Vertex Name="ES_neps0">
+	</Vertex>
+	<Vertex Name="ES_nebcm0">
+	</Vertex>
+	<Vertex Name="ES_nrearrad0">
+	</Vertex>
+	<Vertex Name="ES_nrearcam0">
+	</Vertex>
+	<Vertex Name="ES_nlrearcam0">
+	</Vertex>
+	<Vertex Name="ES_nimu1">
+	</Vertex>
+	<Vertex Name="ES_nimu2">
+	</Vertex>
+	<Vertex Name="ES_nmaploc0">
+	</Vertex>
+	<Vertex Name="SW_B1">
+	</Vertex>
+	<Vertex Name="SW_B2">
+	</Vertex>
+	<Vertex Name="SW_B3">
+	</Vertex>
+	<Vertex Name="SW_B4">
+	</Vertex>
+	<Vertex Name="SW_B5">
+	</Vertex>
+	<Vertex Name="SW_B6">
+	</Vertex>
+	<Vertex Name="SW_B7">
+	</Vertex>
+	<Vertex Name="SW_B8">
+	</Vertex>
+	<Vertex Name="SW_B9">
+	</Vertex>
+	<Vertex Name="SW_B10">
+	</Vertex>
+	<Vertex Name="SW_B11">
+	</Vertex>
+	<Vertex Name="SW_B12">
+	</Vertex>
+	<Vertex Name="SW_B13">
+	</Vertex>
+	<Vertex Name="SW_B14">
+	</Vertex>
+	<Vertex Name="SW_B15">
+	</Vertex>
+	<Vertex Name="SW_B16">
+	</Vertex>
+	<Vertex Name="SW_B17">
+	</Vertex>
+	<Vertex Name="SW_B18">
+	</Vertex>
+	<Vertex Name="SW_B19">
+	</Vertex>
+	<Vertex Name="SW_B20">
+	</Vertex>
+
+	<Edge Id="1" BW="1000" PropDelay="10" Source="ES_nrfr0" Destination="SW_B12">
+	</Edge>
+	<Edge Id="2" BW="1000" PropDelay="10" Source="SW_B12" Destination="SW_B19">
+	</Edge>
+  <Edge Id="3" BW="1000" PropDelay="10" Source="SW_B19" Destination="ES_nctrl2">
+	</Edge>
+	<Edge Id="4" BW="1000" PropDelay="10" Source="SW_B10" Destination="ES_nfr0">
+	</Edge>
+  <Edge Id="5" BW="1000" PropDelay="10" Source="SW_B10" Destination="SW_B19">
+	</Edge>
+  <Edge Id="6" BW="1000" PropDelay="10" Source="ES_nrrr0" Destination="SW_B14">
+	</Edge>
+  <Edge Id="7" BW="1000" PropDelay="10" Source="SW_B14" Destination="SW_B19">
+	</Edge>
+  <Edge Id="8" BW="1000" PropDelay="10" Source="ES_nfc0" Destination="SW_B1">
+	</Edge>
+  <Edge Id="9" BW="1000" PropDelay="10" Source="SW_B1" Destination="SW_B18">
+	</Edge>
+  <Edge Id="10" BW="1000" PropDelay="10" Source="SW_B19" Destination="SW_B1">
+	</Edge>
+  <Edge Id="11" BW="1000" PropDelay="10" Source="ES_nlfr0" Destination="SW_B11">
+	</Edge>
+  <Edge Id="12" BW="1000" PropDelay="10" Source="ES_nctrl1" Destination="SW_B18">
+	</Edge>
+  <Edge Id="13" BW="1000" PropDelay="10" Source="ES_nlsvcam0" Destination="SW_B3">
+	</Edge>
+   <Edge Id="14" BW="1000" PropDelay="10" Source="SW_B4" Destination="SW_B3">
+	</Edge>
+  <Edge Id="15" BW="1000" PropDelay="10" Source="ES_nrsvcam0" Destination="SW_B4">
+	</Edge>
+  <Edge Id="16" BW="1000" PropDelay="10" Source="SW_B2" Destination="SW_B18">
+	</Edge>
+  <Edge Id="17" BW="1000" PropDelay="10" Source="ES_nfsvcam0" Destination="SW_B2">
+	</Edge>
+	 <Edge Id="19" BW="1000" PropDelay="10" Source="SW_B18" Destination="SW_B20">
+	</Edge>
+	 <Edge Id="20" BW="1000" PropDelay="10" Source="ES_necm0" Destination="SW_B20">
+	</Edge>
+	 <Edge Id="21" BW="1000" PropDelay="10" Source="SW_B20" Destination="SW_B6">
+	</Edge>
+	 <Edge Id="22" BW="1000" PropDelay="10" Source="SW_B20" Destination="SW_B7">
+	</Edge>
+	 <Edge Id="23" BW="1000" PropDelay="10" Source="ES_nrearsvcam0" Destination="SW_B6">
+	</Edge>
+	 <Edge Id="24" BW="1000" PropDelay="10" Source="ES_neps0" Destination="SW_B7">
+	</Edge>
+	 <Edge Id="25" BW="1000" PropDelay="10" Source="ES_nebcm0" Destination="SW_B17">
+	</Edge>
+	 <Edge Id="26" BW="1000" PropDelay="10" Source="SW_B20" Destination="SW_B17">
+	</Edge>
+	 <Edge Id="27" BW="1000" PropDelay="10" Source="ES_nrearrad0" Destination="SW_B15">
+	 </Edge>
+	 <Edge Id="28" BW="1000" PropDelay="10" Source="SW_B15" Destination="SW_B13">
+	 </Edge>
+	 <Edge Id="29" BW="1000" PropDelay="10" Source="ES_nrearcam0" Destination="SW_B5">	
+	</Edge>
+	<Edge Id="30" BW="1000" PropDelay="10" Source="SW_B13" Destination="SW_B5">	
+	</Edge>
+	<Edge Id="31" BW="1000" PropDelay="10" Source="ES_nlrearcam0" Destination="SW_B13">	
+	</Edge>
+	<Edge Id="32" BW="1000" PropDelay="10" Source="ES_nimu1" Destination="SW_B8">	
+	</Edge>
+	<Edge Id="33" BW="1000" PropDelay="10" Source="SW_B8" Destination="SW_B16">	
+	</Edge>
+	<Edge Id="34" BW="1000" PropDelay="10" Source="ES_nimu2" Destination="SW_B9">	
+	</Edge>
+	<Edge Id="35" BW="1000" PropDelay="10" Source="SW_B9" Destination="SW_B16">	
+	</Edge>
+	<Edge Id="36" BW="1000" PropDelay="10" Source="ES_nmaploc0" Destination="SW_B16">	
+	</Edge>
+	<Edge Id="37" BW="1000" PropDelay="10" Source="SW_B17" Destination="SW_B16">	
+	</Edge>
+	<Edge Id="38" BW="1000" PropDelay="10" Source="SW_B11" Destination="SW_B18">	
+	</Edge>
+	<Edge Id="39" BW="1000" PropDelay="10" Source="SW_B3" Destination="SW_B18">	
+	</Edge>
+	<Edge Id="40" BW="1000" PropDelay="10" Source="SW_B20" Destination="SW_B19">	
+	</Edge>
+	<Edge Id="41" BW="1000" PropDelay="10" Source="SW_B13" Destination="SW_B19">	
+	</Edge>
+</Architecture>
