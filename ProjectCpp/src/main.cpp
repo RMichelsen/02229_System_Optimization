@@ -14,6 +14,8 @@ using namespace operations_research;
 
 constexpr int CYCLE_LENGTH = 12;
 int printFile = 1;
+int printArguments = 1;
+
 string subfolder = "";
 
 TestCase oldTestCase;
@@ -200,9 +202,6 @@ int Solve(TestCase test_case, Solver::IntValueStrategy q_choice_strat, Solver::I
 				IntExpr *composite_boolean = solver.MakeProd(A_input_positive_check, A_boolean);
 
 				// Calculate the arrival pattern, multiply by 0 if the edge is invalid (not part of solution)
-				//IntVar *A_candidate = solver.MakeIntVar(0, std::numeric_limits<int32_t>::max());
-				//solver.AddConstraint(solver.MakeIfThenElseCt(composite_boolean->Var(), solver.MakeIntConst(flow.size), solver.MakeIntConst(0), A_candidate));
-				//IntVar *A = solver.MakeProd(A_candidate, is_valid_edge)->Var();
 				IntVar* A = solver.MakeProd(solver.MakeProd(composite_boolean, flow.size), is_valid_edge)->Var();
 
 				// Set the corresponding element of the arrival_patterns array, indexing with the edge ID integer variable.
@@ -332,9 +331,11 @@ int Solve(TestCase test_case, Solver::IntValueStrategy q_choice_strat, Solver::I
 	}
 
 	string arguments = "";
-	arguments += "_q" + getStrategyString(q_choice_strat);
-	arguments += "_p" + getStrategyString(path_choice_strat);
-	arguments += "_" + to_string(millis);
+	if (printArguments) {
+		arguments += "_q" + getStrategyString(q_choice_strat);
+		arguments += "_p" + getStrategyString(path_choice_strat);
+		arguments += "_" + to_string(millis);
+	}
 	
 	string path = getTestCasePath(test_case) + "Output";
 	string fileName = "Report" + arguments + fileTag +".xml";
@@ -416,11 +417,29 @@ int main(int argc, char **argv) {
 	Solver::IntValueStrategy random = Solver::ASSIGN_RANDOM_VALUE;
 	Solver::IntValueStrategy center = Solver::ASSIGN_CENTER_VALUE;
 
-	string resultfile = "crossTest.txt";
-	TestCase tc = TC1;
-	int millis = 1000;
-	int repeats = 10;
 
+	//printArguments = 0;
+	int millis = 1000;
+	Solve(TC1, random, min, millis, "");
+	Solve(TC2, random, min, millis, "");
+	Solve(TC3, random, min, millis, "");
+	
+	millis = 5000;
+	
+	Solve(TC4, center, min, millis, "");
+	Solve(TC5, center, min, millis, "");
+	Solve(TC6, center, min, millis, "");
+	
+	millis = 15000;
+	Solve(TC7, center, min, millis, "");
+	Solve(TC8, center, min, millis, "");
+	Solve(TC9, center, min, millis, "");
+	
+	//string resultfile = "someTest.txt";
+	//TestCase tc = RealisticMedium;
+	//int repeats = 10;
+
+	/*
 	testHelper1(tc, min, min, millis, repeats, resultfile);
 	testHelper1(tc, min, max, millis, repeats, resultfile);
 	testHelper1(tc, min, center, millis, repeats, resultfile);
@@ -477,6 +496,7 @@ int main(int argc, char **argv) {
 	testHelper1(tc, random, max, millis, repeats, resultfile);
 	testHelper1(tc, random, center, millis, repeats, resultfile);
 	testHelper1(tc, random, random, millis, repeats, resultfile);
+	*/
 
 	return 0;
 }
